@@ -20,12 +20,3 @@ SOURCES += Arangodbdriver.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h
-
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}

@@ -14,6 +14,19 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-
 SOURCES += tst_StartTest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../arangodb-driver-dist/release/ -larangodb-driver
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../arangodb-driver-dist/debug/ -larangodb-driver
+
+else:unix:CONFIG(debug, debug|release): {
+LIBS += -L$$PWD/../../../arangodb-driver-dist/debug/ -larangodb-driver
+DEPENDPATH += $$PWD/../../../arangodb-driver-dist/debug
+}
+else:unix:CONFIG(release, debug|release): {
+LIBS += -L$$PWD/../../../arangodb-driver-dist/release/ -larangodb-driver
+DEPENDPATH += $$PWD/../../../arangodb-driver-dist/release
+}
+
+INCLUDEPATH += $$PWD/../../src
