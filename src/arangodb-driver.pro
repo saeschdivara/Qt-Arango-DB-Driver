@@ -8,6 +8,8 @@ QT       += network
 
 QT       -= gui
 
+QMAKE_CXXFLAGS += -std=c++11
+
 TARGET = arangodb-driver
 TEMPLATE = lib
 
@@ -16,7 +18,9 @@ CONFIG(debug, debug|release):DEFINES += AR_DEBUG_BUILD
 
 DEFINES += ARANGODBDRIVER_LIBRARY
 
-SOURCES += Arangodbdriver.cpp
+SOURCES += Arangodbdriver.cpp \
+    Document.cpp
 
 HEADERS += Arangodbdriver.h\
-        arangodb-driver_global.h
+        arangodb-driver_global.h \
+    Document.h

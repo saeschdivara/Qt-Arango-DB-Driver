@@ -3,6 +3,8 @@
 #include <QtNetwork>
 #include <Arangodbdriver.h>
 
+using namespace arangodb;
+
 class StartTest : public QObject
 {
         Q_OBJECT
@@ -32,25 +34,20 @@ void StartTest::cleanupTestCase()
 void StartTest::testCase1()
 {
     QFETCH(QString, data);
-    QVERIFY2(true, "Failure");
 
-    QNetworkAccessManager manager;
     Arangodbdriver driver;
-
-    QNetworkReply *reply = manager.get(QNetworkRequest(QUrl("http://localhost:8529/_api/document/test/11153497")));
+    Document *doc = driver.getDocument(data);
     {
         QEventLoop loop;
-        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        connect(doc, &Document::ready, &loop, &QEventLoop::quit);
         loop.exec();
     }
-
-    qDebug() << reply->readAll();
 }
 
 void StartTest::testCase1_data()
 {
     QTest::addColumn<QString>("data");
-    QTest::newRow("0") << QString();
+    QTest::newRow("0") << QString("test/11153497");
 }
 
 QTEST_MAIN(StartTest)
