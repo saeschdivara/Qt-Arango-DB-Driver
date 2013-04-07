@@ -43,7 +43,7 @@ Document *Arangodbdriver::getDocument(QString id)
             doc, &Document::_ar_dataIsAvailable
             );
 
-    connect(doc, &Document::save,
+    connect(doc, &Document::saveData,
             this, &Arangodbdriver::_ar_save
             );
 
