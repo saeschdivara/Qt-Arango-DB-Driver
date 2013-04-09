@@ -41,6 +41,13 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         Document* getDocument(QString id);
 
+        /**
+         * @brief createDocument
+         * @param collection
+         * @return
+         */
+        Document* createDocument(QString collection);
+
     protected Q_SLOTS:
         /**
          * @brief _ar_save

@@ -2,6 +2,7 @@
 #define ARANGODBDRIVER_GLOBAL_H
 
 #include <QtCore/qglobal.h>
+#include <QtCore/QObject>
 
 #if defined(ARANGODBDRIVER_LIBRARY)
 #  define ARANGODBDRIVERSHARED_EXPORT Q_DECL_EXPORT
