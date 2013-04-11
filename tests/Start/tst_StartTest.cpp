@@ -5,6 +5,9 @@
 
 using namespace arangodb;
 
+/**
+ * @brief The StartTest class
+ */
 class StartTest : public QObject
 {
         Q_OBJECT
@@ -58,11 +61,17 @@ void StartTest::testCase2()
 {
     Arangodbdriver driver;
     Document* doc = driver.createDocument("test");
-    doc->set("fuu", QVariant("ss"));
-    doc->save();
+    doc->Set("fuu", QVariant("ss"));
+    doc->Save();
     {
         QEventLoop loop;
         connect(doc, &Document::ready, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    doc->Delete();
+    {
+        QEventLoop loop;
+        connect(doc, &Document::dataDeleted, &loop, &QEventLoop::quit);
         loop.exec();
     }
 }

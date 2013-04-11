@@ -20,6 +20,10 @@ class DocumentPrivate
         bool isCreated = false;
         QJsonObject data;
         QString collectionName;
+
+        QString errorMessage;
+        quint32 errorCode = 0;
+        quint32 errorNumber = 0;
 };
 
 }
@@ -78,13 +82,28 @@ QString Document::collection() const
     return d->collectionName;
 }
 
-void Document::set(const QString &key, QVariant data)
+QString Document::errorMessage() const
+{
+    return d->errorMessage;
+}
+
+quint32 Document::errorCode()
+{
+    return d->errorCode;
+}
+
+quint32 Document::errorNumber()
+{
+    return d->errorNumber;
+}
+
+void Document::Set(const QString &key, QVariant data)
 {
     d->data.insert(key, QJsonValue::fromVariant(data));
     d->isDirty = true;
 }
 
-QVariant Document::get(const QString &key) const
+QVariant Document::Get(const QString &key) const
 {
     return d->data.value(key).toVariant();
 }
@@ -93,12 +112,35 @@ void Document::_ar_dataIsAvailable()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     d->data = QJsonDocument::fromJson(reply->readAll()).object();
-    d->isReady = true;
-    emit ready();
+
+    bool hasError = d->data.value("error").toBool();
+    if ( hasError ) {
+            d->errorMessage = d->data.value("errorMessage").toString();
+            d->errorNumber  = d->data.value("errorNum").toVariant().toInt();
+            d->errorCode    = d->data.value("code").toVariant().toInt();
+            emit error();
+        }
+    else {
+            d->isReady = true;
+            d->isCreated = true;
+            emit ready();
+        }
 }
 
-void Document::save()
+void Document::_ar_dataDeleted()
+{
+    emit dataDeleted();
+}
+
+void Document::Save()
 {
     d->isDirty = false;
     emit saveData(this);
+}
+
+void Document::Delete()
+{
+    d->isDirty = false;
+    d->isCreated = false;
+    emit deleteData(this);
 }

@@ -55,6 +55,10 @@ Document *Arangodbdriver::getDocument(QString id)
             this, &Arangodbdriver::_ar_save
             );
 
+    connect(doc, &Document::deleteData,
+            this, &Arangodbdriver::_ar_delete
+            );
+
     return doc;
 }
 
@@ -64,6 +68,10 @@ Document *Arangodbdriver::createDocument(QString collection)
 
     connect(doc, &Document::saveData,
             this, &Arangodbdriver::_ar_save
+            );
+
+    connect(doc, &Document::deleteData,
+            this, &Arangodbdriver::_ar_delete
             );
 
     return doc;
@@ -86,4 +94,15 @@ void Arangodbdriver::_ar_save(Document *doc)
                     doc, &Document::_ar_dataIsAvailable
                     );
         }
+}
+
+void Arangodbdriver::_ar_delete(Document *doc)
+{
+    QUrl url(d->standardUrl + QString("/document/") + doc->docID());
+    QNetworkRequest request(url);
+    QNetworkReply *reply = d->networkManager.deleteResource(request);
+
+    connect(reply, &QNetworkReply::finished,
+            doc, &Document::_ar_dataDeleted
+            );
 }

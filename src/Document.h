@@ -79,18 +79,36 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         QString collection() const;
 
         /**
+         * @brief errorMessage
+         * @return
+         */
+        QString errorMessage() const;
+
+        /**
+         * @brief errorCode
+         * @return
+         */
+        quint32 errorCode();
+
+        /**
+         * @brief errorCode
+         * @return
+         */
+        quint32 errorNumber();
+
+        /**
          * @brief set
          * @param name
          * @param data
          */
-        void set(const QString &key, QVariant data);
+        void Set(const QString &key, QVariant data);
 
         /**
          * @brief get
          * @param name
          * @return
          */
-        QVariant get(const QString &key) const;
+        QVariant Get(const QString &key) const;
 
     Q_SIGNALS:
         /**
@@ -99,20 +117,45 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void ready();
 
         /**
+         * @brief error
+         */
+        void error();
+
+        /**
          * @brief save
          */
         void saveData(Document *);
+
+        /**
+         * @brief deleteData
+         */
+        void deleteData(Document *);
+
+        /**
+         * @brief dataDeleted
+         */
+        void dataDeleted();
 
     public Q_SLOTS:
         /**
          * @brief save
          */
-        void save();
+        void Save();
+
+        /**
+         * @brief Delete
+         */
+        void Delete();
 
         /**
          * @brief _ar_dataIsAvailable
          */
         void _ar_dataIsAvailable();
+
+        /**
+         * @brief _ar_dataDeleted
+         */
+        void _ar_dataDeleted();
 
     private:
         internal::DocumentPrivate *d;

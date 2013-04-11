@@ -55,6 +55,12 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         void _ar_save(Document *doc);
 
+        /**
+         * @brief _ar_delete
+         * @param doc
+         */
+        void _ar_delete(Document *doc);
+
     private:
         internal::ArangodbdriverPrivate *d;
 };
