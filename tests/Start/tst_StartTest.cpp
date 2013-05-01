@@ -21,6 +21,27 @@ class StartTest : public QObject
         void testCase1();
         void testCase1_data();
         void testCase2();
+
+    private:
+        /**
+         * @brief waitForDocumentReady
+         * @param doc
+         */
+        inline void waitForDocumentReady(Document* doc) {
+            QEventLoop loop;
+            connect(doc, &Document::ready, &loop, &QEventLoop::quit);
+            loop.exec();
+        }
+
+        /**
+         * @brief waitForDocumentReady
+         * @param doc
+         */
+        inline void waitForDocumentDeleted(Document* doc) {
+            QEventLoop loop;
+            connect(doc, &Document::dataDeleted, &loop, &QEventLoop::quit);
+            loop.exec();
+        }
 };
 
 StartTest::StartTest()
@@ -41,11 +62,7 @@ void StartTest::testCase1()
 
     Arangodbdriver driver;
     Document *doc = driver.getDocument(data);
-    {
-        QEventLoop loop;
-        connect(doc, &Document::ready, &loop, &QEventLoop::quit);
-        loop.exec();
-    }
+    waitForDocumentReady(doc);
 
     Q_ASSERT(doc->isReady());
     QCOMPARE(doc->docID(), data);
@@ -61,19 +78,14 @@ void StartTest::testCase2()
 {
     Arangodbdriver driver;
     Document* doc = driver.createDocument("test");
+    // Set fuu with ss
     doc->Set("fuu", QVariant("ss"));
+    // Save the document
     doc->Save();
-    {
-        QEventLoop loop;
-        connect(doc, &Document::ready, &loop, &QEventLoop::quit);
-        loop.exec();
-    }
+    waitForDocumentReady(doc);
+
     doc->Delete();
-    {
-        QEventLoop loop;
-        connect(doc, &Document::dataDeleted, &loop, &QEventLoop::quit);
-        loop.exec();
-    }
+    waitForDocumentDeleted(doc);
 }
 
 QTEST_MAIN(StartTest)
