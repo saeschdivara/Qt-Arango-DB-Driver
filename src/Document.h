@@ -97,18 +97,24 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         quint32 errorNumber();
 
         /**
+         * @brief hasErrorOccurred
+         * @return
+         */
+        bool hasErrorOccurred();
+
+        /**
          * @brief set
          * @param name
          * @param data
          */
-        void Set(const QString &key, QVariant data);
+        void set(const QString &key, QVariant data);
 
         /**
          * @brief get
          * @param name
          * @return
          */
-        QVariant Get(const QString &key) const;
+        QVariant get(const QString &key) const;
 
     Q_SIGNALS:
         /**
@@ -140,12 +146,12 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         /**
          * @brief save
          */
-        void Save();
+        void save();
 
         /**
          * @brief Delete
          */
-        void Delete();
+        void drop();
 
         /**
          * @brief _ar_dataIsAvailable

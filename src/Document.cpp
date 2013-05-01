@@ -97,13 +97,18 @@ quint32 Document::errorNumber()
     return d->errorNumber;
 }
 
-void Document::Set(const QString &key, QVariant data)
+bool Document::hasErrorOccurred()
+{
+    return d->errorCode != 0;
+}
+
+void Document::set(const QString &key, QVariant data)
 {
     d->data.insert(key, QJsonValue::fromVariant(data));
     d->isDirty = true;
 }
 
-QVariant Document::Get(const QString &key) const
+QVariant Document::get(const QString &key) const
 {
     return d->data.value(key).toVariant();
 }
@@ -132,7 +137,7 @@ void Document::_ar_dataDeleted()
     emit dataDeleted();
 }
 
-void Document::Save()
+void Document::save()
 {
     if ( !d->isCreated || d->isDirty ) {
             d->isDirty = false;
@@ -140,7 +145,7 @@ void Document::Save()
         }
 }
 
-void Document::Delete()
+void Document::drop()
 {
     if ( d->isCreated ) {
             d->isDirty = false;
