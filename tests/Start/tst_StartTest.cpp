@@ -18,9 +18,9 @@ class StartTest : public QObject
     private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
-        void testCase1();
+        void testGetDocument();
         void testCase1_data();
-        void testCase2();
+        void testSaveAndDeleteDocument();
 
     private:
         /**
@@ -29,6 +29,7 @@ class StartTest : public QObject
          */
         inline void waitForDocumentReady(Document* doc) {
             QEventLoop loop;
+            connect(doc, &Document::error, &loop, &QEventLoop::quit);
             connect(doc, &Document::ready, &loop, &QEventLoop::quit);
             loop.exec();
         }
@@ -39,6 +40,7 @@ class StartTest : public QObject
          */
         inline void waitForDocumentDeleted(Document* doc) {
             QEventLoop loop;
+            connect(doc, &Document::error, &loop, &QEventLoop::quit);
             connect(doc, &Document::dataDeleted, &loop, &QEventLoop::quit);
             loop.exec();
         }
@@ -56,7 +58,7 @@ void StartTest::cleanupTestCase()
 {
 }
 
-void StartTest::testCase1()
+void StartTest::testGetDocument()
 {
     QFETCH(QString, data);
 
@@ -74,18 +76,36 @@ void StartTest::testCase1_data()
     QTest::newRow("0") << QString("test/11153497");
 }
 
-void StartTest::testCase2()
+void StartTest::testSaveAndDeleteDocument()
 {
     Arangodbdriver driver;
-    Document* doc = driver.createDocument("test");
+    Document *doc = driver.createDocument("test");
     // Set fuu with ss
-    doc->Set("fuu", QVariant("ss"));
+    doc->set("fuu", QVariant("ss"));
     // Save the document
-    doc->Save();
+    doc->save();
     waitForDocumentReady(doc);
 
-    doc->Delete();
+    // Check if the flag isCreated is set
+    Q_ASSERT(doc->isCreated());
+
+    // Get the same document from the db again
+    Document *docFromDb = driver.getDocument(doc->docID());
+    waitForDocumentReady(docFromDb);
+
+    // check if there is really the document
+    Q_ASSERT(!docFromDb->hasErrorOccurred());
+
+    // Delete the test document again
+    doc->drop();
     waitForDocumentDeleted(doc);
+
+    // Try get the same document from the db again
+    docFromDb = driver.getDocument(doc->docID());
+    waitForDocumentReady(docFromDb);
+
+    // check if the document doesn't exist anymore
+    Q_ASSERT(docFromDb->hasErrorOccurred());
 }
 
 QTEST_MAIN(StartTest)
