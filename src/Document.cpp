@@ -134,13 +134,17 @@ void Document::_ar_dataDeleted()
 
 void Document::Save()
 {
-    d->isDirty = false;
-    emit saveData(this);
+    if ( !d->isCreated || d->isDirty ) {
+            d->isDirty = false;
+            emit saveData(this);
+        }
 }
 
 void Document::Delete()
 {
-    d->isDirty = false;
-    d->isCreated = false;
-    emit deleteData(this);
+    if ( d->isCreated ) {
+            d->isDirty = false;
+            d->isCreated = false;
+            emit deleteData(this);
+        }
 }
