@@ -14,6 +14,8 @@ namespace arangodb
 
 /**
  * @brief The Arangodbdriver class
+ *
+ * @since 0.1
  */
 class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
 {
@@ -21,9 +23,12 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
     public:
         /**
          * @brief Arangodbdriver
+         *
          * @param protocol
          * @param host
          * @param port
+         *
+         * @since 0.1
          */
         Arangodbdriver(QString protocol = QString("http"),
                        QString host = QString("localhost"),
@@ -31,33 +36,47 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
 
         /**
          * @brief ~Arangodbdriver
+         *
+         * @since 0.1
          */
         virtual ~Arangodbdriver();
 
         /**
          * @brief getDocument
+         *
          * @param id
          * @return
+         *
+         * @since 0.1
          */
         Document* getDocument(QString id);
 
         /**
          * @brief createDocument
+         *
          * @param collection
          * @return
+         *
+         * @since 0.1
          */
         Document* createDocument(QString collection);
 
     protected Q_SLOTS:
         /**
          * @brief _ar_save
+         *
          * @param doc
+         *
+         * @since 0.1
          */
         void _ar_save(Document *doc);
 
         /**
          * @brief _ar_delete
+         *
          * @param doc
+         *
+         * @since 0.1
          */
         void _ar_delete(Document *doc);
 

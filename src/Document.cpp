@@ -132,6 +132,25 @@ void Document::_ar_dataIsAvailable()
         }
 }
 
+void Document::_ar_dataIsUpdated()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    QJsonObject data = QJsonDocument::fromJson(reply->readAll()).object();
+
+    bool hasError = data.value("error").toBool();
+    if ( hasError ) {
+            d->errorMessage = data.value("errorMessage").toString();
+            d->errorNumber  = data.value("errorNum").toVariant().toInt();
+            d->errorCode    = data.value("code").toVariant().toInt();
+            emit error();
+        }
+    else {
+            d->isReady = true;
+            d->isDirty = false;
+            emit ready();
+        }
+}
+
 void Document::_ar_dataDeleted()
 {
     emit dataDeleted();
