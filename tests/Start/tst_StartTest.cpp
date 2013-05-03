@@ -19,8 +19,9 @@ class StartTest : public QObject
         void initTestCase();
         void cleanupTestCase();
         void testGetDocument();
-        void testCase1_data();
+        void testGetDocument_data();
         void testSaveAndDeleteDocument();
+        void testSaveDocument2Times();
 
     private:
         /**
@@ -58,6 +59,9 @@ void StartTest::cleanupTestCase()
 {
 }
 
+/**
+ * @brief StartTest::testGetDocument
+ */
 void StartTest::testGetDocument()
 {
     QFETCH(QString, data);
@@ -66,16 +70,22 @@ void StartTest::testGetDocument()
     Document *doc = driver.getDocument(data);
     waitForDocumentReady(doc);
 
-    Q_ASSERT(doc->isReady());
-    QCOMPARE(doc->docID(), data);
+    Q_ASSERT( doc->isReady() );
+    QCOMPARE( doc->docID(), data );
 }
 
-void StartTest::testCase1_data()
+/**
+ * @brief StartTest::testGetDocument_data
+ */
+void StartTest::testGetDocument_data()
 {
     QTest::addColumn<QString>("data");
     QTest::newRow("0") << QString("test/11153497");
 }
 
+/**
+ * @brief StartTest::testSaveAndDeleteDocument
+ */
 void StartTest::testSaveAndDeleteDocument()
 {
     Arangodbdriver driver;
@@ -94,7 +104,9 @@ void StartTest::testSaveAndDeleteDocument()
     waitForDocumentReady(docFromDb);
 
     // check if there is really the document
-    Q_ASSERT(!docFromDb->hasErrorOccurred());
+    Q_ASSERT( !docFromDb->hasErrorOccurred() );
+
+    QCOMPARE( docFromDb->get("fuu").toString(), QString("ss") );
 
     // Delete the test document again
     doc->drop();
@@ -105,7 +117,31 @@ void StartTest::testSaveAndDeleteDocument()
     waitForDocumentReady(docFromDb);
 
     // check if the document doesn't exist anymore
-    Q_ASSERT(docFromDb->hasErrorOccurred());
+    Q_ASSERT( docFromDb->hasErrorOccurred() );
+}
+
+/**
+ * @brief StartTest::testSaveDocument2Times
+ */
+void StartTest::testSaveDocument2Times()
+{
+    Arangodbdriver driver;
+    Document *doc = driver.createDocument("test");
+    // Save the document
+    doc->save();
+    waitForDocumentReady(doc);
+
+    // Change the document and save/update
+    doc->set("lll", QVariant("aaa"));
+    doc->save();
+    waitForDocumentReady(doc);
+
+    // check if there wasn't an error
+    Q_ASSERT_X( !doc->hasErrorOccurred(), "!doc->hasErrorOccurred()", doc->errorMessage().toLocal8Bit() );
+
+    // Delete the test document again
+    doc->drop();
+    waitForDocumentDeleted(doc);
 }
 
 QTEST_MAIN(StartTest)
