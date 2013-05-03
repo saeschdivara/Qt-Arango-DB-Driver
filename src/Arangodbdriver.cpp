@@ -79,15 +79,27 @@ Document *Arangodbdriver::createDocument(QString collection)
 
 void Arangodbdriver::_ar_save(Document *doc)
 {
+    QByteArray jsonData = doc->toJsonString();
+    QByteArray jsonDataSize = QByteArray::number(jsonData.size());
+
     if ( doc->isCreated() ) {
+            QUrl url(d->standardUrl + QString("/document/") + doc->docID());
+            QNetworkRequest request(url);
+            request.setRawHeader("Content-Type", "application/json");
+            request.setRawHeader("Content-Length", jsonDataSize);
+
+            QNetworkReply *reply = d->networkManager.put(request, jsonData);
+
+            connect(reply, &QNetworkReply::finished,
+                    doc, &Document::_ar_dataIsAvailable
+                    );
         }
     else {
-            QByteArray jsonData = doc->toJsonString();
-            QByteArray jsonDataSize = QByteArray::number(jsonData.size());
             QUrl url(d->standardUrl + QString("/document?collection=") + doc->collection());
             QNetworkRequest request(url);
             request.setRawHeader("Content-Type", "application/json");
             request.setRawHeader("Content-Length", jsonDataSize);
+
             QNetworkReply *reply = d->networkManager.post(request, jsonData);
 
             connect(reply, &QNetworkReply::finished,
