@@ -24,6 +24,8 @@ class DocumentPrivate
         QString errorMessage;
         quint32 errorCode = 0;
         quint32 errorNumber = 0;
+
+        QStringList dirtyAttributes;
 };
 
 }
@@ -58,7 +60,24 @@ bool Document::isCreated()
 QByteArray Document::toJsonString() const
 {
     QJsonDocument doc;
-    doc.setObject(d->data);
+
+    if ( isEveryAttributeDirty() ) {
+            QJsonObject obj;
+
+            obj.insert(d->ID, obj.value(d->ID));
+            obj.insert(d->KEY, obj.value(d->KEY));
+            obj.insert(d->REV, obj.value(d->REV));
+
+            for( QString attribute : d->dirtyAttributes ) {
+                    obj.insert(attribute, d->data[attribute]);
+                }
+
+            doc.setObject(obj);
+        }
+    else {
+            doc.setObject(d->data);
+        }
+
     return doc.toJson();
 }
 
@@ -104,6 +123,7 @@ bool Document::hasErrorOccurred()
 
 void Document::set(const QString &key, QVariant data)
 {
+    d->dirtyAttributes.append(key);
     d->data.insert(key, QJsonValue::fromVariant(data));
     d->isDirty = true;
 }
@@ -111,6 +131,22 @@ void Document::set(const QString &key, QVariant data)
 QVariant Document::get(const QString &key) const
 {
     return d->data.value(key).toVariant();
+}
+
+QStringList Document::dirtyAttributes() const
+{
+    return d->dirtyAttributes;
+}
+
+bool Document::isEveryAttributeDirty() const
+{
+    int attributes = d->data.keys().size()-3;
+
+    if ( d->data.contains("error") ) {
+            attributes--;
+        }
+
+    return d->dirtyAttributes.size() >= attributes;
 }
 
 void Document::_ar_dataIsAvailable()
@@ -132,25 +168,6 @@ void Document::_ar_dataIsAvailable()
         }
 }
 
-void Document::_ar_dataIsUpdated()
-{
-    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    QJsonObject data = QJsonDocument::fromJson(reply->readAll()).object();
-
-    bool hasError = data.value("error").toBool();
-    if ( hasError ) {
-            d->errorMessage = data.value("errorMessage").toString();
-            d->errorNumber  = data.value("errorNum").toVariant().toInt();
-            d->errorCode    = data.value("code").toVariant().toInt();
-            emit error();
-        }
-    else {
-            d->isReady = true;
-            d->isDirty = false;
-            emit ready();
-        }
-}
-
 void Document::_ar_dataDeleted()
 {
     emit dataDeleted();
@@ -160,6 +177,8 @@ void Document::save()
 {
     if ( !d->isCreated || d->isDirty ) {
             d->isDirty = false;
+            d->dirtyAttributes.clear();
+
             emit saveData(this);
         }
 }
@@ -169,6 +188,7 @@ void Document::drop()
     if ( d->isCreated ) {
             d->isDirty = false;
             d->isCreated = false;
+
             emit deleteData(this);
         }
 }

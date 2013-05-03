@@ -3,6 +3,7 @@
 
 #include "arangodb-driver_global.h"
 #include <QtCore/QByteArray>
+#include <QtCore/QStringList>
 
 namespace internal {
 class DocumentPrivate;
@@ -165,6 +166,21 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          */
         QVariant get(const QString &key) const;
 
+        /**
+         * @brief dirtyAttributes
+         *
+         * @return
+         *
+         * @since 0.1
+         */
+        QStringList dirtyAttributes() const;
+
+        /**
+         * @brief isEveryAttributeDirty
+         * @return
+         */
+        bool isEveryAttributeDirty() const;
+
     Q_SIGNALS:
         /**
          * @brief ready
@@ -222,13 +238,6 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.1
          */
         void _ar_dataIsAvailable();
-
-        /**
-         * @brief _ar_dataIsUpdated
-         *
-         * @since 0.1
-         */
-        void _ar_dataIsUpdated();
 
         /**
          * @brief _ar_dataDeleted

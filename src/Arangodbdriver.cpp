@@ -1,4 +1,5 @@
 #include "Arangodbdriver.h"
+#include <QtCore/QBuffer>
 #include <QtCore/QDebug>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkAccessManager>
@@ -88,7 +89,17 @@ void Arangodbdriver::_ar_save(Document *doc)
             request.setRawHeader("Content-Type", "application/json");
             request.setRawHeader("Content-Length", jsonDataSize);
 
-            QNetworkReply *reply = d->networkManager.put(request, jsonData);
+            QNetworkReply *reply = Q_NULLPTR;
+
+            if ( doc->isEveryAttributeDirty() ) {
+                    reply = d->networkManager.put(request, jsonData);
+                    qDebug() << "pu";
+                }
+            else {
+                    QBuffer data(&jsonData);
+                    reply = d->networkManager.sendCustomRequest(request, QByteArrayLiteral("PATCH"), &data);
+                    qDebug() << "pa";
+                }
 
             connect(reply, &QNetworkReply::finished,
                     doc, &Document::_ar_dataIsAvailable
