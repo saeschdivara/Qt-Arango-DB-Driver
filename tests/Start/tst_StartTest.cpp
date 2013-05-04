@@ -21,6 +21,7 @@ class StartTest : public QObject
         void testSaveAndDeleteDocument();
         void testSaveDocument2Times();
         void testPartialUpdate();
+        void testHeadOperation();
 
     private:
         /**
@@ -152,6 +153,45 @@ void StartTest::testPartialUpdate()
     // Delete the test document again
     doc->drop();
     waitForDocumentDeleted(doc);
+}
+
+void StartTest::testHeadOperation()
+{
+    Arangodbdriver driver;
+    Document *doc = driver.createDocument("test");
+    doc->set("lll", QVariant("aaa"));
+    // Save the document
+    doc->save();
+    waitForDocumentReady(doc);
+
+    // Try get the same document from the db again
+    Document *docFromDb = driver.getDocument(doc->docID());
+    waitForDocumentReady(docFromDb);
+
+    docFromDb->updateStatus();
+    waitForDocumentReady(docFromDb);
+
+    QCOMPARE( docFromDb->isCreated(), true );
+    QCOMPARE( docFromDb->isCurrent(), true );
+
+    doc->set("lllmmmm", "fuu");
+    doc->save();
+    waitForDocumentReady(doc);
+
+    docFromDb->updateStatus();
+    waitForDocumentReady(docFromDb);
+
+    QCOMPARE( docFromDb->isCreated(), true );
+    QCOMPARE( docFromDb->isCurrent(), false );
+
+    doc->drop();
+    waitForDocumentDeleted(doc);
+
+    docFromDb->updateStatus();
+    waitForDocumentReady(docFromDb);
+
+    QCOMPARE( docFromDb->isCreated(), false );
+    QCOMPARE( docFromDb->isCurrent(), false );
 }
 
 QTEST_MAIN(StartTest)
