@@ -19,6 +19,9 @@ class ArangodbdriverPrivate
 
         QString standardUrl;
 
+        QByteArray jsonData;
+        QBuffer data;
+
         void createStandardUrl() {
             standardUrl = protocol + QString("://") + host + QString(":") + QString::number(port) + QString("/_api");
         }
@@ -80,8 +83,8 @@ Document *Arangodbdriver::createDocument(QString collection)
 
 void Arangodbdriver::_ar_save(Document *doc)
 {
-    QByteArray jsonData = doc->toJsonString();
-    QByteArray jsonDataSize = QByteArray::number(jsonData.size());
+    d->jsonData = doc->toJsonString();
+    QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
 
     if ( doc->isCreated() ) {
             QUrl url(d->standardUrl + QString("/document/") + doc->docID());
@@ -92,13 +95,11 @@ void Arangodbdriver::_ar_save(Document *doc)
             QNetworkReply *reply = Q_NULLPTR;
 
             if ( doc->isEveryAttributeDirty() ) {
-                    reply = d->networkManager.put(request, jsonData);
-                    qDebug() << "pu";
+                    reply = d->networkManager.put(request, d->jsonData);
                 }
             else {
-                    QBuffer data(&jsonData);
-                    reply = d->networkManager.sendCustomRequest(request, QByteArrayLiteral("PATCH"), &data);
-                    qDebug() << "pa";
+                    d->data.setBuffer(&d->jsonData);
+                    reply = d->networkManager.sendCustomRequest(request, QByteArrayLiteral("PATCH"), &d->data);
                 }
 
             connect(reply, &QNetworkReply::finished,
@@ -111,7 +112,7 @@ void Arangodbdriver::_ar_save(Document *doc)
             request.setRawHeader("Content-Type", "application/json");
             request.setRawHeader("Content-Length", jsonDataSize);
 
-            QNetworkReply *reply = d->networkManager.post(request, jsonData);
+            QNetworkReply *reply = d->networkManager.post(request, d->jsonData);
 
             connect(reply, &QNetworkReply::finished,
                     doc, &Document::_ar_dataIsAvailable

@@ -18,10 +18,9 @@ class StartTest : public QObject
     private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
-        void testGetDocument();
-        void testGetDocument_data();
         void testSaveAndDeleteDocument();
         void testSaveDocument2Times();
+        void testPartialUpdate();
 
     private:
         /**
@@ -60,30 +59,6 @@ void StartTest::cleanupTestCase()
 }
 
 /**
- * @brief StartTest::testGetDocument
- */
-void StartTest::testGetDocument()
-{
-    QFETCH(QString, data);
-
-    Arangodbdriver driver;
-    Document *doc = driver.getDocument(data);
-    waitForDocumentReady(doc);
-
-    Q_ASSERT( doc->isReady() );
-    QCOMPARE( doc->docID(), data );
-}
-
-/**
- * @brief StartTest::testGetDocument_data
- */
-void StartTest::testGetDocument_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::newRow("0") << QString("test/11153497");
-}
-
-/**
  * @brief StartTest::testSaveAndDeleteDocument
  */
 void StartTest::testSaveAndDeleteDocument()
@@ -97,14 +72,14 @@ void StartTest::testSaveAndDeleteDocument()
     waitForDocumentReady(doc);
 
     // Check if the flag isCreated is set
-    Q_ASSERT(doc->isCreated());
+    Q_ASSERT_X(doc->isCreated(), "testSaveAndDeleteDocument", doc->errorMessage().toLocal8Bit());
 
     // Get the same document from the db again
     Document *docFromDb = driver.getDocument(doc->docID());
     waitForDocumentReady(docFromDb);
 
     // check if there is really the document
-    Q_ASSERT( !docFromDb->hasErrorOccurred() );
+    Q_ASSERT_X( !docFromDb->hasErrorOccurred(), "testSaveAndDeleteDocument", docFromDb->errorMessage().toLocal8Bit() );
 
     QCOMPARE( docFromDb->get("fuu").toString(), QString("ss") );
 
@@ -133,6 +108,41 @@ void StartTest::testSaveDocument2Times()
 
     // Change the document and save/update
     doc->set("lll", QVariant("aaa"));
+
+    QCOMPARE(doc->dirtyAttributes().size(), 1);
+    Q_ASSERT(doc->isEveryAttributeDirty());
+
+    doc->save();
+    waitForDocumentReady(doc);
+
+    // check if there wasn't an error
+    Q_ASSERT_X( !doc->hasErrorOccurred(), "!doc->hasErrorOccurred()", doc->errorMessage().toLocal8Bit() );
+
+    // Delete the test document again
+    doc->drop();
+    waitForDocumentDeleted(doc);
+}
+
+/**
+ * @brief StartTest::testPartialUpdate
+ */
+void StartTest::testPartialUpdate()
+{
+    Arangodbdriver driver;
+    Document *doc = driver.createDocument("test");
+    doc->set("lll", QVariant("aaa"));
+    doc->set("dd", QVariant("aaa"));
+    doc->set("aa", QVariant("aaa"));
+    // Save the document
+    doc->save();
+    waitForDocumentReady(doc);
+
+    // Change the document and save/update
+    doc->set("lll", QVariant("bb"));
+
+    QCOMPARE(doc->dirtyAttributes().size(), 1);
+    Q_ASSERT( !doc->isEveryAttributeDirty() );
+
     doc->save();
     waitForDocumentReady(doc);
 

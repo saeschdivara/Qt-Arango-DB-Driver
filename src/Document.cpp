@@ -61,7 +61,7 @@ QByteArray Document::toJsonString() const
 {
     QJsonDocument doc;
 
-    if ( isEveryAttributeDirty() ) {
+    if ( !isEveryAttributeDirty() ) {
             QJsonObject obj;
 
             obj.insert(d->ID, obj.value(d->ID));
@@ -152,18 +152,24 @@ bool Document::isEveryAttributeDirty() const
 void Document::_ar_dataIsAvailable()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    d->data = QJsonDocument::fromJson(reply->readAll()).object();
+    QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
+    d->dirtyAttributes.clear();
 
-    bool hasError = d->data.value("error").toBool();
+    bool hasError = obj.value("error").toBool();
     if ( hasError ) {
-            d->errorMessage = d->data.value("errorMessage").toString();
-            d->errorNumber  = d->data.value("errorNum").toVariant().toInt();
-            d->errorCode    = d->data.value("code").toVariant().toInt();
+            d->errorMessage = obj.value("errorMessage").toString();
+            d->errorNumber  = obj.value("errorNum").toVariant().toInt();
+            d->errorCode    = obj.value("code").toVariant().toInt();
             emit error();
         }
     else {
             d->isReady = true;
             d->isCreated = true;
+
+            for ( auto key : obj.keys() ) {
+                    d->data.insert(key, obj[key]);
+                }
+
             emit ready();
         }
 }
@@ -177,7 +183,6 @@ void Document::save()
 {
     if ( !d->isCreated || d->isDirty ) {
             d->isDirty = false;
-            d->dirtyAttributes.clear();
 
             emit saveData(this);
         }
