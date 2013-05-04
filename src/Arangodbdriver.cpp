@@ -46,7 +46,7 @@ Arangodbdriver::~Arangodbdriver()
 
 Collection *Arangodbdriver::getCollection(QString name)
 {
-    Collection *collection = new Collection(this);
+    Collection *collection = new Collection(name, this);
 }
 
 Document *Arangodbdriver::getDocument(QString id)

@@ -2,6 +2,7 @@
 #define COLLECTION_H
 
 #include <QObject>
+#include <QtCore/QString>
 #include "arangodb-driver_global.h"
 
 namespace internal {
@@ -23,11 +24,12 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief Collection
          *
+         * @param name
          * @param parent
          *
          * @since 0.1
          */
-        explicit Collection(QObject *parent = 0);
+        explicit Collection(QString name, QObject *parent = 0);
         
     signals:
         

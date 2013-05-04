@@ -11,7 +11,7 @@ class CollectionPrivate
 
 }
 
-Collection::Collection(QObject *parent) :
+Collection::Collection(QString name, QObject *parent) :
     QObject(parent)
 {
 }
