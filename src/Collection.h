@@ -4,6 +4,10 @@
 #include <QObject>
 #include "arangodb-driver_global.h"
 
+namespace internal {
+class CollectionPrivate;
+}
+
 namespace arangodb
 {
 

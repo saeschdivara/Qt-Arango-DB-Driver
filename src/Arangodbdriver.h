@@ -2,6 +2,7 @@
 #define ARANGODBDRIVER_H
 
 #include "arangodb-driver_global.h"
+#include "Collection.h"
 #include "Document.h"
 #include <QtCore/QObject>
 
@@ -42,6 +43,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         virtual ~Arangodbdriver();
 
         /**
+         * @brief getCollection
+         *
+         * @param name
+         * @return
+         *
+         * @since 0.1
+         */
+        Collection* getCollection(QString name);
+
+        /**
          * @brief getDocument
          *
          * @param id
@@ -63,13 +74,13 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
 
     protected Q_SLOTS:
         /**
-         * @brief _ar_save
+         * @brief _ar_document_save
          *
          * @param doc
          *
          * @since 0.1
          */
-        void _ar_save(Document *doc);
+        void _ar_document_save(Document *doc);
 
         /**
          * @brief _ar_delete
@@ -78,7 +89,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @since 0.1
          */
-        void _ar_delete(Document *doc);
+        void _ar_document_delete(Document *doc);
 
     private:
         internal::ArangodbdriverPrivate *d;

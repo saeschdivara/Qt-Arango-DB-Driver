@@ -44,6 +44,11 @@ Arangodbdriver::~Arangodbdriver()
     delete d;
 }
 
+Collection *Arangodbdriver::getCollection(QString name)
+{
+    Collection *collection = new Collection(this);
+}
+
 Document *Arangodbdriver::getDocument(QString id)
 {
     Document *doc = new Document(this);
@@ -56,11 +61,11 @@ Document *Arangodbdriver::getDocument(QString id)
             );
 
     connect(doc, &Document::saveData,
-            this, &Arangodbdriver::_ar_save
+            this, &Arangodbdriver::_ar_document_save
             );
 
     connect(doc, &Document::deleteData,
-            this, &Arangodbdriver::_ar_delete
+            this, &Arangodbdriver::_ar_document_delete
             );
 
     return doc;
@@ -71,17 +76,17 @@ Document *Arangodbdriver::createDocument(QString collection)
     Document *doc = new Document(collection, this);
 
     connect(doc, &Document::saveData,
-            this, &Arangodbdriver::_ar_save
+            this, &Arangodbdriver::_ar_document_save
             );
 
     connect(doc, &Document::deleteData,
-            this, &Arangodbdriver::_ar_delete
+            this, &Arangodbdriver::_ar_document_delete
             );
 
     return doc;
 }
 
-void Arangodbdriver::_ar_save(Document *doc)
+void Arangodbdriver::_ar_document_save(Document *doc)
 {
     d->jsonData = doc->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -120,7 +125,7 @@ void Arangodbdriver::_ar_save(Document *doc)
         }
 }
 
-void Arangodbdriver::_ar_delete(Document *doc)
+void Arangodbdriver::_ar_document_delete(Document *doc)
 {
     QUrl url(d->standardUrl + QString("/document/") + doc->docID());
     QNetworkRequest request(url);
