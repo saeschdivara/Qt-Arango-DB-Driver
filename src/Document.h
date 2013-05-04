@@ -66,6 +66,16 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         bool isCreated();
 
         /**
+         * @brief Returns true if the documents revision is the current one
+         * it gets only updated the updateStatus is triggered
+         *
+         * @return
+         *
+         * @since 0.1
+         */
+        bool isCurrent();
+
+        /**
          * @brief toJsonString
          *
          * @return
@@ -177,7 +187,10 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
 
         /**
          * @brief isEveryAttributeDirty
+         *
          * @return
+         *
+         * @since 0.1
          */
         bool isEveryAttributeDirty() const;
 
@@ -211,6 +224,13 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void deleteData(Document *);
 
         /**
+         * @brief updateDataStatus
+         *
+         * @since 0.1
+         */
+        void updateDataStatus(Document *);
+
+        /**
          * @brief dataDeleted
          *
          * @since 0.1
@@ -233,6 +253,13 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void drop();
 
         /**
+         * @brief updateStatus
+         *
+         * @since 0.1
+         */
+        void updateStatus();
+
+        /**
          * @brief _ar_dataIsAvailable
          *
          * @since 0.1
@@ -245,6 +272,11 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.1
          */
         void _ar_dataDeleted();
+
+        /**
+         * @brief _ar_dataUpdated
+         */
+        void _ar_dataUpdated();
 
     private:
         internal::DocumentPrivate *d;

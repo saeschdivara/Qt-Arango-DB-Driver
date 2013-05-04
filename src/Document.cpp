@@ -18,6 +18,7 @@ class DocumentPrivate
         bool isReady = false;
         bool isDirty = false;
         bool isCreated = false;
+        bool isCurrent = true;
         QJsonObject data;
         QString collectionName;
 
@@ -55,6 +56,11 @@ bool Document::isReady()
 bool Document::isCreated()
 {
     return d->isCreated;
+}
+
+bool Document::isCurrent()
+{
+    return d->isCurrent;
 }
 
 QByteArray Document::toJsonString() const
@@ -179,6 +185,25 @@ void Document::_ar_dataDeleted()
     emit dataDeleted();
 }
 
+void Document::_ar_dataUpdated()
+{
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    d->isReady = true;
+
+    if (reply->hasRawHeader("etag") ) {
+            QByteArray etag = reply->rawHeader("etag");
+            etag.replace('"', ""); // comes from the rawHeader
+            d->isCreated = true;
+            d->isCurrent = ( etag == rev() );
+        }
+    else {
+            d->isCreated = false;
+            d->isCurrent = false;
+        }
+
+    emit ready();
+}
+
 void Document::save()
 {
     if ( !d->isCreated || d->isDirty ) {
@@ -196,4 +221,9 @@ void Document::drop()
 
             emit deleteData(this);
         }
+}
+
+void Document::updateStatus()
+{
+    emit updateDataStatus(this);
 }
