@@ -19,8 +19,10 @@ CONFIG(debug, debug|release):DEFINES += AR_DEBUG_BUILD
 DEFINES += ARANGODBDRIVER_LIBRARY
 
 SOURCES += Arangodbdriver.cpp \
-    Document.cpp
+    Document.cpp \
+    Collection.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
-    Document.h
+    Document.h \
+    Collection.h
