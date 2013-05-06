@@ -82,7 +82,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QByteArray toJsonString() const;
+        virtual QByteArray toJsonString();
 
         /**
          * @brief docID
@@ -91,7 +91,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QString docID() const;
+        QString docID();
 
         /**
          * @brief key
@@ -100,7 +100,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QString key() const;
+        QString key();
 
         /**
          * @brief rev
@@ -109,7 +109,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QString rev() const;
+        QString rev();
 
         /**
          * @brief collection
@@ -118,7 +118,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QString collection() const;
+        QString collection();
 
         /**
          * @brief errorMessage
@@ -127,7 +127,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QString errorMessage() const;
+        QString errorMessage();
 
         /**
          * @brief errorCode
@@ -174,7 +174,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QVariant get(const QString &key) const;
+        QVariant get(const QString &key);
 
         /**
          * @brief dirtyAttributes
@@ -183,7 +183,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QStringList dirtyAttributes() const;
+        QStringList dirtyAttributes();
 
         /**
          * @brief isEveryAttributeDirty
@@ -192,7 +192,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        bool isEveryAttributeDirty() const;
+        bool isEveryAttributeDirty();
 
     Q_SIGNALS:
         /**
@@ -279,7 +279,6 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void _ar_dataUpdated();
 
     protected:
-        internal::DocumentPrivate *d;
 
         /**
          * @brief Document
@@ -303,6 +302,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         Document(internal::DocumentPrivate *privatePointer, QString collection, QObject *parent = 0);
 
     private:
+        const internal::DocumentPrivate *d;
         Q_DECLARE_PRIVATE(internal::Document)
 };
 

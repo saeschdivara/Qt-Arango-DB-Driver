@@ -3,6 +3,7 @@
 #include <QtDebug>
 
 using namespace arangodb;
+using namespace internal;
 
 Document::Document(QObject *parent) :
     QObject(parent),
@@ -19,12 +20,14 @@ Document::Document(internal::DocumentPrivate *privatePointer, QObject *parent) :
 Document::Document(internal::DocumentPrivate *privatePointer, QString collection, QObject *parent) :
     Document(privatePointer, parent)
 {
+    Q_D(Document);
     d->collectionName = collection;
 }
 
 Document::Document(QString collection, QObject *parent) :
     Document(parent)
 {
+    Q_D(Document);
     d->collectionName = collection;
 }
 
@@ -35,21 +38,25 @@ Document::~Document()
 
 bool Document::isReady()
 {
+    Q_D(Document);
     return d->isReady;
 }
 
 bool Document::isCreated()
 {
+    Q_D(Document);
     return d->isCreated;
 }
 
 bool Document::isCurrent()
 {
+    Q_D(Document);
     return d->isCurrent;
 }
 
-QByteArray Document::toJsonString() const
+QByteArray Document::toJsonString()
 {
+    Q_D(Document);
     QJsonDocument doc;
 
     if ( !isEveryAttributeDirty() ) {
@@ -72,65 +79,77 @@ QByteArray Document::toJsonString() const
     return doc.toJson();
 }
 
-QString Document::docID() const
+QString Document::docID()
 {
+    Q_D(Document);
     return d->data.value(internal::ID).toString();
 }
 
-QString Document::key() const
+QString Document::key()
 {
+    Q_D(Document);
     return d->data.value(internal::KEY).toString();
 }
 
-QString Document::rev() const
+QString Document::rev()
 {
+    Q_D(Document);
     return d->data.value(internal::REV).toString();
 }
 
-QString Document::collection() const
+QString Document::collection()
 {
+    Q_D(Document);
     return d->collectionName;
 }
 
-QString Document::errorMessage() const
+QString Document::errorMessage()
 {
+    Q_D(Document);
     return d->errorMessage;
 }
 
 quint32 Document::errorCode()
 {
+    Q_D(Document);
     return d->errorCode;
 }
 
 quint32 Document::errorNumber()
 {
+    Q_D(Document);
     return d->errorNumber;
 }
 
 bool Document::hasErrorOccurred()
 {
+    Q_D(Document);
     return d->errorCode != 0;
 }
 
 void Document::set(const QString &key, QVariant data)
 {
+    Q_D(Document);
     d->dirtyAttributes.append(key);
     d->data.insert(key, QJsonValue::fromVariant(data));
     d->isDirty = true;
 }
 
-QVariant Document::get(const QString &key) const
+QVariant Document::get(const QString &key)
 {
+    Q_D(Document);
     return d->data.value(key).toVariant();
 }
 
-QStringList Document::dirtyAttributes() const
+QStringList Document::dirtyAttributes()
 {
+    Q_D(Document);
     return d->dirtyAttributes;
 }
 
-bool Document::isEveryAttributeDirty() const
+bool Document::isEveryAttributeDirty()
 {
+    Q_D(Document);
     int attributes = d->data.keys().size()-3;
 
     if ( d->data.contains("error") ) {
@@ -142,6 +161,7 @@ bool Document::isEveryAttributeDirty() const
 
 void Document::_ar_dataIsAvailable()
 {
+    Q_D(Document);
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
     d->dirtyAttributes.clear();
@@ -172,6 +192,7 @@ void Document::_ar_dataDeleted()
 
 void Document::_ar_dataUpdated()
 {
+    Q_D(Document);
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     d->isReady = true;
 
@@ -191,6 +212,7 @@ void Document::_ar_dataUpdated()
 
 void Document::save()
 {
+    Q_D(Document);
     if ( !d->isCreated || d->isDirty ) {
             d->isDirty = false;
 
@@ -200,6 +222,7 @@ void Document::save()
 
 void Document::drop()
 {
+    Q_D(Document);
     if ( d->isCreated ) {
             d->isDirty = false;
             d->isCreated = false;

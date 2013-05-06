@@ -39,6 +39,33 @@ class ARANGODBDRIVERSHARED_EXPORT Edge : public Document
          */
         Edge(QString collection, QObject *parent = 0);
 
+        /**
+         * @brief toJsonString
+         *
+         * @return
+         *
+         * @since 0.1
+         */
+        virtual QByteArray toJsonString() Q_DECL_OVERRIDE;
+
+        /**
+         * @brief from
+         *
+         * @return
+         *
+         * @since 0.1
+         */
+        QString from();
+
+        /**
+         * @brief to
+         *
+         * @return
+         *
+         * @since 0.1
+         */
+        QString to();
+
     private:
         Q_DECLARE_PRIVATE(internal::Edge)
 };
