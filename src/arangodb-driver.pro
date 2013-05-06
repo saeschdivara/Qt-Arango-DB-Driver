@@ -27,4 +27,5 @@ HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
     Document.h \
     Collection.h \
-    Edge.h
+    Edge.h \
+    private/Document_p.h

@@ -1,40 +1,25 @@
 #include "Document.h"
+#include "private/Document_p.h"
 #include <QtDebug>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtNetwork/QNetworkReply>
 
 using namespace arangodb;
-
-namespace internal {
-
-class DocumentPrivate
-{
-    public:
-        const QString ID  = QStringLiteral("_id");
-        const QString KEY = QStringLiteral("_key");
-        const QString REV = QStringLiteral("_rev");
-
-        bool isReady = false;
-        bool isDirty = false;
-        bool isCreated = false;
-        bool isCurrent = true;
-        QJsonObject data;
-        QString collectionName;
-
-        QString errorMessage;
-        quint32 errorCode = 0;
-        quint32 errorNumber = 0;
-
-        QStringList dirtyAttributes;
-};
-
-}
 
 Document::Document(QObject *parent) :
     QObject(parent),
     d(new internal::DocumentPrivate)
 {
+}
+
+Document::Document(internal::DocumentPrivate *privatePointer, QObject *parent) :
+    QObject(parent),
+    d(privatePointer)
+{
+}
+
+Document::Document(internal::DocumentPrivate *privatePointer, QString collection, QObject *parent) :
+    Document(privatePointer, parent)
+{
+    d->collectionName = collection;
 }
 
 Document::Document(QString collection, QObject *parent) :
@@ -70,9 +55,9 @@ QByteArray Document::toJsonString() const
     if ( !isEveryAttributeDirty() ) {
             QJsonObject obj;
 
-            obj.insert(d->ID, obj.value(d->ID));
-            obj.insert(d->KEY, obj.value(d->KEY));
-            obj.insert(d->REV, obj.value(d->REV));
+            obj.insert(internal::ID, obj.value(internal::ID));
+            obj.insert(internal::KEY, obj.value(internal::KEY));
+            obj.insert(internal::REV, obj.value(internal::REV));
 
             for( QString attribute : d->dirtyAttributes ) {
                     obj.insert(attribute, d->data[attribute]);
@@ -89,17 +74,17 @@ QByteArray Document::toJsonString() const
 
 QString Document::docID() const
 {
-    return d->data.value(d->ID).toString();
+    return d->data.value(internal::ID).toString();
 }
 
 QString Document::key() const
 {
-    return d->data.value(d->KEY).toString();
+    return d->data.value(internal::KEY).toString();
 }
 
 QString Document::rev() const
 {
-    return d->data.value(d->REV).toString();
+    return d->data.value(internal::REV).toString();
 }
 
 QString Document::collection() const

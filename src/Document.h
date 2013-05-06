@@ -38,7 +38,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        explicit Document(QString collection, QObject *parent = 0);
+        Document(QString collection, QObject *parent = 0);
 
         /**
          * @brief ~Document
@@ -278,8 +278,32 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          */
         void _ar_dataUpdated();
 
-    private:
+    protected:
         internal::DocumentPrivate *d;
+
+        /**
+         * @brief Document
+         *
+         * @param d
+         * @param parent
+         *
+         * @since 0.1
+         */
+        Document(internal::DocumentPrivate *privatePointer, QObject *parent = 0);
+
+        /**
+         * @brief Document
+         *
+         * @param privatePointer
+         * @param collection
+         * @param parent
+         *
+         * @since 0.1
+         */
+        Document(internal::DocumentPrivate *privatePointer, QString collection, QObject *parent = 0);
+
+    private:
+        Q_DECLARE_PRIVATE(internal::Document)
 };
 
 }

@@ -46,7 +46,9 @@ Arangodbdriver::~Arangodbdriver()
 
 Collection *Arangodbdriver::getCollection(QString name)
 {
+    // TODO: has to be implemented fully
     Collection *collection = new Collection(name, this);
+    return collection;
 }
 
 Document *Arangodbdriver::getDocument(QString id)
