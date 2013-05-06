@@ -20,9 +20,11 @@ DEFINES += ARANGODBDRIVER_LIBRARY
 
 SOURCES += Arangodbdriver.cpp \
     Document.cpp \
-    Collection.cpp
+    Collection.cpp \
+    Edge.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
     Document.h \
-    Collection.h
+    Collection.h \
+    Edge.h

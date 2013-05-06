@@ -1,9 +1,8 @@
 #ifndef COLLECTION_H
 #define COLLECTION_H
 
-#include <QObject>
-#include <QtCore/QString>
 #include "arangodb-driver_global.h"
+#include <QtCore/QString>
 
 namespace internal {
 class CollectionPrivate;
