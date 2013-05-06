@@ -4,7 +4,7 @@
 #include "arangodb-driver_global.h"
 #include "Collection.h"
 #include "Document.h"
-#include <QtCore/QObject>
+#include "Edge.h"
 
 namespace internal {
 class ArangodbdriverPrivate;
@@ -72,6 +72,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         Document* createDocument(QString collection);
 
+        /**
+         * @brief getEdge
+         *
+         * @param id
+         * @return
+         *
+         * @since 0.1
+         */
+        Edge* getEdge(QString id);
+
     protected Q_SLOTS:
         /**
          * @brief _ar_document_save
@@ -83,7 +93,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         void _ar_document_save(Document *doc);
 
         /**
-         * @brief _ar_delete
+         * @brief _ar_document_delete
          *
          * @param doc
          *
@@ -99,6 +109,33 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.1
          */
         void _ar_document_updateStatus(Document *doc);
+
+        /**
+         * @brief _ar_edge_save
+         *
+         * @param doc
+         *
+         * @since 0.1
+         */
+        void _ar_edge_save(Document *doc);
+
+        /**
+         * @brief _ar_edge_delete
+         *
+         * @param doc
+         *
+         * @since 0.1
+         */
+        void _ar_edge_delete(Document *doc);
+
+        /**
+         * @brief _ar_edge_updateStatus
+         *
+         * @param doc
+         *
+         * @since 0.1
+         */
+        void _ar_edge_updateStatus(Document *doc);
 
     private:
         internal::ArangodbdriverPrivate *d;
