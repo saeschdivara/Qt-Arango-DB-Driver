@@ -279,7 +279,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void _ar_dataUpdated();
 
     protected:
-        internal::DocumentPrivate *d;
+        internal::DocumentPrivate* d_ptr;
 
         /**
          * @brief Document
