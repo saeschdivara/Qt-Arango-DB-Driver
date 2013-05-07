@@ -96,6 +96,32 @@ Document *Arangodbdriver::createDocument(QString collection)
     return doc;
 }
 
+Edge *Arangodbdriver::getEdge(QString id)
+{
+    Edge *doc = new Edge(this);
+
+    QUrl url(d->standardUrl + QString("/edge/") + id);
+    QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
+
+    connect(reply, &QNetworkReply::finished,
+            doc, &Document::_ar_dataIsAvailable
+            );
+
+    connect(doc, &Edge::saveData,
+            this, &Arangodbdriver::_ar_edge_save
+            );
+
+    connect(doc, &Edge::deleteData,
+            this, &Arangodbdriver::_ar_edge_delete
+            );
+
+    connect(doc, &Edge::updateDataStatus,
+            this, &Arangodbdriver::_ar_edge_updateStatus
+            );
+
+    return doc;
+}
+
 void Arangodbdriver::_ar_document_save(Document *doc)
 {
     d->jsonData = doc->toJsonString();
@@ -156,4 +182,19 @@ void Arangodbdriver::_ar_document_updateStatus(Document *doc)
     connect(reply, &QNetworkReply::finished,
             doc, &Document::_ar_dataUpdated
             );
+}
+
+void Arangodbdriver::_ar_edge_save(Document *doc)
+{
+    Edge *e = qobject_cast<Edge *>(doc);
+}
+
+void Arangodbdriver::_ar_edge_delete(Document *doc)
+{
+    Edge *e = qobject_cast<Edge *>(doc);
+}
+
+void Arangodbdriver::_ar_edge_updateStatus(Document *doc)
+{
+    Edge *e = qobject_cast<Edge *>(doc);
 }
