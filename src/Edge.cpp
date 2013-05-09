@@ -2,7 +2,6 @@
 #include "private/Document_p.h"
 
 using namespace arangodb;
-using namespace internal;
 
 namespace internal {
 
@@ -21,46 +20,19 @@ Edge::Edge(QObject *parent) :
 {
 }
 
-Edge::Edge(QString collection, QObject *parent) :
+Edge::Edge(QString collection, Document *fromDoc, Document *toDoc, QObject *parent) :
     Document(new internal::EdgePrivate, collection, parent)
 {
-}
-
-QByteArray Edge::toJsonString()
-{
-    Q_D(Edge);
-    QJsonDocument doc;
-
-    if ( !isEveryAttributeDirty() ) {
-            QJsonObject obj;
-
-            obj.insert(internal::ID, obj.value(internal::ID));
-            obj.insert(internal::KEY, obj.value(internal::KEY));
-            obj.insert(internal::REV, obj.value(internal::REV));
-            obj.insert(internal::FROM, obj.value(internal::FROM));
-            obj.insert(internal::TO, obj.value(internal::TO));
-
-            for( QString attribute : d->dirtyAttributes ) {
-                    obj.insert(attribute, d->data[attribute]);
-                }
-
-            doc.setObject(obj);
-        }
-    else {
-            doc.setObject(d->data);
-        }
-
-    return doc.toJson();
+    d_func()->data.insert(internal::FROM, fromDoc->docID());
+    d_func()->data.insert(internal::TO, toDoc->docID());
 }
 
 QString Edge::from()
 {
-    Q_D(Edge);
-    return d->data.value(internal::FROM).toString();
+    return d_func()->data.value(internal::FROM).toString();
 }
 
 QString Edge::to()
 {
-    Q_D(Edge);
-    return d->data.value(internal::TO).toString();
+    return d_func()->data.value(internal::TO).toString();
 }

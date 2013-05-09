@@ -82,6 +82,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         Edge* getEdge(QString id);
 
+        /**
+         * @brief createEdge
+         *
+         * @param collection
+         * @return
+         *
+         * @since 0.1
+         */
+        Edge* createEdge(QString collection, Document *fromDoc, Document *toDoc);
+
     protected Q_SLOTS:
         /**
          * @brief _ar_document_save

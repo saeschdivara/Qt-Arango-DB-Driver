@@ -18,10 +18,11 @@ class StartTest : public QObject
     private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
-        void testSaveAndDeleteDocument();
-        void testSaveDocument2Times();
-        void testPartialUpdate();
-        void testHeadOperation();
+        void testDocumentSaveAndDelete();
+        void testDocumentSave2Times();
+        void testDocumentPartialUpdate();
+        void testDocumentHeadOperation();
+        void testEdgeSaveAndDelete();
 
     private:
         /**
@@ -47,22 +48,31 @@ class StartTest : public QObject
         }
 };
 
+/**
+ * @brief StartTest::StartTest
+ */
 StartTest::StartTest()
 {
 }
 
+/**
+ * @brief StartTest::initTestCase
+ */
 void StartTest::initTestCase()
 {
 }
 
+/**
+ * @brief StartTest::cleanupTestCase
+ */
 void StartTest::cleanupTestCase()
 {
 }
 
 /**
- * @brief StartTest::testSaveAndDeleteDocument
+ * @brief StartTest::testDocumentSaveAndDelete
  */
-void StartTest::testSaveAndDeleteDocument()
+void StartTest::testDocumentSaveAndDelete()
 {
     Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
@@ -97,9 +107,9 @@ void StartTest::testSaveAndDeleteDocument()
 }
 
 /**
- * @brief StartTest::testSaveDocument2Times
+ * @brief StartTest::testDocumentSave2Times
  */
-void StartTest::testSaveDocument2Times()
+void StartTest::testDocumentSave2Times()
 {
     Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
@@ -125,9 +135,9 @@ void StartTest::testSaveDocument2Times()
 }
 
 /**
- * @brief StartTest::testPartialUpdate
+ * @brief StartTest::testDocumentPartialUpdate
  */
-void StartTest::testPartialUpdate()
+void StartTest::testDocumentPartialUpdate()
 {
     Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
@@ -155,7 +165,10 @@ void StartTest::testPartialUpdate()
     waitForDocumentDeleted(doc);
 }
 
-void StartTest::testHeadOperation()
+/**
+ * @brief StartTest::testDocumentHeadOperation
+ */
+void StartTest::testDocumentHeadOperation()
 {
     Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
@@ -192,6 +205,36 @@ void StartTest::testHeadOperation()
 
     QCOMPARE( docFromDb->isCreated(), false );
     QCOMPARE( docFromDb->isCurrent(), false );
+}
+
+/**
+ * @brief StartTest::testEdgeSaveAndDelete
+ */
+void StartTest::testEdgeSaveAndDelete()
+{
+    Arangodbdriver driver;
+    Document *doc1 = driver.createDocument("test");
+    Document *doc2 = driver.createDocument("test");
+
+    doc1->save();
+    waitForDocumentReady(doc1);
+
+    doc2->save();
+    waitForDocumentReady(doc2);
+
+    Edge *e = driver.createEdge("fubar", doc1, doc2);
+    e->save();
+    waitForDocumentReady(e);
+
+    Edge *dbEdge = driver.getEdge(e->docID());
+    waitForDocumentReady(dbEdge);
+
+    QVERIFY2( dbEdge->isCreated() == true, dbEdge->errorMessage().toLocal8Bit() );
+
+    e->drop();
+    waitForDocumentDeleted(e);
+
+    QCOMPARE( e->isCreated(), false );
 }
 
 QTEST_MAIN(StartTest)

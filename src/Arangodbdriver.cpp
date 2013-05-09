@@ -98,28 +98,47 @@ Document *Arangodbdriver::createDocument(QString collection)
 
 Edge *Arangodbdriver::getEdge(QString id)
 {
-    Edge *doc = new Edge(this);
+    Edge *e = new Edge(this);
 
     QUrl url(d->standardUrl + QString("/edge/") + id);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
 
     connect(reply, &QNetworkReply::finished,
-            doc, &Document::_ar_dataIsAvailable
+            e, &Document::_ar_dataIsAvailable
             );
 
-    connect(doc, &Edge::saveData,
+    connect(e, &Edge::saveData,
             this, &Arangodbdriver::_ar_edge_save
             );
 
-    connect(doc, &Edge::deleteData,
+    connect(e, &Edge::deleteData,
             this, &Arangodbdriver::_ar_edge_delete
             );
 
-    connect(doc, &Edge::updateDataStatus,
+    connect(e, &Edge::updateDataStatus,
             this, &Arangodbdriver::_ar_edge_updateStatus
             );
 
-    return doc;
+    return e;
+}
+
+Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document *toDoc)
+{
+    Edge *e = new Edge(collection, fromDoc, toDoc, this);
+
+    connect(e, &Edge::saveData,
+            this, &Arangodbdriver::_ar_edge_save
+            );
+
+    connect(e, &Edge::deleteData,
+            this, &Arangodbdriver::_ar_edge_delete
+            );
+
+    connect(e, &Edge::updateDataStatus,
+            this, &Arangodbdriver::_ar_edge_updateStatus
+            );
+
+    return e;
 }
 
 void Arangodbdriver::_ar_document_save(Document *doc)
@@ -187,11 +206,36 @@ void Arangodbdriver::_ar_document_updateStatus(Document *doc)
 void Arangodbdriver::_ar_edge_save(Document *doc)
 {
     Edge *e = qobject_cast<Edge *>(doc);
+    d->jsonData = doc->toJsonString();
+    QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
+
+    QString edgeUrl = d->standardUrl +
+            QString("/edge?collection=%1&from=%2&to=%3")
+            .arg(e->collection())
+            .arg(e->from())
+            .arg(e->to());
+
+    QUrl url(edgeUrl);
+    QNetworkRequest request(url);
+    request.setRawHeader("Content-Type", "application/json");
+    request.setRawHeader("Content-Length", jsonDataSize);
+
+    QNetworkReply *reply = d->networkManager.post(request, d->jsonData);
+
+    connect(reply, &QNetworkReply::finished,
+            doc, &Edge::_ar_dataIsAvailable
+            );
 }
 
 void Arangodbdriver::_ar_edge_delete(Document *doc)
 {
-    Edge *e = qobject_cast<Edge *>(doc);
+    QUrl url(d->standardUrl + QString("/edge/") + doc->docID());
+    QNetworkRequest request(url);
+    QNetworkReply *reply = d->networkManager.deleteResource(request);
+
+    connect(reply, &QNetworkReply::finished,
+            doc, &Document::_ar_dataDeleted
+            );
 }
 
 void Arangodbdriver::_ar_edge_updateStatus(Document *doc)

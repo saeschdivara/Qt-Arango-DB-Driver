@@ -82,7 +82,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        QByteArray toJsonString() const;
+        virtual QByteArray toJsonString() const;
 
         /**
          * @brief docID
