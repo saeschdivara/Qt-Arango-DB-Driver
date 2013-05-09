@@ -23,6 +23,8 @@ class StartTest : public QObject
         void testDocumentPartialUpdate();
         void testDocumentHeadOperation();
         void testEdgeSaveAndDelete();
+        void testEdgePartialUpdate();
+        void testEdgeHeadOperation();
 
     private:
         /**
@@ -235,6 +237,99 @@ void StartTest::testEdgeSaveAndDelete()
     waitForDocumentDeleted(e);
 
     QCOMPARE( e->isCreated(), false );
+
+    doc1->drop();
+    doc2->drop();
+}
+
+void StartTest::testEdgePartialUpdate()
+{
+    Arangodbdriver driver;
+
+    Document *doc1 = driver.createDocument("test");
+    Document *doc2 = driver.createDocument("test");
+
+    doc1->save();
+    waitForDocumentReady(doc1);
+
+    doc2->save();
+    waitForDocumentReady(doc2);
+
+    Edge *e = driver.createEdge("fubar", doc1, doc2);
+    e->set("ll-", "FLUU");
+    e->set("ss-", "DD");
+    e->save();
+    waitForDocumentReady(e);
+
+    QVERIFY2( e->isCreated() == true, e->errorMessage().toLocal8Bit() );
+
+    e->set("k", "dfj");
+    e->save();
+    waitForDocumentReady(e);
+
+    Edge *dbEdge = driver.getEdge(e->docID());
+    waitForDocumentReady(dbEdge);
+
+    QVERIFY2( dbEdge->isCreated() == true, dbEdge->errorMessage().toLocal8Bit() );
+    QCOMPARE( dbEdge->get("ll-").toString(), QString("FLUU") );
+    QCOMPARE( dbEdge->get("ss-").toString(), QString("DD") );
+    QCOMPARE( dbEdge->get("k").toString(), QString("dfj") );
+
+    e->drop();
+    waitForDocumentDeleted(e);
+
+    QCOMPARE( e->isCreated(), false );
+
+    doc1->drop();
+    doc2->drop();
+}
+
+/**
+ * @brief StartTest::testEdgeHeadOperation
+ */
+void StartTest::testEdgeHeadOperation()
+{
+    Arangodbdriver driver;
+    Document *doc1 = driver.createDocument("test");
+    Document *doc2 = driver.createDocument("test");
+
+    Edge *edge = driver.createEdge("fubar", doc1, doc2);
+    edge->set("lll", QVariant("aaa"));
+    // Save the document
+    edge->save();
+    waitForDocumentReady(edge);
+
+    // Try get the same document from the db again
+    Edge *edgeFromDb = driver.getEdge(edge->docID());
+    waitForDocumentReady(edgeFromDb);
+
+    edgeFromDb->updateStatus();
+    waitForDocumentReady(edgeFromDb);
+
+    QCOMPARE( edgeFromDb->isCreated(), true );
+    QCOMPARE( edgeFromDb->isCurrent(), true );
+
+    edge->set("lllmmmm", "fuu");
+    edge->save();
+    waitForDocumentReady(edge);
+
+    edgeFromDb->updateStatus();
+    waitForDocumentReady(edgeFromDb);
+
+    QCOMPARE( edgeFromDb->isCreated(), true );
+    QCOMPARE( edgeFromDb->isCurrent(), false );
+
+    edge->drop();
+    waitForDocumentDeleted(edge);
+
+    edgeFromDb->updateStatus();
+    waitForDocumentReady(edgeFromDb);
+
+    QCOMPARE( edgeFromDb->isCreated(), false );
+    QCOMPARE( edgeFromDb->isCurrent(), false );
+
+    doc1->drop();
+    doc2->drop();
 }
 
 QTEST_MAIN(StartTest)
