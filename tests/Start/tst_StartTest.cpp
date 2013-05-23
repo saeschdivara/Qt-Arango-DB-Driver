@@ -293,6 +293,12 @@ void StartTest::testEdgeHeadOperation()
     Document *doc1 = driver.createDocument("test");
     Document *doc2 = driver.createDocument("test");
 
+    doc1->save();
+    waitForDocumentReady(doc1);
+
+    doc2->save();
+    waitForDocumentReady(doc2);
+
     Edge *edge = driver.createEdge("fubar", doc1, doc2);
     edge->set("lll", QVariant("aaa"));
     // Save the document

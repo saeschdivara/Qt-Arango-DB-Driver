@@ -138,15 +138,6 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         void _ar_edge_delete(Document *doc);
 
-        /**
-         * @brief _ar_edge_updateStatus
-         *
-         * @param doc
-         *
-         * @since 0.1
-         */
-        void _ar_edge_updateStatus(Document *doc);
-
     private:
         internal::ArangodbdriverPrivate *d;
 };

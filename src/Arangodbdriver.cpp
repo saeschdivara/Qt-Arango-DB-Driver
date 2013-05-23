@@ -116,7 +116,7 @@ Edge *Arangodbdriver::getEdge(QString id)
             );
 
     connect(e, &Edge::updateDataStatus,
-            this, &Arangodbdriver::_ar_edge_updateStatus
+            this, &Arangodbdriver::_ar_document_updateStatus
             );
 
     return e;
@@ -135,7 +135,7 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
             );
 
     connect(e, &Edge::updateDataStatus,
-            this, &Arangodbdriver::_ar_edge_updateStatus
+            this, &Arangodbdriver::_ar_document_updateStatus
             );
 
     return e;
@@ -258,9 +258,4 @@ void Arangodbdriver::_ar_edge_delete(Document *doc)
     connect(reply, &QNetworkReply::finished,
             doc, &Document::_ar_dataDeleted
             );
-}
-
-void Arangodbdriver::_ar_edge_updateStatus(Document *doc)
-{
-    Edge *e = qobject_cast<Edge *>(doc);
 }

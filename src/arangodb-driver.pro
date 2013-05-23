@@ -21,11 +21,13 @@ DEFINES += ARANGODBDRIVER_LIBRARY
 SOURCES += Arangodbdriver.cpp \
     Document.cpp \
     Collection.cpp \
-    Edge.cpp
+    Edge.cpp \
+    QueryBuilder.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
     Document.h \
     Collection.h \
     Edge.h \
-    private/Document_p.h
+    private/Document_p.h \
+    QueryBuilder.h
