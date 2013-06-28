@@ -5,6 +5,9 @@
 #include "Collection.h"
 #include "Document.h"
 #include "Edge.h"
+#include "QBSelect.h"
+#include "QBCursor.h"
+#include <QtCore/QSharedPointer>
 
 namespace internal {
 class ArangodbdriverPrivate;
@@ -91,6 +94,15 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.1
          */
         Edge* createEdge(QString collection, Document *fromDoc, Document *toDoc);
+
+        /**
+         * @brief executeSelect
+         * @param select
+         * @return
+         *
+         * @since 0.3
+         */
+        QSharedPointer<QBCursor> executeSelect(QSharedPointer<QBSelect> select);
 
     protected Q_SLOTS:
         /**

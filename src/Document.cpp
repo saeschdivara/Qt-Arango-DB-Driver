@@ -156,6 +156,7 @@ void Document::_ar_dataIsAvailable()
     else {
             d_func()->isReady = true;
             d_func()->isCreated = true;
+            d_func()->isCurrent = true;
 
             for ( auto key : obj.keys() ) {
                     d_func()->data.insert(key, obj[key]);

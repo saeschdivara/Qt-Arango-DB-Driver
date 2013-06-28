@@ -2,6 +2,8 @@
 #define QUERYBUILDER_H
 
 #include "arangodb-driver_global.h"
+#include "QBSelect.h"
+#include <QtCore/QSharedPointer>
 
 namespace arangodb
 {
@@ -16,11 +18,8 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder : public QObject
         Q_OBJECT
     public:
         explicit QueryBuilder(QObject *parent = 0);
-        
-    signals:
-        
-    public slots:
-        
+
+        QSharedPointer<QBSelect> createSelect(QString collection);
 };
 
 }

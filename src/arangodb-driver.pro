@@ -22,7 +22,9 @@ SOURCES += Arangodbdriver.cpp \
     Document.cpp \
     Collection.cpp \
     Edge.cpp \
-    QueryBuilder.cpp
+    QueryBuilder.cpp \
+    QBSelect.cpp \
+    QBCursor.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
@@ -30,4 +32,6 @@ HEADERS += Arangodbdriver.h\
     Collection.h \
     Edge.h \
     private/Document_p.h \
-    QueryBuilder.h
+    QueryBuilder.h \
+    QBSelect.h \
+    QBCursor.h

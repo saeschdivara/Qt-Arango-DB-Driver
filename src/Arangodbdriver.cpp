@@ -141,6 +141,12 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
     return e;
 }
 
+QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSelect> select)
+{
+    QSharedPointer<QBCursor> cursor(new QBCursor);
+    return cursor;
+}
+
 void Arangodbdriver::_ar_document_save(Document *doc)
 {
     d->jsonData = doc->toJsonString();
