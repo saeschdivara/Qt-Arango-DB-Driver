@@ -23,9 +23,14 @@ Document::Document(internal::DocumentPrivate *privatePointer, QString collection
 }
 
 Document::Document(QString collection, QObject *parent) :
-    Document(parent)
+    Document(new internal::DocumentPrivate, collection, parent)
 {
-    d_func()->collectionName = collection;
+}
+
+Document::Document(QString collection, QString id, QObject *parent) :
+    Document(collection, parent)
+{
+    set(internal::ID, id);
 }
 
 Document::~Document()
@@ -146,6 +151,8 @@ void Document::_ar_dataIsAvailable()
     QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
     d_func()->dirtyAttributes.clear();
 
+    reply->disconnect(this, SLOT(_ar_dataIsAvailable());
+
     bool hasError = obj.value("error").toBool();
     if ( hasError ) {
             d_func()->errorMessage = obj.value("errorMessage").toString();
@@ -196,6 +203,12 @@ void Document::save()
             d_func()->isDirty = false;
 
             emit saveData(this);
+        }
+}
+
+void Document::sync()
+{
+    if ( !d_func()->isCurrent ) {
         }
 }
 

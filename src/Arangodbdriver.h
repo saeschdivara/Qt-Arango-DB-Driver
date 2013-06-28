@@ -76,6 +76,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Document* createDocument(QString collection);
 
         /**
+         * @brief createDocument
+         *
+         * @param collection
+         * @param id
+         *
+         * @return
+         */
+        Document* createDocument(QString collection, QString id);
+
+        /**
          * @brief getEdge
          *
          * @param id
@@ -131,6 +141,15 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.1
          */
         void _ar_document_updateStatus(Document *doc);
+
+        /**
+         * @brief _ar_document_sync
+         *
+         * @param doc
+         *
+         * @since 0.3
+         */
+        void _ar_document_sync(Document *doc);
 
         /**
          * @brief _ar_edge_save

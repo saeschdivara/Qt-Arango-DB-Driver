@@ -41,6 +41,17 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         Document(QString collection, QObject *parent = 0);
 
         /**
+         * @brief Document
+         *
+         * @param collection
+         * @param id
+         * @param parent
+         *
+         * @since 0.3
+         */
+        Document(QString collection, QString id, QObject *parent = 0);
+
+        /**
          * @brief ~Document
          *
          * @since 0.1
@@ -231,6 +242,13 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void updateDataStatus(Document *);
 
         /**
+         * @brief syncData
+         *
+         * @since 0.3
+         */
+        void syncData(Document *);
+
+        /**
          * @brief dataDeleted
          *
          * @since 0.1
@@ -244,6 +262,13 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.1
          */
         void save();
+
+        /**
+         * @brief sync
+         *
+         * @since 0.3
+         */
+        void sync();
 
         /**
          * @brief drop

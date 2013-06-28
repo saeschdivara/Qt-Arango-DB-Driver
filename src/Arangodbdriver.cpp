@@ -74,6 +74,10 @@ Document *Arangodbdriver::getDocument(QString id)
             this, &Arangodbdriver::_ar_document_updateStatus
             );
 
+    connect(doc, &Document::syncData,
+            this, &Arangodbdriver::_ar_document_sync
+            );
+
     return doc;
 }
 
@@ -91,6 +95,33 @@ Document *Arangodbdriver::createDocument(QString collection)
 
     connect(doc, &Document::updateDataStatus,
             this, &Arangodbdriver::_ar_document_updateStatus
+            );
+
+    connect(doc, &Document::syncData,
+            this, &Arangodbdriver::_ar_document_sync
+            );
+
+    return doc;
+}
+
+Document *Arangodbdriver::createDocument(QString collection, QString id)
+{
+    Document *doc = new Document(collection, id, this);
+
+    connect(doc, &Document::saveData,
+            this, &Arangodbdriver::_ar_document_save
+            );
+
+    connect(doc, &Document::deleteData,
+            this, &Arangodbdriver::_ar_document_delete
+            );
+
+    connect(doc, &Document::updateDataStatus,
+            this, &Arangodbdriver::_ar_document_updateStatus
+            );
+
+    connect(doc, &Document::syncData,
+            this, &Arangodbdriver::_ar_document_sync
             );
 
     return doc;
@@ -119,6 +150,10 @@ Edge *Arangodbdriver::getEdge(QString id)
             this, &Arangodbdriver::_ar_document_updateStatus
             );
 
+    connect(e, &Edge::syncData,
+            this, &Arangodbdriver::_ar_document_sync
+            );
+
     return e;
 }
 
@@ -136,6 +171,10 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
 
     connect(e, &Edge::updateDataStatus,
             this, &Arangodbdriver::_ar_document_updateStatus
+            );
+
+    connect(e, &Edge::syncData,
+            this, &Arangodbdriver::_ar_document_sync
             );
 
     return e;
@@ -207,6 +246,10 @@ void Arangodbdriver::_ar_document_updateStatus(Document *doc)
     connect(reply, &QNetworkReply::finished,
             doc, &Document::_ar_dataUpdated
             );
+}
+
+void Arangodbdriver::_ar_document_sync(Document *doc)
+{
 }
 
 void Arangodbdriver::_ar_edge_save(Document *doc)
