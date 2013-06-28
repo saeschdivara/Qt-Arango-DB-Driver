@@ -250,6 +250,12 @@ void Arangodbdriver::_ar_document_updateStatus(Document *doc)
 
 void Arangodbdriver::_ar_document_sync(Document *doc)
 {
+    QUrl url(d->standardUrl + QString("/document/") + doc->docID());
+    QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
+
+    connect(reply, &QNetworkReply::finished,
+            doc, &Document::_ar_dataIsAvailable
+            );
 }
 
 void Arangodbdriver::_ar_edge_save(Document *doc)

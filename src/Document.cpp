@@ -209,6 +209,7 @@ void Document::save()
 void Document::sync()
 {
     if ( !d_func()->isCurrent ) {
+            emit syncData(this);
         }
 }
 
