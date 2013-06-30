@@ -104,9 +104,9 @@ Document *Arangodbdriver::createDocument(QString collection)
     return doc;
 }
 
-Document *Arangodbdriver::createDocument(QString collection, QString id)
+Document *Arangodbdriver::createDocument(QString collection, QString key)
 {
-    Document *doc = new Document(collection, id, this);
+    Document *doc = new Document(collection, key, this);
 
     connect(doc, &Document::saveData,
             this, &Arangodbdriver::_ar_document_save

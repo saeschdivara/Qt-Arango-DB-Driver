@@ -83,7 +83,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @return
          */
-        Document* createDocument(QString collection, QString id);
+        Document* createDocument(QString collection, QString key);
 
         /**
          * @brief getEdge

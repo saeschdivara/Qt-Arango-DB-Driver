@@ -44,12 +44,12 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @brief Document
          *
          * @param collection
-         * @param id
+         * @param key
          * @param parent
          *
          * @since 0.3
          */
-        Document(QString collection, QString id, QObject *parent = 0);
+        Document(QString collection, QString key, QObject *parent = 0);
 
         /**
          * @brief ~Document

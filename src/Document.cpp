@@ -27,10 +27,10 @@ Document::Document(QString collection, QObject *parent) :
 {
 }
 
-Document::Document(QString collection, QString id, QObject *parent) :
+Document::Document(QString collection, QString key, QObject *parent) :
     Document(collection, parent)
 {
-    set(internal::ID, id);
+    set(internal::KEY, key);
 }
 
 Document::~Document()
@@ -151,7 +151,7 @@ void Document::_ar_dataIsAvailable()
     QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
     d_func()->dirtyAttributes.clear();
 
-    reply->disconnect(this, SLOT(_ar_dataIsAvailable());
+    reply->disconnect(this, SLOT(_ar_dataIsAvailable()));
 
     bool hasError = obj.value("error").toBool();
     if ( hasError ) {
