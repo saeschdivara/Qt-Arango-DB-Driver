@@ -169,6 +169,8 @@ void Document::_ar_dataIsAvailable()
                     d_func()->data.insert(key, obj[key]);
                 }
 
+            d_func()->resetError();
+
             emit ready();
         }
 }

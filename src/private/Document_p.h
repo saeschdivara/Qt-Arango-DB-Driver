@@ -22,6 +22,12 @@ class DocumentPrivate
         quint32 errorNumber = 0;
 
         QStringList dirtyAttributes;
+
+        inline void resetError() {
+            errorMessage.clear();
+            errorCode = 0;
+            errorNumber = 0;
+        }
 };
 
 const QString ID  = QStringLiteral("_id");
