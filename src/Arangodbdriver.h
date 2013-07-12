@@ -107,12 +107,22 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
 
         /**
          * @brief executeSelect
+         *
          * @param select
          * @return
          *
          * @since 0.3
          */
         QSharedPointer<QBCursor> executeSelect(QSharedPointer<QBSelect> select);
+
+        /**
+         * @brief loadMoreResults
+         *
+         * @param cursor
+         *
+         * @since 0.4
+         */
+        void loadMoreResults(QBCursor * cursor);
 
     protected Q_SLOTS:
         /**

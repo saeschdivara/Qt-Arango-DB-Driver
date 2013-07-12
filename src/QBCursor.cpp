@@ -1,4 +1,5 @@
 #include "QBCursor.h"
+#include "Arangodbdriver.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
@@ -20,6 +21,12 @@ class QBCursorPrivate
         QString errorMessage;
         quint32 errorCode = 0;
         quint32 errorNumber = 0;
+
+        inline void resetError() {
+            errorMessage.clear();
+            errorCode = 0;
+            errorNumber = 0;
+        }
 };
 
 QBCursor::QBCursor(QObject *parent) :
@@ -78,6 +85,18 @@ int QBCursor::count() const
     return d->docs.count();
 }
 
+void QBCursor::getMoreData()
+{
+    Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+    if (driver) {
+        driver->loadMoreResults(this);
+    }
+    else {
+        qWarning() << Q_FUNC_INFO;
+        qWarning() << "Parent is not Arangodbdriver";
+    }
+}
+
 void QBCursor::waitForResult()
 {
     bool b = true;
@@ -99,10 +118,18 @@ void QBCursor::_ar_cursor_result_loaded()
     Q_D(QBCursor);
 
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+
+    disconnect(reply, &QNetworkReply::finished,
+               this, &QBCursor::_ar_cursor_result_loaded);
+
     QByteArray data = reply->readAll();
+
+    qDebug() << data;
 
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object();
+
+    d->resetError();
 
     if ( obj.value(QStringLiteral("error")).toBool() ) {
         d->errorMessage = obj.value("errorMessage").toString();

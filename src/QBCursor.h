@@ -97,6 +97,13 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
         int count() const;
 
         /**
+         * @brief getMoreData
+         *
+         * @since 0.4
+         */
+        void getMoreData();
+
+        /**
          * @brief waitForResult
          *
          * @since 0.4
