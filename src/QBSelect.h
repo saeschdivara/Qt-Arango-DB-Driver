@@ -12,8 +12,16 @@ class QBSelectPrivate;
 class ARANGODBDRIVERSHARED_EXPORT QBSelect
 {
     public:
-        QBSelect();
+        QBSelect(const QString & collection, int batchSize);
         ~QBSelect();
+
+        QString collection() const;
+        int batchSize() const;
+
+        void setCounting(bool c);
+        bool isCounting() const;
+
+        QByteArray toJson() const;
 
     protected:
         QBSelectPrivate *d_ptr;

@@ -33,6 +33,16 @@ Document::Document(QString collection, QString key, QObject *parent) :
     set(internal::KEY, key);
 }
 
+Document::Document(QJsonObject obj, QObject * parent) :
+    Document(new internal::DocumentPrivate, parent)
+{
+    obj.remove(QStringLiteral("n"));
+    d_func()->collectionName = obj.value(internal::ID).toString().split('/').at(0);
+    d_func()->data.insert(internal::ID, obj.value(internal::ID));
+    d_func()->data.insert(internal::KEY, obj.value(internal::KEY));
+    d_func()->data.insert(internal::REV, obj.value(internal::REV));
+}
+
 Document::~Document()
 {
     delete d_ptr;

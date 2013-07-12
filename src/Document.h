@@ -2,7 +2,9 @@
 #define DOCUMENT_H
 
 #include "arangodb-driver_global.h"
+
 #include <QtCore/QByteArray>
+#include <QtCore/QJsonObject>
 #include <QtCore/QStringList>
 
 namespace internal {
@@ -50,6 +52,16 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.3
          */
         Document(QString collection, QString key, QObject *parent = 0);
+
+        /**
+         * @brief Document
+         *
+         * @param obj
+         * @param parent
+         *
+         * @since 0.4
+         */
+        Document(QJsonObject obj, QObject * parent = 0);
 
         /**
          * @brief ~Document

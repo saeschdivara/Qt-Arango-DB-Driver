@@ -19,7 +19,7 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder : public QObject
     public:
         explicit QueryBuilder(QObject *parent = 0);
 
-        QSharedPointer<QBSelect> createSelect(QString collection);
+        QSharedPointer<QBSelect> createSelect(QString collection, int batchSize = 15);
 };
 
 }

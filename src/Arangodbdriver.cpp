@@ -183,6 +183,19 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
 QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSelect> select)
 {
     QSharedPointer<QBCursor> cursor(new QBCursor);
+
+    QByteArray jsonSelect = select->toJson();
+    QUrl url(d->standardUrl + QString("/cursor"));
+    QNetworkRequest request(url);
+    request.setRawHeader("Content-Type", "application/json");
+    request.setRawHeader("Content-Length", QByteArray::number(jsonSelect.size()));
+
+    QNetworkReply *reply = d->networkManager.post(request, jsonSelect);
+
+    connect(reply, &QNetworkReply::finished,
+            cursor.data(), &QBCursor::_ar_cursor_result_loaded
+            );
+
     return cursor;
 }
 

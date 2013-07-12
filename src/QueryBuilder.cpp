@@ -7,8 +7,8 @@ QueryBuilder::QueryBuilder(QObject *parent) :
 {
 }
 
-QSharedPointer<QBSelect> QueryBuilder::createSelect(QString collection)
+QSharedPointer<QBSelect> QueryBuilder::createSelect(QString collection, int batchSize)
 {
-    QSharedPointer<QBSelect> select(new QBSelect);
+    QSharedPointer<QBSelect> select(new QBSelect(collection, batchSize));
     return select;
 }
