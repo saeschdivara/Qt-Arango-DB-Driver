@@ -15,6 +15,7 @@ class QueriesTest : public QObject
         void testGetAllDocuments();
         void testLoadMoreResults();
         void testGetDocByWhere();
+        void testGetDocsByWhere();
 };
 
 QueriesTest::QueriesTest()
@@ -80,6 +81,33 @@ void QueriesTest::testGetDocByWhere()
 
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
+
+    QCOMPARE(cursor->hasErrorOccurred(), false);
+    QCOMPARE(cursor->hasMore(), false);
+    QCOMPARE(cursor->count(), 1);
+}
+
+void QueriesTest::testGetDocsByWhere()
+{
+    arangodb::Arangodbdriver driver;
+    arangodb::QueryBuilder qb;
+
+    auto select = qb.createSelect(QStringLiteral("test"), 2);
+
+    QCOMPARE(select->collection(), QStringLiteral("test"));
+    QCOMPARE(select->batchSize(), 2);
+    QCOMPARE(select->isCounting(), false);
+
+    QStringList vars;
+    vars << "ll" << "fu";
+    select->setWhere(QStringLiteral("name"), vars);
+
+    qDebug() << select->toJson();
+
+    auto cursor = driver.executeSelect(select);
+    cursor->waitForResult();
+
+    qDebug() << cursor->errorMessage();
 
     QCOMPARE(cursor->hasErrorOccurred(), false);
     QCOMPARE(cursor->hasMore(), false);

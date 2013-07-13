@@ -1,6 +1,7 @@
 #include "QBSelect.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 
@@ -16,6 +17,8 @@ class QBSelectPrivate
         bool isCounting;
 
         QString where;
+        QString whereField;
+        QStringList bindVars;
 };
 
 QBSelect::QBSelect(const QString & collection, int batchSize) :
@@ -63,6 +66,14 @@ void QBSelect::setWhere(const QString & field, const QString & op)
     d->where = QStringLiteral("FILTER u.%1 == \"%2\"").arg(field, op);
 }
 
+void QBSelect::setWhere(const QString & field, const QStringList & op)
+{
+    Q_D(QBSelect);
+    d->bindVars = op;
+    d->where = QStringLiteral("FILTER u.%1 == %2").arg(field, QChar('@') + field);
+    d->whereField = field;
+}
+
 QByteArray QBSelect::toJson() const
 {
     Q_D(const QBSelect);
@@ -80,6 +91,13 @@ QByteArray QBSelect::toJson() const
     jsonObj.insert(QStringLiteral("query"), query);
     jsonObj.insert(QStringLiteral("count"), d->isCounting);
     jsonObj.insert(QStringLiteral("batchSize"), d->batchSize);
+
+    if (d->bindVars.size() > 0) {
+        QJsonObject bindVarsObj;
+        bindVarsObj.insert(d->whereField, QJsonArray::fromStringList(d->bindVars));
+
+        jsonObj.insert(QStringLiteral("bindVars"), bindVarsObj);
+    }
 
     jsonDoc.setObject(jsonObj);
     return jsonDoc.toJson();
