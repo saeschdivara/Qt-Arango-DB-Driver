@@ -60,7 +60,7 @@ bool QBSelect::isCounting() const
 void QBSelect::setWhere(const QString & field, const QString & op)
 {
     Q_D(QBSelect);
-    d->where = QStringLiteral("u.%1 == \"%2\"").arg(field, op);
+    d->where = QStringLiteral("FILTER u.%1 == \"%2\"").arg(field, op);
 }
 
 QByteArray QBSelect::toJson() const

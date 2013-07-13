@@ -14,6 +14,7 @@ class QueriesTest : public QObject
     private Q_SLOTS:
         void testGetAllDocuments();
         void testLoadMoreResults();
+        void testGetDocByWhere();
 };
 
 QueriesTest::QueriesTest()
@@ -62,6 +63,27 @@ void QueriesTest::testLoadMoreResults()
     QCOMPARE(cursor->hasErrorOccurred(), false);
     QCOMPARE(cursor->hasMore(), false);
     QCOMPARE(cursor->count(), 4);
+}
+
+void QueriesTest::testGetDocByWhere()
+{
+    arangodb::Arangodbdriver driver;
+    arangodb::QueryBuilder qb;
+
+    auto select = qb.createSelect(QStringLiteral("test"), 2);
+
+    QCOMPARE(select->collection(), QStringLiteral("test"));
+    QCOMPARE(select->batchSize(), 2);
+    QCOMPARE(select->isCounting(), false);
+
+    select->setWhere(QStringLiteral("name"), QStringLiteral("ll"));
+
+    auto cursor = driver.executeSelect(select);
+    cursor->waitForResult();
+
+    QCOMPARE(cursor->hasErrorOccurred(), false);
+    QCOMPARE(cursor->hasMore(), false);
+    QCOMPARE(cursor->count(), 1);
 }
 
 QTEST_MAIN(QueriesTest)
