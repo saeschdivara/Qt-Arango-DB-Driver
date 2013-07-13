@@ -14,6 +14,8 @@ class QBSelectPrivate
         int batchSize;
         int limit;
         bool isCounting;
+
+        QString where;
 };
 
 QBSelect::QBSelect(const QString & collection, int batchSize) :
@@ -55,18 +57,24 @@ bool QBSelect::isCounting() const
     return d->isCounting;
 }
 
+void QBSelect::setWhere(const QString & field, const QString & op)
+{
+    Q_D(QBSelect);
+    d->where = QStringLiteral("u.%1 == \"%2\"").arg(field, op);
+}
+
 QByteArray QBSelect::toJson() const
 {
     Q_D(const QBSelect);
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
-    QString query("FOR u IN %1 %2 RETURN u");
+    QString query("FOR u IN %1 %2 %3 RETURN u");
 
     if ( d->limit < 1 ) {
-        query = query.arg(d->collection, QStringLiteral(""));
+        query = query.arg(d->collection, QStringLiteral(""), d->where);
     }
     else {
-        query = query.arg(d->collection, QStringLiteral("LIMIT %1").arg(QString::number(d->limit)));
+        query = query.arg(d->collection, QStringLiteral("LIMIT %1").arg(QString::number(d->limit)), d->where);
     }
 
     jsonObj.insert(QStringLiteral("query"), query);

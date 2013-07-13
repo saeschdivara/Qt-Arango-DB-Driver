@@ -124,8 +124,6 @@ void QBCursor::_ar_cursor_result_loaded()
 
     QByteArray data = reply->readAll();
 
-    qDebug() << data;
-
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object();
 

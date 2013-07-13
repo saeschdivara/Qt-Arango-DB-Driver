@@ -2,7 +2,6 @@
 #define QBSELECT_H
 
 #include "arangodb-driver_global.h"
-#include "QBSelect.h"
 
 namespace arangodb
 {
@@ -20,6 +19,8 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
 
         void setCounting(bool c);
         bool isCounting() const;
+
+        void setWhere(const QString & field, const QString & op);
 
         QByteArray toJson() const;
 
