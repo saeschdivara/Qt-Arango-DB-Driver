@@ -200,6 +200,17 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         QVariant get(const QString &key) const;
 
         /**
+         * @brief contains
+         *
+         * @param key
+         *
+         * @return
+         *
+         * @since 0.4
+         */
+        bool contains(const QString & key) const;
+
+        /**
          * @brief dirtyAttributes
          *
          * @return
@@ -216,6 +227,13 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.1
          */
         bool isEveryAttributeDirty() const;
+
+        /**
+         * @brief waitForResult
+         *
+         * @since 0.4
+         */
+        void waitForResult();
 
     Q_SIGNALS:
         /**

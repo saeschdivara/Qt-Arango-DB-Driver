@@ -92,22 +92,18 @@ void QueriesTest::testGetDocsByWhere()
     arangodb::Arangodbdriver driver;
     arangodb::QueryBuilder qb;
 
-    auto select = qb.createSelect(QStringLiteral("test"), 2);
+    auto select = qb.createSelect(QStringLiteral("webuser"), 2);
 
-    QCOMPARE(select->collection(), QStringLiteral("test"));
+    QCOMPARE(select->collection(), QStringLiteral("webuser"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
     QStringList vars;
-    vars << "ll" << "fu";
-    select->setWhere(QStringLiteral("name"), vars);
-
-    qDebug() << select->toJson();
+    vars << "saeschdivara" << "root";
+    select->setWhere(QStringLiteral("username"), vars);
 
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
-
-    qDebug() << cursor->errorMessage();
 
     QCOMPARE(cursor->hasErrorOccurred(), false);
     QCOMPARE(cursor->hasMore(), false);

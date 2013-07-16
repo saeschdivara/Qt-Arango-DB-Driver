@@ -1,5 +1,6 @@
 #include "Document.h"
 #include "private/Document_p.h"
+#include <QtCore/QCoreApplication>
 #include <QtDebug>
 
 using namespace arangodb;
@@ -68,21 +69,21 @@ QByteArray Document::toJsonString() const
     QJsonDocument doc;
 
     if ( !isEveryAttributeDirty() ) {
-            QJsonObject obj;
+        QJsonObject obj;
 
-            obj.insert(internal::ID, obj.value(internal::ID));
-            obj.insert(internal::KEY, obj.value(internal::KEY));
-            obj.insert(internal::REV, obj.value(internal::REV));
+        obj.insert(internal::ID, obj.value(internal::ID));
+        obj.insert(internal::KEY, obj.value(internal::KEY));
+        obj.insert(internal::REV, obj.value(internal::REV));
 
-            for( QString attribute : d_func()->dirtyAttributes ) {
-                    obj.insert(attribute, d_func()->data[attribute]);
-                }
-
-            doc.setObject(obj);
+        for( QString attribute : d_func()->dirtyAttributes ) {
+            obj.insert(attribute, d_func()->data[attribute]);
         }
+
+        doc.setObject(obj);
+    }
     else {
-            doc.setObject(d_func()->data);
-        }
+        doc.setObject(d_func()->data);
+    }
 
     return doc.toJson();
 }
@@ -139,6 +140,11 @@ QVariant Document::get(const QString &key) const
     return d_func()->data.value(key).toVariant();
 }
 
+bool Document::contains(const QString & key) const
+{
+    return d_func()->data.contains(key);
+}
+
 QStringList Document::dirtyAttributes() const
 {
     return d_func()->dirtyAttributes;
@@ -149,10 +155,27 @@ bool Document::isEveryAttributeDirty() const
     int attributes = d_func()->data.keys().size()-3;
 
     if ( d_func()->data.contains("error") ) {
-            attributes--;
-        }
+        attributes--;
+    }
 
     return d_func()->dirtyAttributes.size() >= attributes;
+}
+
+void Document::waitForResult()
+{
+    bool b = true;
+    QMetaObject::Connection conn1 = QObject::connect(this, &Document::ready, [&] {
+        b = false;
+    });
+    QMetaObject::Connection conn2 = QObject::connect(this, &Document::error, [&] {
+        b = false;
+    });
+    while (b) {
+        qApp->processEvents();
+    }
+    QObject::disconnect(conn1);
+    QObject::disconnect(conn2);
+
 }
 
 void Document::_ar_dataIsAvailable()
@@ -165,24 +188,24 @@ void Document::_ar_dataIsAvailable()
 
     bool hasError = obj.value("error").toBool();
     if ( hasError ) {
-            d_func()->errorMessage = obj.value("errorMessage").toString();
-            d_func()->errorNumber  = obj.value("errorNum").toVariant().toInt();
-            d_func()->errorCode    = obj.value("code").toVariant().toInt();
-            emit error();
-        }
+        d_func()->errorMessage = obj.value("errorMessage").toString();
+        d_func()->errorNumber  = obj.value("errorNum").toVariant().toInt();
+        d_func()->errorCode    = obj.value("code").toVariant().toInt();
+        emit error();
+    }
     else {
-            d_func()->isReady = true;
-            d_func()->isCreated = true;
-            d_func()->isCurrent = true;
+        d_func()->isReady = true;
+        d_func()->isCreated = true;
+        d_func()->isCurrent = true;
 
-            for ( auto key : obj.keys() ) {
-                    d_func()->data.insert(key, obj[key]);
-                }
-
-            d_func()->resetError();
-
-            emit ready();
+        for ( auto key : obj.keys() ) {
+            d_func()->data.insert(key, obj[key]);
         }
+
+        d_func()->resetError();
+
+        emit ready();
+    }
 }
 
 void Document::_ar_dataDeleted()
@@ -196,15 +219,15 @@ void Document::_ar_dataUpdated()
     d_func()->isReady = true;
 
     if (reply->hasRawHeader("etag") ) {
-            QByteArray etag = reply->rawHeader("etag");
-            etag.replace('"', ""); // comes from the rawHeader
-            d_func()->isCreated = true;
-            d_func()->isCurrent = ( etag == rev() );
-        }
+        QByteArray etag = reply->rawHeader("etag");
+        etag.replace('"', ""); // comes from the rawHeader
+        d_func()->isCreated = true;
+        d_func()->isCurrent = ( etag == rev() );
+    }
     else {
-            d_func()->isCreated = false;
-            d_func()->isCurrent = false;
-        }
+        d_func()->isCreated = false;
+        d_func()->isCurrent = false;
+    }
 
     emit ready();
 }
@@ -212,27 +235,27 @@ void Document::_ar_dataUpdated()
 void Document::save()
 {
     if ( !d_func()->isCreated || d_func()->isDirty ) {
-            d_func()->isDirty = false;
+        d_func()->isDirty = false;
 
-            emit saveData(this);
-        }
+        emit saveData(this);
+    }
 }
 
 void Document::sync()
 {
     if ( !d_func()->isCurrent ) {
-            emit syncData(this);
-        }
+        emit syncData(this);
+    }
 }
 
 void Document::drop()
 {
     if ( d_func()->isCreated ) {
-            d_func()->isDirty = false;
-            d_func()->isCreated = false;
+        d_func()->isDirty = false;
+        d_func()->isCreated = false;
 
-            emit deleteData(this);
-        }
+        emit deleteData(this);
+    }
 }
 
 void Document::updateStatus()
