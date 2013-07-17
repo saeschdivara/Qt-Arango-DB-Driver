@@ -42,6 +42,7 @@ Document::Document(QJsonObject obj, QObject * parent) :
     d_func()->data.insert(internal::ID, obj.value(internal::ID));
     d_func()->data.insert(internal::KEY, obj.value(internal::KEY));
     d_func()->data.insert(internal::REV, obj.value(internal::REV));
+    d_func()->isCurrent = false;
 }
 
 Document::~Document()
