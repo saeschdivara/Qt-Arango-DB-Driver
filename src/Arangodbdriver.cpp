@@ -62,21 +62,7 @@ Document *Arangodbdriver::getDocument(QString id)
             doc, &Document::_ar_dataIsAvailable
             );
 
-    connect(doc, &Document::saveData,
-            this, &Arangodbdriver::_ar_document_save
-            );
-
-    connect(doc, &Document::deleteData,
-            this, &Arangodbdriver::_ar_document_delete
-            );
-
-    connect(doc, &Document::updateDataStatus,
-            this, &Arangodbdriver::_ar_document_updateStatus
-            );
-
-    connect(doc, &Document::syncData,
-            this, &Arangodbdriver::_ar_document_sync
-            );
+    connectDocument(doc);
 
     return doc;
 }
@@ -84,22 +70,7 @@ Document *Arangodbdriver::getDocument(QString id)
 Document *Arangodbdriver::createDocument(QString collection)
 {
     Document *doc = new Document(collection, this);
-
-    connect(doc, &Document::saveData,
-            this, &Arangodbdriver::_ar_document_save
-            );
-
-    connect(doc, &Document::deleteData,
-            this, &Arangodbdriver::_ar_document_delete
-            );
-
-    connect(doc, &Document::updateDataStatus,
-            this, &Arangodbdriver::_ar_document_updateStatus
-            );
-
-    connect(doc, &Document::syncData,
-            this, &Arangodbdriver::_ar_document_sync
-            );
+    connectDocument(doc);
 
     return doc;
 }
@@ -107,7 +78,13 @@ Document *Arangodbdriver::createDocument(QString collection)
 Document *Arangodbdriver::createDocument(QString collection, QString key)
 {
     Document *doc = new Document(collection, key, this);
+    connectDocument(doc);
 
+    return doc;
+}
+
+void Arangodbdriver::connectDocument(Document * doc)
+{
     connect(doc, &Document::saveData,
             this, &Arangodbdriver::_ar_document_save
             );
@@ -123,8 +100,6 @@ Document *Arangodbdriver::createDocument(QString collection, QString key)
     connect(doc, &Document::syncData,
             this, &Arangodbdriver::_ar_document_sync
             );
-
-    return doc;
 }
 
 Edge *Arangodbdriver::getEdge(QString id)

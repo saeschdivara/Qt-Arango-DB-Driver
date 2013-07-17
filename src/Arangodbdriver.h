@@ -76,6 +76,15 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Document* createDocument(QString collection);
 
         /**
+         * @brief connectDocument
+         *
+         * @param doc
+         *
+         * @since 0.4
+         */
+        void connectDocument(Document * doc);
+
+        /**
          * @brief createDocument
          *
          * @param collection
