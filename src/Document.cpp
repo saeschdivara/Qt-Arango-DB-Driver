@@ -72,9 +72,9 @@ QByteArray Document::toJsonString() const
     if ( !isEveryAttributeDirty() ) {
         QJsonObject obj;
 
-        obj.insert(internal::ID, obj.value(internal::ID));
-        obj.insert(internal::KEY, obj.value(internal::KEY));
-        obj.insert(internal::REV, obj.value(internal::REV));
+        obj.insert(internal::ID, d_func()->data.value(internal::ID));
+        obj.insert(internal::KEY, d_func()->data.value(internal::KEY));
+        obj.insert(internal::REV, d_func()->data.value(internal::REV));
 
         for( QString attribute : d_func()->dirtyAttributes ) {
             obj.insert(attribute, d_func()->data[attribute]);
