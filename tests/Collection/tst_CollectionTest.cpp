@@ -30,14 +30,14 @@ void CollectionTest::cleanupTestCase()
 
 void CollectionTest::testCase1()
 {
-    QFETCH(QString, data);
+    QFETCH(QString, collectionName);
     QVERIFY2(true, "Failure");
 }
 
 void CollectionTest::testCase1_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::newRow("0") << QString();
+    QTest::addColumn<QString>("collectionName");
+    QTest::newRow("0") << QString("");
 }
 
 QTEST_MAIN(CollectionTest)

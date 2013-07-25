@@ -56,6 +56,25 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Collection* getCollection(QString name);
 
         /**
+         * @brief createCollection
+         *
+         * @param name
+         * @return
+         *
+         * @since 0.5
+         */
+        Collection * createCollection(const QString & name);
+
+        /**
+         * @brief connectCollection
+         *
+         * @param collection
+         *
+         * @since 0.5
+         */
+        void connectCollection(Collection * collection);
+
+        /**
          * @brief getDocument
          *
          * @param id
@@ -76,6 +95,18 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Document* createDocument(QString collection);
 
         /**
+         * @brief createDocument
+         *
+         * @param collection
+         * @param id
+         *
+         * @return
+         *
+         * @since 0.1
+         */
+        Document* createDocument(QString collection, QString key);
+
+        /**
          * @brief connectDocument
          *
          * @param doc
@@ -83,16 +114,6 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.4
          */
         void connectDocument(Document * doc);
-
-        /**
-         * @brief createDocument
-         *
-         * @param collection
-         * @param id
-         *
-         * @return
-         */
-        Document* createDocument(QString collection, QString key);
 
         /**
          * @brief getEdge

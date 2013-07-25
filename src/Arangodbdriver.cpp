@@ -46,9 +46,31 @@ Arangodbdriver::~Arangodbdriver()
 
 Collection *Arangodbdriver::getCollection(QString name)
 {
-    // TODO: has to be implemented fully
     Collection *collection = new Collection(name, this);
+
+    QUrl url(d->standardUrl + QString("/collection/") + name);
+    QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
+
+    connect(reply, &QNetworkReply::finished,
+            collection, &Collection::_ar_dataIsAvailable
+            );
+
+    connectCollection(collection);
+
     return collection;
+}
+
+Collection *Arangodbdriver::createCollection(const QString & name)
+{
+    Collection *collection = new Collection(name, this);
+
+    connectCollection(collection);
+    return collection;
+}
+
+void Arangodbdriver::connectCollection(Collection * collection)
+{
+    Q_UNUSED(collection);
 }
 
 Document *Arangodbdriver::getDocument(QString id)
