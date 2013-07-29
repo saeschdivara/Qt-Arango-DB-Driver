@@ -63,7 +63,13 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @since 0.5
          */
-        Collection * createCollection(const QString & name);
+        Collection * createCollection(const QString & name,
+                                      bool waitForSync = false,
+                                      int journalSize = -1,
+                                      bool isSystem = false,
+                                      bool isVolatile = false,
+                                      Collection::KeyOption * keyOption = Q_NULLPTR,
+                                      Collection::Type type = Collection::DocumentType);
 
         /**
          * @brief connectCollection
