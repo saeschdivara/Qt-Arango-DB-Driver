@@ -69,7 +69,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
                                       bool isSystem = false,
                                       bool isVolatile = false,
                                       Collection::KeyOption * keyOption = Q_NULLPTR,
-                                      Collection::Type type = Collection::DocumentType);
+                                      Collection::Type type = Collection::Type::DocumentType);
 
         /**
          * @brief connectCollection

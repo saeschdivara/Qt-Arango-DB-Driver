@@ -10,12 +10,18 @@ namespace arangodb
 class CollectionPrivate
 {
     public:
-        QString name;
-
         bool isReady = false;
         bool isDirty = false;
         bool isCreated = false;
         bool isCurrent = true;
+
+        QString name;
+        bool waitForSync;
+        int journalSize;
+        bool isSystem;
+        bool isVolatile;
+        Collection::KeyOption * keyOption;
+        Collection::Type type;
 
         QString errorMessage;
         quint32 errorCode = 0;
@@ -28,12 +34,26 @@ class CollectionPrivate
         }
 };
 
-Collection::Collection(QString name, QObject *parent) :
+Collection::Collection(const QString & name, QObject * parent) :
     QObject(parent),
     d_ptr(new CollectionPrivate)
 {
     Q_D(Collection);
     d->name = name;
+}
+
+Collection::Collection(const QString & name, bool waitForSync, int journalSize, bool isSystem, bool isVolatile, KeyOption * keyOption, Type type, QObject *parent) :
+    QObject(parent),
+    d_ptr(new CollectionPrivate)
+{
+    Q_D(Collection);
+    d->name = name;
+    d->waitForSync = waitForSync;
+    d->journalSize = journalSize;
+    d->isSystem = isSystem;
+    d->isVolatile = isVolatile;
+    d->keyOption = keyOption;
+    d->type = type;
 }
 
 Collection::~Collection()
@@ -59,6 +79,24 @@ QString Collection::name() const
     return d->name;
 }
 
+bool Collection::isWaitingForSync()
+{
+    Q_D(Collection);
+    return d->waitForSync;
+}
+
+bool Collection::isSystem()
+{
+    Q_D(Collection);
+    return d->isSystem;
+}
+
+bool Collection::isVolatile()
+{
+    Q_D(Collection);
+    return d->isVolatile;
+}
+
 QString Collection::errorMessage() const
 {
     Q_D(const Collection);
@@ -81,6 +119,11 @@ bool Collection::hasErrorOccurred()
 {
     Q_D(Collection);
     return d->errorNumber != 0;
+}
+
+void Collection::save()
+{
+    //Q_UNIMPLEMENTED;
 }
 
 void Collection::_ar_dataIsAvailable()

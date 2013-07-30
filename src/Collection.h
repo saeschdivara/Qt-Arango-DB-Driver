@@ -32,7 +32,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                  *
                  * @since 0.5
                  */
-                enum KeyGeneratorType {
+                enum class KeyGeneratorType {
                     TraditionalType = 1,
                     AutoIncrementType = 2
                 };
@@ -70,6 +70,23 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                  * @since 0.5
                  */
                 uint offset;
+
+                QJsonObject object() {
+                    QJsonObject obj;
+
+                    if ( type == KeyGeneratorType::TraditionalType ) {
+                        obj.insert(QString("type"), QString("traditional"));
+                    }
+                    else if ( type == KeyGeneratorType::AutoIncrementType ) {
+                        obj.insert(QString("type"), QString("autoincrement"));
+                    }
+
+                    obj.insert("allowUserKeys", allowUserKeys);
+                    obj.insert(QString("increment"), QJsonValue(int(increment)));
+                    obj.insert(QString("offset"), QJsonValue(int(offset)));
+
+                    return obj;
+                }
         };
 
         /**
@@ -77,7 +94,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @since 0.5
          */
-        enum Type {
+        enum class Type {
             DocumentType = 2,
             EdgesType = 3
         };
@@ -90,7 +107,30 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @since 0.1
          */
-        explicit Collection(QString name, QObject *parent = 0);
+        explicit Collection(const QString & name, QObject * parent = 0);
+
+        /**
+         * @brief Collection
+         *
+         * @param name
+         * @param waitForSync
+         * @param journalSize
+         * @param isSystem
+         * @param isVolatile
+         * @param keyOption
+         * @param type
+         * @param parent
+         *
+         * @since 0.5
+         */
+        explicit Collection(const QString & name,
+                            bool waitForSync,
+                            int journalSize,
+                            bool isSystem,
+                            bool isVolatile,
+                            Collection::KeyOption * keyOption,
+                            Collection::Type type,
+                            QObject *parent = 0);
 
         /**
          * @brief ~Collection
@@ -127,6 +167,49 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         QString name() const;
 
         /**
+         * @brief waitForSync (optional, default: false): If true then the data is synchro-
+         * nised to disk before returning from a create or update of an document.
+         *
+         * @return
+         *
+         * @since 0.5
+         */
+        bool isWaitingForSync();
+
+        /**
+         * @brief journalSize (optional, default is a configuration parameter (p. ??))-
+         * : The maximal size of a journal or datafile. Note that this also limits the
+         * maximal size of a single object. Must be at least 1MB.
+         *
+         * @return
+         *
+         * @since 0.5
+         */
+        int journalSize();
+
+        /**
+         * @brief isSystem (optional, default is false): If true, create a system collec-
+         * tion. In this case collection-name should start with an underscore. End
+         * users should normally create non-system collections only. API implemen-
+         * tors may be required to create system collections in very special occasions,
+         * but normally a regular collection will do.
+         *
+         * @return
+         *
+         * @since 0.5
+         */
+        bool isSystem();
+
+        /**
+         * @brief isVolatile
+         *
+         * @return
+         *
+         * @since 0.5
+         */
+        bool isVolatile();
+
+        /**
          * @brief errorMessage
          *
          * @return
@@ -161,6 +244,13 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         bool hasErrorOccurred();
+
+        /**
+         * @brief save
+         *
+         * @since 0.5
+         */
+        void save();
         
     signals:
         /**
