@@ -235,6 +235,13 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          */
         void waitForResult();
 
+        /**
+         * @brief deleteAfterFinished
+         *
+         * @since 0.5
+         */
+        void deleteAfterFinished();
+
     Q_SIGNALS:
         /**
          * @brief ready

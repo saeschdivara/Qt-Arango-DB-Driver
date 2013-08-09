@@ -179,6 +179,17 @@ void Document::waitForResult()
 
 }
 
+void Document::deleteAfterFinished()
+{
+    QObject::connect( this, &Document::ready,
+                      this, &Document::deleteLater
+                      );
+
+    QObject::connect( this, &Document::error,
+                      this, &Document::deleteLater
+                      );
+}
+
 void Document::_ar_dataIsAvailable()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
