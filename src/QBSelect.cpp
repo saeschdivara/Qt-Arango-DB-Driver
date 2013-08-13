@@ -70,7 +70,7 @@ void QBSelect::setWhere(const QString & field, const QStringList & op)
 {
     Q_D(QBSelect);
     d->bindVars = op;
-    d->where = QStringLiteral("FILTER u.%1 == %2").arg(field, QChar('@') + field);
+    d->where = QStringLiteral("FILTER u.%1 IN %2").arg(field, QChar('@') + field);
     d->whereField = field;
 }
 
