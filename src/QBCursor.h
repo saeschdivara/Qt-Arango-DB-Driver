@@ -11,6 +11,12 @@ namespace arangodb
 
 class QBCursorPrivate;
 
+/**
+ * @brief The QBCursor class
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.4
+ */
 class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
 {
         Q_OBJECT
@@ -20,6 +26,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         QBCursor(QObject *parent = 0);
@@ -29,6 +36,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         bool hasMore() const;
@@ -38,6 +46,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         QString id() const;
@@ -47,6 +56,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         QString errorMessage() const;
@@ -56,6 +66,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         quint32 errorCode() const;
@@ -65,6 +76,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         quint32 errorNumber() const;
@@ -74,6 +86,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         bool hasErrorOccurred() const;
@@ -83,6 +96,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         QList<Document *> data();
@@ -92,6 +106,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         int count() const;
@@ -99,6 +114,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
         /**
          * @brief getMoreData
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void getMoreData();
@@ -106,6 +122,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
         /**
          * @brief waitForResult
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void waitForResult();
@@ -114,6 +131,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
         /**
          * @brief _ar_cursor_result_loaded
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void _ar_cursor_result_loaded();
@@ -122,6 +140,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
         /**
          * @brief ready
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void ready();
@@ -129,6 +148,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
         /**
          * @brief error
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void error();
