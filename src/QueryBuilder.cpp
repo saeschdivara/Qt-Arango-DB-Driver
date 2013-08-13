@@ -1,9 +1,9 @@
 #include "QueryBuilder.h"
 
-using namespace arangodb;
+namespace arangodb
+{
 
-QueryBuilder::QueryBuilder(QObject *parent) :
-    QObject(parent)
+QueryBuilder::QueryBuilder()
 {
 }
 
@@ -11,4 +11,11 @@ QSharedPointer<QBSelect> QueryBuilder::createSelect(QString collection, int batc
 {
     QSharedPointer<QBSelect> select(new QBSelect(collection, batchSize));
     return select;
+}
+
+QSharedPointer<QBSelect> QueryBuilder::createSelect(QStringList & collections, int batchSize)
+{
+    //
+}
+
 }

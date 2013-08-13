@@ -33,12 +33,13 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
 
         /**
          * @brief collection
+         *
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.3
          */
-        QString collection() const;
+        QStringList collections() const;
 
         /**
          * @brief batchSize
@@ -71,7 +72,9 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         bool isCounting() const;
 
         /**
-         * @brief setWhere
+         * @brief This method assumes that only one collection
+         * is set for the select and therefor the where statement
+         * is set for this collection (first collection in the list)
          *
          * @param field
          * @param op

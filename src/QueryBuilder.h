@@ -11,15 +11,16 @@ namespace arangodb
 /**
  * @brief The QueryBuilder class
  *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.3
  */
-class ARANGODBDRIVERSHARED_EXPORT QueryBuilder : public QObject
+class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
 {
-        Q_OBJECT
     public:
-        explicit QueryBuilder(QObject *parent = 0);
+        QueryBuilder();
 
         QSharedPointer<QBSelect> createSelect(QString collection, int batchSize = 15);
+        QSharedPointer<QBSelect> createSelect(QStringList & collections, int batchSize = 15);
 };
 
 }

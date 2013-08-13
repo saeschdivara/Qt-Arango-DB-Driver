@@ -29,7 +29,7 @@ void QueriesTest::testGetAllDocuments()
 
     auto select = qb.createSelect(QStringLiteral("test"));
 
-    QCOMPARE(select->collection(), QStringLiteral("test"));
+    QCOMPARE(select->collections().first(), QStringLiteral("test"));
     QCOMPARE(select->batchSize(), 15);
     QCOMPARE(select->isCounting(), false);
 
@@ -47,7 +47,7 @@ void QueriesTest::testLoadMoreResults()
 
     auto select = qb.createSelect(QStringLiteral("test"), 2);
 
-    QCOMPARE(select->collection(), QStringLiteral("test"));
+    QCOMPARE(select->collections().first(), QStringLiteral("test"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
@@ -73,7 +73,7 @@ void QueriesTest::testGetDocByWhere()
 
     auto select = qb.createSelect(QStringLiteral("test"), 2);
 
-    QCOMPARE(select->collection(), QStringLiteral("test"));
+    QCOMPARE(select->collections().first(), QStringLiteral("test"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
@@ -94,7 +94,7 @@ void QueriesTest::testGetDocsByWhere()
 
     auto select = qb.createSelect(QStringLiteral("webuser"), 2);
 
-    QCOMPARE(select->collection(), QStringLiteral("webuser"));
+    QCOMPARE(select->collections().first(), QStringLiteral("webuser"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
