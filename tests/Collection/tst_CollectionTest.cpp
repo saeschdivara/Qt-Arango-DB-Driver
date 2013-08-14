@@ -1,6 +1,7 @@
 #include <QString>
 #include <QtTest>
 #include <QCoreApplication>
+#include <Arangodbdriver.h>
 
 class CollectionTest : public QObject
 {
@@ -12,8 +13,12 @@ class CollectionTest : public QObject
     private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
-        void testCase1();
-        void testCase1_data();
+
+        void testCreateCollection();
+        void testCreateCollection_data();
+
+    private:
+        arangodb::Arangodbdriver driver;
 };
 
 CollectionTest::CollectionTest()
@@ -28,16 +33,21 @@ void CollectionTest::cleanupTestCase()
 {
 }
 
-void CollectionTest::testCase1()
+void CollectionTest::testCreateCollection()
 {
     QFETCH(QString, collectionName);
-    QVERIFY2(true, "Failure");
+
+    arangodb::Collection * collection = driver.createCollection(collectionName);
+    collection->save();
+    collection->waitUntilReady();
+
+    QCOMPARE(driver.isColllectionExisting(collectionName), true);
 }
 
-void CollectionTest::testCase1_data()
+void CollectionTest::testCreateCollection_data()
 {
     QTest::addColumn<QString>("collectionName");
-    QTest::newRow("0") << QString("");
+    QTest::newRow("0") << QString("fuubar");
 }
 
 QTEST_MAIN(CollectionTest)

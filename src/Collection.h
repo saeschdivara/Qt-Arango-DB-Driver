@@ -14,6 +14,7 @@ class CollectionPrivate;
 /**
  * @brief The Collection class
  *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.1
  */
 class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
@@ -24,12 +25,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief The KeyOption struct
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         struct KeyOption {
                 /**
                  * @brief The KeyGeneratorType enum
                  *
+                 * @author Sascha Häusler <saeschdivara@gmail.com>
                  * @since 0.5
                  */
                 enum class KeyGeneratorType {
@@ -40,6 +43,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                 /**
                  * @brief type specifies the type of the key generator
                  *
+                 * @author Sascha Häusler <saeschdivara@gmail.com>
                  * @since 0.5
                  */
                 KeyGeneratorType type;
@@ -51,6 +55,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                  * supplying own key values in the _key attribute of documents is con-
                  * sidered an error.
                  *
+                 * @author Sascha Häusler <saeschdivara@gmail.com>
                  * @since 0.5
                  */
                 bool allowUserKeys;
@@ -59,6 +64,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                  * @brief increment value for autoincrement key generator.
                  * Not used for other key generator types.
                  *
+                 * @author Sascha Häusler <saeschdivara@gmail.com>
                  * @since 0.5
                  */
                 uint increment;
@@ -67,6 +73,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                  * @brief initial offset value for autoincrement key generator. Not
                  * used for other key generator types.
                  *
+                 * @author Sascha Häusler <saeschdivara@gmail.com>
                  * @since 0.5
                  */
                 uint offset;
@@ -92,6 +99,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief The Type enum
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         enum class Type {
@@ -105,6 +113,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @param name
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         explicit Collection(const QString & name, QObject * parent = 0);
@@ -121,6 +130,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @param type
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         explicit Collection(const QString & name,
@@ -135,6 +145,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief ~Collection
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         virtual ~Collection();
@@ -144,6 +155,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool isReady();
@@ -153,6 +165,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool isCreated();
@@ -162,6 +175,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         QString name() const;
@@ -172,6 +186,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool isWaitingForSync();
@@ -183,6 +198,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         int journalSize();
@@ -196,24 +212,61 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool isSystem();
 
         /**
-         * @brief isVolatile
+         * @brief isVolatile (optional, default is false): If true then the collection
+         * data is kept in-memory only and not made persistent. Unloading the collec-
+         * tion will cause the collection data to be discarded. Stopping or re-starting the
+         * server will also cause full loss of data in the collection. Setting this option
+         * will make the resulting collection be slightly faster than regular collections
+         * because ArangoDB does not enforce any synchronisation to disk and does
+         * not calculate any CRC checksums for datafiles (as there are no datafiles).
+         * This option should threrefore be used for cache-type collections only, and
+         * not for data that cannot be re-created otherwise.
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool isVolatile();
+
+        /**
+         * @brief keyOptions (optional) additional options for key generation. If speci-
+         * fied, then keyOptions should be a JSON array containing the following
+         * attributes (note: some of them are optional):
+         *      – type: specifies the type of the key generator. The currently available
+         *        generators are traditional and autoincrement.
+         *
+         *      – allowUserKeys: if set to true, then it is allowed to supply own
+         *        key values in the _key attribute of a document. If set to false, then
+         *        the key generator will solely be responsible for generating keys and
+         *        supplying own key values in the _key attribute of documents is con-
+         *        sidered an error.
+         *
+         *      – increment: increment value for autoincrement key generator.
+         *        Not used for other key generator types.
+         *
+         *      – offset: initial offset value for autoincrement key generator. Not
+         *        used for other key generator types.
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        KeyOption * keyOption() const;
 
         /**
          * @brief errorMessage
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         QString errorMessage() const;
@@ -223,6 +276,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         quint32 errorCode();
@@ -232,6 +286,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         quint32 errorNumber();
@@ -241,6 +296,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool hasErrorOccurred();
@@ -248,14 +304,35 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief save
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void save();
+
+        /**
+         * @brief Waits until either the ready or the error
+         * signal has been emitted
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void waitUntilReady();
+
+        /**
+         * @brief toJsonString
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        QByteArray toJsonString();
         
-    signals:
+    Q_SIGNALS:
         /**
          * @brief ready
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void ready();
@@ -263,6 +340,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief error
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void error();
@@ -270,14 +348,16 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         /**
          * @brief saveData
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void saveData(Collection *);
         
-    public slots:
+    public Q_SLOTS:
         /**
          * @brief _ar_dataIsAvailable
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void _ar_dataIsAvailable();

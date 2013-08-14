@@ -1,5 +1,6 @@
 #include "Collection.h"
 
+#include <QtCore/QCoreApplication>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtNetwork/QNetworkReply>
@@ -97,6 +98,12 @@ bool Collection::isVolatile()
     return d->isVolatile;
 }
 
+Collection::KeyOption *Collection::keyOption() const
+{
+    Q_D(const Collection);
+    return d->keyOption;
+}
+
 QString Collection::errorMessage() const
 {
     Q_D(const Collection);
@@ -123,7 +130,41 @@ bool Collection::hasErrorOccurred()
 
 void Collection::save()
 {
-    //Q_UNIMPLEMENTED;
+    emit saveData(this);
+}
+
+void Collection::waitUntilReady()
+{
+    bool b = true;
+    QMetaObject::Connection conn1 = QObject::connect(this, &Collection::ready, [&] {
+        b = false;
+    });
+    QMetaObject::Connection conn2 = QObject::connect(this, &Collection::error, [&] {
+        b = false;
+    });
+    while (b) {
+        qApp->processEvents();
+    }
+    QObject::disconnect(conn1);
+    QObject::disconnect(conn2);
+}
+
+QByteArray Collection::toJsonString()
+{
+    Q_D(Collection);
+
+    QJsonObject obj;
+    obj.insert(QStringLiteral("name"), d->name);
+    obj.insert(QStringLiteral("waitForSync"), d->waitForSync);
+    if (d->journalSize > 0 ) obj.insert(QStringLiteral("journalSize"), d->journalSize);
+    obj.insert(QStringLiteral("isSystem"), d->isSystem);
+    obj.insert(QStringLiteral("isVolatile"), d->isVolatile);
+    if ( d->keyOption != Q_NULLPTR ) obj.insert(QStringLiteral("keyOption"), d->keyOption->object());
+    obj.insert(QStringLiteral("type"), int(d->type));
+
+    QJsonDocument doc;
+    doc.setObject(obj);
+    return doc.toJson();
 }
 
 void Collection::_ar_dataIsAvailable()

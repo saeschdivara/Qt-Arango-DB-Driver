@@ -46,6 +46,15 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         virtual ~Arangodbdriver();
 
         /**
+         * @brief existsCollection
+         *
+         * @return
+         *
+         * @since 0.5
+         */
+        bool isColllectionExisting(const QString & collectionName);
+
+        /**
          * @brief getCollection
          *
          * @param name
@@ -91,7 +100,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Document* getDocument(QString id);
 
         /**
-         * @brief createDocument
+         * @brief Creates document for a collection
          *
          * @param collection
          * @return
@@ -101,10 +110,11 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Document* createDocument(QString collection);
 
         /**
-         * @brief createDocument
+         * @brief Creates a document for a collection
+         * and with a specific key
          *
          * @param collection
-         * @param id
+         * @param key
          *
          * @return
          *
@@ -214,6 +224,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.1
          */
         void _ar_edge_delete(Document *doc);
+
+        /**
+         * @brief _ar_collection_save
+         *
+         * @param collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void _ar_collection_save(Collection * collection);
 
     private:
         internal::ArangodbdriverPrivate *d;
