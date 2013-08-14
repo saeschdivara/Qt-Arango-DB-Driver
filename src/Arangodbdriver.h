@@ -235,6 +235,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         void _ar_collection_save(Collection * collection);
 
+        /**
+         * @brief _ar_collection_delete
+         *
+         * @param collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void _ar_collection_delete(Collection * collection);
+
     private:
         internal::ArangodbdriverPrivate *d;
 };

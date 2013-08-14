@@ -171,6 +171,16 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         bool isCreated();
 
         /**
+         * @brief id
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        QString id() const;
+
+        /**
          * @brief name
          *
          * @return
@@ -310,6 +320,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void save();
 
         /**
+         * @brief deleteAll
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void deleteAll();
+
+        /**
          * @brief Waits until either the ready or the error
          * signal has been emitted
          *
@@ -317,6 +335,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         void waitUntilReady();
+
+        /**
+         * @brief waitUntilDeleted
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void waitUntilDeleted();
 
         /**
          * @brief toJsonString
@@ -338,6 +364,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void ready();
 
         /**
+         * @brief deleted
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void deleted();
+
+        /**
          * @brief error
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
@@ -352,6 +386,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         void saveData(Collection *);
+
+        /**
+         * @brief deleteData
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void deleteData(Collection *);
         
     public Q_SLOTS:
         /**
@@ -361,6 +403,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         void _ar_dataIsAvailable();
+
+        /**
+         * @brief _ar_isDeleted
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void _ar_isDeleted();
 
     protected:
         CollectionPrivate * d_ptr;

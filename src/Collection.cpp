@@ -16,6 +16,7 @@ class CollectionPrivate
         bool isCreated = false;
         bool isCurrent = true;
 
+        QString id;
         QString name;
         bool waitForSync;
         int journalSize;
@@ -74,6 +75,12 @@ bool Collection::isCreated()
     return d->isCreated;
 }
 
+QString Collection::id() const
+{
+    Q_D(const Collection);
+    return d->id;
+}
+
 QString Collection::name() const
 {
     Q_D(const Collection);
@@ -130,13 +137,34 @@ bool Collection::hasErrorOccurred()
 
 void Collection::save()
 {
-    emit saveData(this);
+    Q_EMIT saveData(this);
+}
+
+void Collection::deleteAll()
+{
+    Q_EMIT deleteData(this);
 }
 
 void Collection::waitUntilReady()
 {
     bool b = true;
     QMetaObject::Connection conn1 = QObject::connect(this, &Collection::ready, [&] {
+        b = false;
+    });
+    QMetaObject::Connection conn2 = QObject::connect(this, &Collection::error, [&] {
+        b = false;
+    });
+    while (b) {
+        qApp->processEvents();
+    }
+    QObject::disconnect(conn1);
+    QObject::disconnect(conn2);
+}
+
+void Collection::waitUntilDeleted()
+{
+    bool b = true;
+    QMetaObject::Connection conn1 = QObject::connect(this, &Collection::deleted, [&] {
         b = false;
     });
     QMetaObject::Connection conn2 = QObject::connect(this, &Collection::error, [&] {
@@ -188,7 +216,31 @@ void Collection::_ar_dataIsAvailable()
 
         d->resetError();
 
+        d->id           = obj.value(QStringLiteral("id")).toBool();
+        d->waitForSync  = obj.value(QStringLiteral("waitForSync")).toBool();
+        d->journalSize  = obj.value(QStringLiteral("journalSize")).toDouble();
+        d->isSystem     = obj.value(QStringLiteral("isSystem")).toBool();
+        d->isVolatile   = obj.value(QStringLiteral("isVolatile")).toBool();
+
         emit ready();
+    }
+}
+
+void Collection::_ar_isDeleted()
+{
+    Q_D(Collection);
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
+
+    bool hasError = obj.value("error").toBool();
+    if ( hasError ) {
+        d->errorMessage = obj.value("errorMessage").toString();
+        d->errorNumber  = obj.value("errorNum").toVariant().toInt();
+        d->errorCode    = obj.value("code").toVariant().toInt();
+        Q_EMIT error();
+    }
+    else {
+        Q_EMIT deleted();
     }
 }
 

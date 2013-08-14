@@ -14,8 +14,8 @@ class CollectionTest : public QObject
         void initTestCase();
         void cleanupTestCase();
 
-        void testCreateCollection();
-        void testCreateCollection_data();
+        void testCreateAndDeleteCollection();
+        void testCreateAndDeleteCollection_data();
 
     private:
         arangodb::Arangodbdriver driver;
@@ -33,7 +33,7 @@ void CollectionTest::cleanupTestCase()
 {
 }
 
-void CollectionTest::testCreateCollection()
+void CollectionTest::testCreateAndDeleteCollection()
 {
     QFETCH(QString, collectionName);
 
@@ -41,10 +41,17 @@ void CollectionTest::testCreateCollection()
     collection->save();
     collection->waitUntilReady();
 
+    QCOMPARE(collection->hasErrorOccurred(), false);
     QCOMPARE(driver.isColllectionExisting(collectionName), true);
+
+    collection->deleteAll();
+    collection->waitUntilDeleted();
+
+    QCOMPARE(collection->hasErrorOccurred(), false);
+    QCOMPARE(driver.isColllectionExisting(collectionName), false);
 }
 
-void CollectionTest::testCreateCollection_data()
+void CollectionTest::testCreateAndDeleteCollection_data()
 {
     QTest::addColumn<QString>("collectionName");
     QTest::newRow("0") << QString("fuubar");

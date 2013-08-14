@@ -103,6 +103,9 @@ void Arangodbdriver::connectCollection(Collection * collection)
     connect( collection, &Collection::saveData,
              this, &Arangodbdriver::_ar_collection_save
              );
+    connect( collection, &Collection::deleteData,
+             this, &Arangodbdriver::_ar_collection_delete
+             );
 }
 
 Document *Arangodbdriver::getDocument(QString id)
@@ -384,5 +387,16 @@ void Arangodbdriver::_ar_collection_save(Collection * collection)
 
     connect(reply, &QNetworkReply::finished,
             collection, &Collection::_ar_dataIsAvailable
+            );
+}
+
+void Arangodbdriver::_ar_collection_delete(Collection * collection)
+{
+    QUrl url(d->standardUrl + QString("/collection/") + collection->name());
+    QNetworkRequest request(url);
+    QNetworkReply *reply = d->networkManager.deleteResource(request);
+
+    connect(reply, &QNetworkReply::finished,
+            collection, &Collection::_ar_isDeleted
             );
 }
