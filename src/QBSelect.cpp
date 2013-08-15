@@ -42,13 +42,26 @@ class QBSelectPrivate
 
             switch (resultType)
             {
-                case ResultType::StringResult:
-                    realResult = QString("%1").arg(getCollectionIdentifier(getCollectionName()));
+                case ResultType::StringResult: {
+                        realResult = QString("%1").arg(getCollectionIdentifier(getCollectionName()));
+                    }
                     break;
-                case ResultType::StringListResult:
+
+                case ResultType::StringListResult: {
+                        QString collectionsResult = getCollectionIdentifier(collections.first());
+                        const int total = collections.size();
+                        for (int i = 1; i < total; ++i) {
+                            collectionsResult += QString(",") + getCollectionIdentifier(collections.at(i));
+                        }
+
+                        realResult = QString("[%1]").arg(collectionsResult);
+                    }
                     break;
-                case ResultType::HashResult:
+
+                case ResultType::HashResult: {
+                    }
                     break;
+
                 default:
                     break;
             }
@@ -71,9 +84,11 @@ class QBSelectPrivate
             QString identifier;
 
             if ( collectionName.length() > 4 )
-                identifier = collectionName.left(4).toLower();
+                identifier = collectionName.right(2).toUpper() + collectionName.left(2).toLower();
             else
-                identifier = collectionName + QChar('_');
+                identifier = collectionName;
+
+            identifier += QChar('_');
 
             return identifier;
         }
@@ -176,14 +191,14 @@ QByteArray QBSelect::toJson() const
     Q_D(const QBSelect);
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
-    const QString forCollectionTemplate("FOR %1 IN %2");
+    const QString forCollectionTemplate("FOR %1 IN %2 ");
     QString query("FOR %1 IN %2 %3 %4 RETURN %5");
 
     const int totalCollections = d->collections.size();
     for (int i = 0; i < totalCollections-1; ++i) {
         QString collection = forCollectionTemplate;
         QString collectionName = d->collections.at(i);
-        collection.arg(d->getCollectionIdentifier(collectionName), collectionName);
+        collection = collection.arg(d->getCollectionIdentifier(collectionName), collectionName);
         query = collection + query;
     }
 
