@@ -19,7 +19,30 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
     public:
         QueryBuilder();
 
+        /**
+         * @brief createSelect
+         *
+         * @param collection
+         * @param batchSize
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.3
+         */
         QSharedPointer<QBSelect> createSelect(QString collection, int batchSize = 15);
+
+        /**
+         * @brief createSelect
+         *
+         * @param collections
+         * @param batchSize
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
         QSharedPointer<QBSelect> createSelect(QStringList & collections, int batchSize = 15);
 };
 

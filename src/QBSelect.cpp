@@ -66,9 +66,26 @@ QBSelect::QBSelect(const QString & collection, int batchSize) :
     d->limit = -1;
 }
 
+QBSelect::QBSelect(const QStringList & collections, int batchSize):
+    d_ptr(new QBSelectPrivate)
+{
+    Q_D(QBSelect);
+    d->collections = collections;
+    d->batchSize = batchSize;
+    d->isCounting = false;
+    d->limit = -1;
+}
+
 QBSelect::~QBSelect()
 {
     delete d_ptr;
+}
+
+void QBSelect::addNewCollection(const QString & collection)
+{
+    Q_D(QBSelect);
+    if ( !d->collections.contains(collection) )
+        d->collections.append(collection);
 }
 
 QStringList QBSelect::collections() const

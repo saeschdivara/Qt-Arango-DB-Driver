@@ -15,7 +15,8 @@ QSharedPointer<QBSelect> QueryBuilder::createSelect(QString collection, int batc
 
 QSharedPointer<QBSelect> QueryBuilder::createSelect(QStringList & collections, int batchSize)
 {
-    //
+    QSharedPointer<QBSelect> select(new QBSelect(collections, batchSize));
+    return select;
 }
 
 }

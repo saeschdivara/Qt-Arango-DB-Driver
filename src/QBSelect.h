@@ -29,7 +29,28 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
          * @since 0.3
          */
         QBSelect(const QString & collection, int batchSize);
+
+        /**
+         * @brief QBSelect
+         *
+         * @param collections
+         * @param batchSize
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        QBSelect(const QStringList & collections, int batchSize);
         ~QBSelect();
+
+        /**
+         * @brief addNewCollection
+         *
+         * @param collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void addNewCollection(const QString & collection);
 
         /**
          * @brief collection
@@ -37,7 +58,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
-         * @since 0.3
+         * @since 0.5
          */
         QStringList collections() const;
 
