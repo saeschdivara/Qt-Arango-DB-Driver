@@ -7,6 +7,8 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 
+#include <memory>
+
 using namespace arangodb;
 
 namespace internal {
@@ -23,6 +25,9 @@ class ArangodbdriverPrivate
 
         QByteArray jsonData;
         QBuffer data;
+
+        int waitingListSize = 0;
+        bool isWaitingListRunning;
 
         void createStandardUrl() {
             standardUrl = protocol + QString("://") + host + QString(":") + QString::number(port) + QString("/_api");
@@ -242,6 +247,59 @@ void Arangodbdriver::loadMoreResults(QBCursor * cursor)
     connect(reply, &QNetworkReply::finished,
             cursor, &QBCursor::_ar_cursor_result_loaded
             );
+}
+
+void Arangodbdriver::waitUntilFinished()
+{
+    while (d->isWaitingListRunning) {
+        qApp->processEvents();
+    }
+}
+
+void Arangodbdriver::privateWaitUntilFinished(Collection * collection)
+{
+    auto connReady = std::make_shared<QMetaObject::Connection>();
+    auto connError = std::make_shared<QMetaObject::Connection>();
+    int * listSize = &d->waitingListSize;
+    bool * waiting = &d->isWaitingListRunning;
+
+    listSize++;
+
+    auto functor = [=] {
+        QObject::disconnect(*connReady);
+        QObject::disconnect(*connError);
+        (*listSize)--;
+
+        if ( *listSize == 0 ) {
+            *waiting = false;
+        }
+    };
+
+    *connReady  = connect(collection, &Collection::ready,functor);
+    *connError  = connect(collection, &Collection::error,functor);
+}
+
+void Arangodbdriver::privateWaitUntilFinished(Document * document)
+{
+    auto connReady = std::make_shared<QMetaObject::Connection>();
+    auto connError = std::make_shared<QMetaObject::Connection>();
+    int * listSize = &d->waitingListSize;
+    bool * waiting = &d->isWaitingListRunning;
+
+    listSize++;
+
+    auto functor = [=] {
+        QObject::disconnect(*connReady);
+        QObject::disconnect(*connError);
+        (*listSize)--;
+
+        if ( *listSize == 0 ) {
+            *waiting = false;
+        }
+    };
+
+    *connReady  = connect(document, &Document::ready,functor);
+    *connError  = connect(document, &Document::error,functor);
 }
 
 void Arangodbdriver::_ar_document_save(Document *doc)

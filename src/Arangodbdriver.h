@@ -170,6 +170,55 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         void loadMoreResults(QBCursor * cursor);
 
+        /**
+         * @brief Variadic template method to wait for an
+         * unlimited number of Document's, Collection's
+         * and Edge's objects until they are ready
+         * or an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void waitUntilFinished();
+
+        /**
+         * @brief Variadic template method to wait for an
+         * unlimited number of Collection's
+         * objects until they are ready or an error occured
+         *
+         * @param collection    Collection
+         * @param others        Variadic template parameter
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        template<typename ... OtherTypes>
+        void waitUntilFinished(Collection * collection, OtherTypes ... others) {
+            privateWaitUntilFinished(collection);
+            waitUntilFinished(others...);
+        }
+
+        /**
+         * @brief Variadic template method to wait for an
+         * unlimited number of Document's
+         * objects until they are ready or an error occured
+         *
+         * @param document      Document
+         * @param others        Variadic template parameter
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        template<typename ... OtherTypes>
+        void waitUntilFinished(Document * document, OtherTypes ... others) {
+            privateWaitUntilFinished(document);
+            waitUntilFinished(others...);
+        }
+
+    protected:
+        void privateWaitUntilFinished(Collection * collection);
+        void privateWaitUntilFinished(Document * document);
+
     protected Q_SLOTS:
         /**
          * @brief _ar_document_save

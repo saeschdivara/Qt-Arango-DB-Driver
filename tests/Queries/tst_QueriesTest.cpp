@@ -10,23 +10,68 @@ class QueriesTest : public QObject
         
     public:
         QueriesTest();
+        ~QueriesTest();
         
     private Q_SLOTS:
+        void initTestCase();
+        void cleanupTestCase();
+
         void testGetAllDocuments();
         void testLoadMoreResults();
         void testGetDocByWhere();
-        void testGetDocsByWhere();
+        void testGetMultipleDocsByWhere();
+        void testGetAllDocumentsFromTwoCollections();
+
+    private:
+        arangodb::Arangodbdriver driver;
+        arangodb::QueryBuilder qb;
+        arangodb::Collection * tempCollection = Q_NULLPTR;
+        arangodb::Collection * temp2Collection = Q_NULLPTR;
 };
 
 QueriesTest::QueriesTest()
+{
+    tempCollection = driver.createCollection("temp");
+    tempCollection->save();
+
+    temp2Collection = driver.createCollection("temp2");
+    temp2Collection->save();
+
+    driver.waitUntilFinished(tempCollection, temp2Collection);
+
+    arangodb::Document * doc1 = tempCollection->createDocument();
+    doc1->set("test", true);
+    arangodb::Document * doc2 = tempCollection->createDocument();
+    doc2->set("test", false);
+    arangodb::Document * doc3 = tempCollection->createDocument();
+    doc3->set("test", true);
+
+    doc1->save();
+    doc2->save();
+    doc3->save();
+
+    driver.waitUntilFinished(doc1, doc2, doc3);
+}
+
+QueriesTest::~QueriesTest()
+{
+    tempCollection->deleteAll();
+    tempCollection->waitUntilDeleted();
+
+    temp2Collection->deleteAll();
+    temp2Collection->waitUntilDeleted();
+}
+
+void QueriesTest::initTestCase()
+{
+}
+
+void QueriesTest::cleanupTestCase()
 {
 }
 
 void QueriesTest::testGetAllDocuments()
 {
-    arangodb::Arangodbdriver driver;
-    arangodb::QueryBuilder qb;
-
     auto select = qb.createSelect(QStringLiteral("test"));
 
     QCOMPARE(select->collections().first(), QStringLiteral("test"));
@@ -36,15 +81,12 @@ void QueriesTest::testGetAllDocuments()
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
 
-    QCOMPARE(cursor->hasErrorOccurred(), false);
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->count(), 4);
 }
 
 void QueriesTest::testLoadMoreResults()
 {
-    arangodb::Arangodbdriver driver;
-    arangodb::QueryBuilder qb;
-
     auto select = qb.createSelect(QStringLiteral("test"), 2);
 
     QCOMPARE(select->collections().first(), QStringLiteral("test"));
@@ -54,7 +96,7 @@ void QueriesTest::testLoadMoreResults()
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
 
-    QCOMPARE(cursor->hasErrorOccurred(), false);
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->hasMore(), true);
     QCOMPARE(cursor->count(), 2);
 
@@ -68,9 +110,6 @@ void QueriesTest::testLoadMoreResults()
 
 void QueriesTest::testGetDocByWhere()
 {
-    arangodb::Arangodbdriver driver;
-    arangodb::QueryBuilder qb;
-
     auto select = qb.createSelect(QStringLiteral("test"), 2);
 
     QCOMPARE(select->collections().first(), QStringLiteral("test"));
@@ -82,16 +121,13 @@ void QueriesTest::testGetDocByWhere()
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
 
-    QCOMPARE(cursor->hasErrorOccurred(), false);
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->hasMore(), false);
     QCOMPARE(cursor->count(), 1);
 }
 
-void QueriesTest::testGetDocsByWhere()
+void QueriesTest::testGetMultipleDocsByWhere()
 {
-    arangodb::Arangodbdriver driver;
-    arangodb::QueryBuilder qb;
-
     auto select = qb.createSelect(QStringLiteral("webuser"), 2);
 
     QCOMPARE(select->collections().first(), QStringLiteral("webuser"));
@@ -105,9 +141,14 @@ void QueriesTest::testGetDocsByWhere()
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
 
-    QCOMPARE(cursor->hasErrorOccurred(), false);
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->hasMore(), false);
     QCOMPARE(cursor->count(), 1);
+}
+
+void QueriesTest::testGetAllDocumentsFromTwoCollections()
+{
+    auto select = qb.createSelect(tempCollection->name(), 2);
 }
 
 QTEST_MAIN(QueriesTest)
