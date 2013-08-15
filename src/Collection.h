@@ -9,6 +9,8 @@
 namespace arangodb
 {
 
+class Document;
+
 class CollectionPrivate;
 
 /**
@@ -310,6 +312,28 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         bool hasErrorOccurred();
+
+        /**
+         * @brief createDocument
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        Document * createDocument();
+
+        /**
+         * @brief createDocument
+         *
+         * @param key
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        Document * createDocument(const QString & key);
 
         /**
          * @brief save

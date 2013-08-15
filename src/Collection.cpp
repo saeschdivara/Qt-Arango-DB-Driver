@@ -1,5 +1,8 @@
 #include "Collection.h"
 
+#include "Arangodbdriver.h"
+#include "Document.h"
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
@@ -133,6 +136,32 @@ bool Collection::hasErrorOccurred()
 {
     Q_D(Collection);
     return d->errorNumber != 0;
+}
+
+Document *Collection::createDocument()
+{
+    Q_D(Collection);
+
+    Arangodbdriver * driver = Q_NULLPTR;
+    if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
+        return driver->createDocument(d->name);
+    }
+    else {
+        return new Document(d->name);
+    }
+}
+
+Document *Collection::createDocument(const QString & key)
+{
+    Q_D(Collection);
+
+    Arangodbdriver * driver = Q_NULLPTR;
+    if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
+        return driver->createDocument(d->name, key);
+    }
+    else {
+        return new Document(d->name, key);
+    }
 }
 
 void Collection::save()
