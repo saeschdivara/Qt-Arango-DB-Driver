@@ -20,6 +20,42 @@ class QBSelectPrivate
         QString whereField;
         QStringList bindVars;
 
+        QVariant result;
+
+        enum class ResultType : quint8 {
+            NoResult            = 0,
+            StringResult        = 1,
+            StringListResult    = 2,
+            HashResult          = 3
+        };
+
+        ResultType resultType = ResultType::NoResult;
+
+        inline QString getResult() const {
+            QString realResult;
+            ResultType resultType = this->resultType;
+            // If no result is set, we assume everything is wanted
+            if ( resultType == ResultType::NoResult ) {
+                resultType = (collections.size() == 1) ? ResultType::StringResult
+                                                       : ResultType::StringListResult;
+            }
+
+            switch (resultType)
+            {
+                case ResultType::StringResult:
+                    realResult = QString("%1").arg(getCollectionIdentifier(getCollectionName()));
+                    break;
+                case ResultType::StringListResult:
+                    break;
+                case ResultType::HashResult:
+                    break;
+                default:
+                    break;
+            }
+
+            return realResult;
+        }
+
         /**
          * @brief Since there can be multiple collections
          * we need to have a way to generate their identfiers
@@ -128,13 +164,20 @@ void QBSelect::setWhere(const QString & field, const QStringList & op)
     d->whereField = field;
 }
 
+void QBSelect::setResult(const QString & collectionName)
+{
+    Q_D(QBSelect);
+    d->result = collectionName;
+    d->resultType = QBSelectPrivate::ResultType::StringResult;
+}
+
 QByteArray QBSelect::toJson() const
 {
     Q_D(const QBSelect);
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
     const QString forCollectionTemplate("FOR %1 IN %2");
-    QString query("FOR %1 IN %2 %3 %4 RETURN %1");
+    QString query("FOR %1 IN %2 %3 %4 RETURN %5");
 
     const int totalCollections = d->collections.size();
     for (int i = 0; i < totalCollections-1; ++i) {
@@ -146,6 +189,8 @@ QByteArray QBSelect::toJson() const
 
     QString lastCollection = d->collections.last();
     QString collectionIdentifier = d->getCollectionIdentifier(lastCollection);
+
+    // Only if limit is over 0, a limit is set
     if ( d->limit < 1 ) {
         query = query.arg(collectionIdentifier, lastCollection, QStringLiteral(""), d->where);
     }
@@ -153,6 +198,8 @@ QByteArray QBSelect::toJson() const
         QString limit = QStringLiteral("LIMIT %1").arg(QString::number(d->limit));
         query = query.arg(collectionIdentifier, lastCollection, limit, d->where);
     }
+
+    query = query.arg(d->getResult());
 
     jsonObj.insert(QStringLiteral("query"), query);
     jsonObj.insert(QStringLiteral("count"), d->isCounting);

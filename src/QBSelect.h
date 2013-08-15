@@ -118,6 +118,16 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         void setWhere(const QString & field, const QStringList & op);
 
         /**
+         * @brief setResult
+         *
+         * @param collectionName
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void setResult(const QString & collectionName);
+
+        /**
          * @brief Returns the json representation of the query
          * and all its extra information which will be sent to
          * the database server.
