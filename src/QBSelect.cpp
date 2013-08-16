@@ -54,7 +54,7 @@ class QBSelectPrivate
                             collectionsResult += QString(",") + getCollectionIdentifier(collections.at(i));
                         }
 
-                        realResult = QString("[%1]").arg(collectionsResult);
+                        realResult = QString("MERGE(%1)").arg(collectionsResult);
                     }
                     break;
 
