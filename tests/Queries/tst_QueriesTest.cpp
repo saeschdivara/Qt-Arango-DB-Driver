@@ -51,6 +51,16 @@ QueriesTest::QueriesTest()
     doc3->save();
 
     driver.waitUntilFinished(doc1, doc2, doc3);
+
+    arangodb::Document * doc4 = temp2Collection->createDocument();
+    doc4->set("con", doc1->docID());
+    arangodb::Document * doc5 = temp2Collection->createDocument();
+    doc5->set("con", doc2->docID());
+
+    doc4->save();
+    doc5->save();
+
+    driver.waitUntilFinished(doc4, doc5);
 }
 
 QueriesTest::~QueriesTest()
@@ -149,6 +159,30 @@ void QueriesTest::testGetMultipleDocsByWhere()
 void QueriesTest::testGetAllDocumentsFromTwoCollections()
 {
     auto select = qb.createSelect(tempCollection->name(), 2);
+    select->addNewCollection(temp2Collection->name());
+
+    QCOMPARE(select->collections().size(), 2);
+    QCOMPARE(select->collections().at(0), QStringLiteral("temp"));
+    QCOMPARE(select->collections().at(1), QStringLiteral("temp2"));
+
+    auto cursor = driver.executeSelect(select);
+    cursor->waitForResult();
+
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
+    QCOMPARE(cursor->hasMore(), true);
+
+    cursor->getMoreData();
+    cursor->waitForResult();
+
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
+    QCOMPARE(cursor->hasMore(), true);
+
+    cursor->getMoreData();
+    cursor->waitForResult();
+
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
+    QCOMPARE(cursor->hasMore(), false);
+    QCOMPARE(cursor->data().size(), 5);
 }
 
 QTEST_MAIN(QueriesTest)
