@@ -60,12 +60,19 @@ Document::Document(QString collection, QString key, QObject *parent) :
 Document::Document(QJsonObject obj, QObject * parent) :
     Document(new internal::DocumentPrivate, parent)
 {
-    obj.remove(QStringLiteral("n"));
-    d_func()->collectionName = obj.value(internal::ID).toString().split('/').at(0);
-    d_func()->data.insert(internal::ID, obj.value(internal::ID));
-    d_func()->data.insert(internal::KEY, obj.value(internal::KEY));
-    d_func()->data.insert(internal::REV, obj.value(internal::REV));
-    d_func()->isCurrent = false;
+    if ( obj.contains(internal::ID) ) {
+        obj.remove(QStringLiteral("n"));
+        d_func()->collectionName = obj.value(internal::ID).toString().split('/').at(0);
+        d_func()->data.insert(internal::ID, obj.value(internal::ID));
+        d_func()->data.insert(internal::KEY, obj.value(internal::KEY));
+        d_func()->data.insert(internal::REV, obj.value(internal::REV));
+        d_func()->isCurrent = false;
+    }
+    else {
+        for ( auto key : obj.keys() ) {
+            d_func()->data.insert(key, obj[key]);
+        }
+    }
 }
 
 Document::~Document()
@@ -130,6 +137,11 @@ QString Document::rev() const
 QString Document::collection() const
 {
     return d_func()->collectionName;
+}
+
+bool Document::isStoredInCollection()
+{
+    return !d_func()->collectionName.isEmpty();
 }
 
 QString Document::errorMessage() const

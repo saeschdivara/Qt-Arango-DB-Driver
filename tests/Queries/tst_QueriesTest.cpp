@@ -232,8 +232,12 @@ void QueriesTest::testSetResultWithMultipleCollections()
 
     QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->count(), 2);
-    arangodb::Document * doc = cursor->data().first();
-    qDebug() << doc->toJsonString();
+
+    arangodb::Document * doc1 = cursor->data().at(0);
+    QCOMPARE(doc1->isStoredInCollection(), false);
+
+    arangodb::Document * doc2 = cursor->data().at(1);
+    QCOMPARE(doc2->isStoredInCollection(), false);
 }
 
 QTEST_MAIN(QueriesTest)

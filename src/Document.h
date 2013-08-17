@@ -167,6 +167,19 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         QString collection() const;
 
         /**
+         * @brief If this returns false, it cannot
+         * be saved or synchronised to a collection.
+         * It means that its data is a collection of
+         * different collection fields.
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        bool isStoredInCollection();
+
+        /**
          * @brief errorMessage
          *
          * @return

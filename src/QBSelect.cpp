@@ -108,7 +108,7 @@ class QBSelectPrivate
                             }
                         }
 
-                        realResult = QString("[%1]").arg(results);
+                        realResult = QString("{%1}").arg(results);
                     }
                     break;
 
@@ -119,10 +119,21 @@ class QBSelectPrivate
             return realResult;
         }
 
+        /**
+         * @brief getResultPart
+         *
+         * @param hash
+         * @param key
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
         QString getResultPart(const QHash<QString, QVariant> hash, const QString & key) const {
             QVariant part = hash.value(key);
             if ( part.type() == QVariant::String ) {
-                return QString("%1.%2").arg(getCollectionIdentifier(key), part.toString());
+                return QString("\"%2\": %1.%2").arg(getCollectionIdentifier(key), part.toString());
             }
             else if ( part.type() == QVariant::StringList ) {
             }
