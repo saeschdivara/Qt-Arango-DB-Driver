@@ -133,7 +133,7 @@ class QBSelectPrivate
         QString getResultPart(const QHash<QString, QVariant> hash, const QString & key) const {
             QVariant part = hash.value(key);
             if ( part.type() == QVariant::String ) {
-                return QString("\"%2\": %1.%2").arg(getCollectionIdentifier(key), part.toString());
+                return QString("\"%1_%2\": %3.%2").arg(key, part.toString(), getCollectionIdentifier(key));
             }
             else if ( part.type() == QVariant::StringList ) {
             }

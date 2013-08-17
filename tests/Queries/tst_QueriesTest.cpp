@@ -235,9 +235,13 @@ void QueriesTest::testSetResultWithMultipleCollections()
 
     arangodb::Document * doc1 = cursor->data().at(0);
     QCOMPARE(doc1->isStoredInCollection(), false);
+    QCOMPARE(doc1->contains("temp2_con"), true);
+    QCOMPARE(doc1->contains("temp_test_field_echo"), true);
 
     arangodb::Document * doc2 = cursor->data().at(1);
     QCOMPARE(doc2->isStoredInCollection(), false);
+    QCOMPARE(doc2->contains("temp2_con"), true);
+    QCOMPARE(doc2->contains("temp_test_field_echo"), true);
 }
 
 QTEST_MAIN(QueriesTest)
