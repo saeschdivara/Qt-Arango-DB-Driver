@@ -54,6 +54,14 @@ class QueriesTest : public QObject
 
 QueriesTest::QueriesTest()
 {
+}
+
+QueriesTest::~QueriesTest()
+{
+}
+
+void QueriesTest::initTestCase()
+{
     tempCollection = driver.createCollection("temp");
     tempCollection->save();
 
@@ -64,10 +72,13 @@ QueriesTest::QueriesTest()
 
     arangodb::Document * doc1 = tempCollection->createDocument();
     doc1->set("test", true);
+    doc1->set("test_field_echo", 44);
     arangodb::Document * doc2 = tempCollection->createDocument();
     doc2->set("test", false);
+    doc2->set("test_field_echo", 999);
     arangodb::Document * doc3 = tempCollection->createDocument();
     doc3->set("test", true);
+    doc3->set("test_field_echo", 3.2);
 
     doc1->save();
     doc2->save();
@@ -84,9 +95,12 @@ QueriesTest::QueriesTest()
     doc5->save();
 
     driver.waitUntilFinished(doc4, doc5);
+
+    tempCollection->load();
+    tempCollection->waitUntilLoaded();
 }
 
-QueriesTest::~QueriesTest()
+void QueriesTest::cleanupTestCase()
 {
     tempCollection->deleteAll();
     tempCollection->waitUntilDeleted();
@@ -95,19 +109,11 @@ QueriesTest::~QueriesTest()
     temp2Collection->waitUntilDeleted();
 }
 
-void QueriesTest::initTestCase()
-{
-}
-
-void QueriesTest::cleanupTestCase()
-{
-}
-
 void QueriesTest::testGetAllDocuments()
 {
-    auto select = qb.createSelect(QStringLiteral("test"));
+    auto select = qb.createSelect(QStringLiteral("temp"));
 
-    QCOMPARE(select->collections().first(), QStringLiteral("test"));
+    QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 15);
     QCOMPARE(select->isCounting(), false);
 
@@ -115,14 +121,14 @@ void QueriesTest::testGetAllDocuments()
     cursor->waitForResult();
 
     QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
-    QCOMPARE(cursor->count(), 4);
+    QCOMPARE(cursor->count(), 3);
 }
 
 void QueriesTest::testLoadMoreResults()
 {
-    auto select = qb.createSelect(QStringLiteral("test"), 2);
+    auto select = qb.createSelect(QStringLiteral("temp"), 2);
 
-    QCOMPARE(select->collections().first(), QStringLiteral("test"));
+    QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
@@ -138,25 +144,25 @@ void QueriesTest::testLoadMoreResults()
 
     QCOMPARE(cursor->hasErrorOccurred(), false);
     QCOMPARE(cursor->hasMore(), false);
-    QCOMPARE(cursor->count(), 4);
+    QCOMPARE(cursor->count(), 3);
 }
 
 void QueriesTest::testGetDocByWhere()
 {
-    auto select = qb.createSelect(QStringLiteral("test"), 2);
+    auto select = qb.createSelect(QStringLiteral("temp"), 2);
 
-    QCOMPARE(select->collections().first(), QStringLiteral("test"));
+    QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
-    select->setWhere(QStringLiteral("name"), QStringLiteral("ll"));
+    select->setWhere(QStringLiteral("test"), true);
 
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
 
     QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->hasMore(), false);
-    QCOMPARE(cursor->count(), 1);
+    QCOMPARE(cursor->count(), 2);
 }
 
 void QueriesTest::testGetMultipleDocsByWhere()
@@ -205,7 +211,7 @@ void QueriesTest::testGetAllDocumentsFromTwoCollections()
 
     QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->hasMore(), false);
-    QCOMPARE(cursor->data().size(), 5);
+    QCOMPARE(cursor->data().size(), 6);
 }
 
 QTEST_MAIN(QueriesTest)
