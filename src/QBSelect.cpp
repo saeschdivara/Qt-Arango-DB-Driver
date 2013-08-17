@@ -104,7 +104,7 @@ class QBSelectPrivate
                                 results = getResultPart(resultHash, key);
                             }
                             else {
-                                results += QString(",") + getResultPart(resultHash, key);
+                                results += QChar(',') + getResultPart(resultHash, key);
                             }
                         }
 
@@ -136,7 +136,23 @@ class QBSelectPrivate
                 return QString("\"%1_%2\": %3.%2").arg(key, part.toString(), getCollectionIdentifier(key));
             }
             else if ( part.type() == QVariant::StringList ) {
+                QString result;
+                QString resultPartTemplate("\"%1_%2\": %3.%2");
+                QStringList fieldList = part.toStringList();
+                for ( const QString field : fieldList ) {
+                    QString resultPart = resultPartTemplate;
+                    if ( field == fieldList.first() ) {
+                        result = resultPart.arg(key, field, getCollectionIdentifier(key));
+                    }
+                    else {
+                        result += QChar(',') + resultPart.arg(key, field, getCollectionIdentifier(key));
+                    }
+                }
+
+                return result;
             }
+
+            return QStringLiteral("");
         }
 
         /**

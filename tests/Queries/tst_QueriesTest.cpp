@@ -66,12 +66,15 @@ void QueriesTest::initTestCase()
     arangodb::Document * doc1 = tempCollection->createDocument();
     doc1->set("test", true);
     doc1->set("test_field_echo", 44);
+    doc1->set("test_field_fire", QString("---s"));
     arangodb::Document * doc2 = tempCollection->createDocument();
     doc2->set("test", false);
     doc2->set("test_field_echo", 999);
+    doc2->set("test_field_fire", QString("-ööö"));
     arangodb::Document * doc3 = tempCollection->createDocument();
     doc3->set("test", true);
     doc3->set("test_field_echo", 3.2);
+    doc3->set("test_field_fire", QString("11s"));
 
     doc1->save();
     doc1->waitForResult();
@@ -219,7 +222,11 @@ void QueriesTest::testSetResultWithMultipleCollections()
                      QStringLiteral("temp2"), QStringLiteral("con"));
 
     QHash<QString, QVariant> hashResult;
-    hashResult.insert(QStringLiteral("temp"), QStringLiteral("test_field_echo"));
+    QStringList tempCollectionFields;
+    tempCollectionFields << QStringLiteral("test_field_echo");
+    tempCollectionFields << QStringLiteral("test_field_fire");
+
+    hashResult.insert(QStringLiteral("temp"), tempCollectionFields);
     hashResult.insert(QStringLiteral("temp2"), QStringLiteral("con"));
     select->setResult(hashResult);
 
@@ -237,11 +244,13 @@ void QueriesTest::testSetResultWithMultipleCollections()
     QCOMPARE(doc1->isStoredInCollection(), false);
     QCOMPARE(doc1->contains("temp2_con"), true);
     QCOMPARE(doc1->contains("temp_test_field_echo"), true);
+    QCOMPARE(doc1->contains("temp_test_field_fire"), true);
 
     arangodb::Document * doc2 = cursor->data().at(1);
     QCOMPARE(doc2->isStoredInCollection(), false);
     QCOMPARE(doc2->contains("temp2_con"), true);
     QCOMPARE(doc2->contains("temp_test_field_echo"), true);
+    QCOMPARE(doc2->contains("temp_test_field_fire"), true);
 }
 
 QTEST_MAIN(QueriesTest)
