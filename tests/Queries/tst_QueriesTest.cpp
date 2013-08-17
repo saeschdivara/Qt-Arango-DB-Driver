@@ -32,8 +32,8 @@ class QueriesTest : public QObject
         Q_OBJECT
         
     public:
-        QueriesTest();
-        ~QueriesTest();
+        QueriesTest() {}
+        ~QueriesTest() {}
         
     private Q_SLOTS:
         void initTestCase();
@@ -44,6 +44,7 @@ class QueriesTest : public QObject
         void testGetDocByWhere();
         void testGetMultipleDocsByWhere();
         void testGetAllDocumentsFromTwoCollections();
+        void testSetResultWithMultipleCollections();
 
     private:
         arangodb::Arangodbdriver driver;
@@ -51,14 +52,6 @@ class QueriesTest : public QObject
         arangodb::Collection * tempCollection = Q_NULLPTR;
         arangodb::Collection * temp2Collection = Q_NULLPTR;
 };
-
-QueriesTest::QueriesTest()
-{
-}
-
-QueriesTest::~QueriesTest()
-{
-}
 
 void QueriesTest::initTestCase()
 {
@@ -88,8 +81,10 @@ void QueriesTest::initTestCase()
 
     arangodb::Document * doc4 = temp2Collection->createDocument();
     doc4->set("con", doc1->docID());
+    doc4->set("data", 999);
     arangodb::Document * doc5 = temp2Collection->createDocument();
     doc5->set("con", doc2->docID());
+    doc5->set("data", 9);
 
     doc4->save();
     doc5->save();
@@ -211,7 +206,33 @@ void QueriesTest::testGetAllDocumentsFromTwoCollections()
 
     QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
     QCOMPARE(cursor->hasMore(), false);
-    QCOMPARE(cursor->data().size(), 6);
+    QCOMPARE(cursor->count(), 6);
+}
+
+void QueriesTest::testSetResultWithMultipleCollections()
+{
+    auto select = qb.createSelect(tempCollection->name(), 2);
+    select->addNewCollection(temp2Collection->name());
+
+    select->setWhere(QStringLiteral("temp"), QStringLiteral("test_field_echo"),
+                     QStringLiteral("temp2"), QStringLiteral("data"));
+
+    QHash<QString, QVariant> hashResult;
+    hashResult.insert(QStringLiteral("temp"), QStringLiteral("test_field_echo"));
+    hashResult.insert(QStringLiteral("temp2"), QStringLiteral("con"));
+    select->setResult(hashResult);
+
+    QCOMPARE(select->collections().size(), 2);
+    QCOMPARE(select->collections().at(0), QStringLiteral("temp"));
+    QCOMPARE(select->collections().at(1), QStringLiteral("temp2"));
+
+    auto cursor = driver.executeSelect(select);
+    cursor->waitForResult();
+
+    QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
+    QCOMPARE(cursor->count(), 1);
+    arangodb::Document * doc = cursor->data().first();
+    qDebug() << doc->toJsonString();
 }
 
 QTEST_MAIN(QueriesTest)
