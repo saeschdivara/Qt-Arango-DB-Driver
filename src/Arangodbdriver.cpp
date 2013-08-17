@@ -131,6 +131,9 @@ void Arangodbdriver::connectCollection(Collection * collection)
     connect( collection, &Collection::saveData,
              this, &Arangodbdriver::_ar_collection_save
              );
+    connect( collection, &Collection::loadIntoMemory,
+             this, &Arangodbdriver::_ar_collection_save
+             );
     connect( collection, &Collection::deleteData,
              this, &Arangodbdriver::_ar_collection_delete
              );
@@ -468,6 +471,22 @@ void Arangodbdriver::_ar_collection_save(Collection * collection)
 
     connect(reply, &QNetworkReply::finished,
             collection, &Collection::_ar_dataIsAvailable
+            );
+}
+
+void Arangodbdriver::_ar_collection_load(Collection * collection)
+{
+    d->jsonData = QByteArrayLiteral("{}");
+    QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
+    QUrl url(d->standardUrl + QString("/collection/%1/load").arg(collection->name()));
+    QNetworkRequest request(url);
+    request.setRawHeader("Content-Type", "application/json");
+    request.setRawHeader("Content-Length", jsonDataSize);
+
+    QNetworkReply *reply = d->networkManager.put(request, d->jsonData);
+
+    connect(reply, &QNetworkReply::finished,
+            collection, &Collection::_ar_loaded
             );
 }
 

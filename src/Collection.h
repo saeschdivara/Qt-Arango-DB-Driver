@@ -375,6 +375,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void deleteAll();
 
         /**
+         * @brief load
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void load();
+
+        /**
          * @brief Waits until either the ready or the error
          * signal has been emitted
          *
@@ -382,6 +390,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         void waitUntilReady();
+
+        /**
+         * @brief waitUntilLoaded
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void waitUntilLoaded();
 
         /**
          * @brief waitUntilDeleted
@@ -419,6 +435,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void deleted();
 
         /**
+         * @brief loaded
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void loaded();
+
+        /**
          * @brief error
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
@@ -441,6 +465,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         void deleteData(Collection *);
+
+        /**
+         * @brief loadIntoMemory
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void loadIntoMemory(Collection *);
         
     public Q_SLOTS:
         /**
@@ -450,6 +482,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         void _ar_dataIsAvailable();
+
+        /**
+         * @brief _ar_loaded
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void _ar_loaded();
 
         /**
          * @brief _ar_isDeleted

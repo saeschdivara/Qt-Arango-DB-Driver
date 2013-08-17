@@ -197,6 +197,11 @@ void Collection::deleteAll()
     Q_EMIT deleteData(this);
 }
 
+void Collection::load()
+{
+    Q_EMIT loadIntoMemory(this);
+}
+
 void Collection::waitUntilReady()
 {
     bool b = true;
@@ -211,6 +216,14 @@ void Collection::waitUntilReady()
     }
     QObject::disconnect(conn1);
     QObject::disconnect(conn2);
+}
+
+void Collection::waitUntilLoaded()
+{
+    QEventLoop loop;
+    QObject::connect( this, &Collection::loaded, &loop, &QEventLoop::quit );
+    QObject::connect( this, &Collection::error, &loop, &QEventLoop::quit );
+    loop.exec();
 }
 
 void Collection::waitUntilDeleted()
@@ -259,7 +272,7 @@ void Collection::_ar_dataIsAvailable()
         d->errorMessage = obj.value("errorMessage").toString();
         d->errorNumber  = obj.value("errorNum").toVariant().toInt();
         d->errorCode    = obj.value("code").toVariant().toInt();
-        emit error();
+        Q_EMIT error();
     }
     else {
         d->isReady = true;
@@ -274,8 +287,13 @@ void Collection::_ar_dataIsAvailable()
         d->isSystem     = obj.value(QStringLiteral("isSystem")).toBool();
         d->isVolatile   = obj.value(QStringLiteral("isVolatile")).toBool();
 
-        emit ready();
+        Q_EMIT ready();
     }
+}
+
+void Collection::_ar_loaded()
+{
+    Q_EMIT loaded();
 }
 
 void Collection::_ar_isDeleted()
