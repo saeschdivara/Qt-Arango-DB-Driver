@@ -74,10 +74,11 @@ void QueriesTest::initTestCase()
     doc3->set("test_field_echo", 3.2);
 
     doc1->save();
+    doc1->waitForResult();
     doc2->save();
+    doc2->waitForResult();
     doc3->save();
-
-    driver.waitUntilFinished(doc1, doc2, doc3);
+    doc3->waitForResult();
 
     arangodb::Document * doc4 = temp2Collection->createDocument();
     doc4->set("con", doc1->docID());
@@ -87,9 +88,9 @@ void QueriesTest::initTestCase()
     doc5->set("data", 9);
 
     doc4->save();
+    doc4->waitForResult();
     doc5->save();
-
-    driver.waitUntilFinished(doc4, doc5);
+    doc5->waitForResult();
 
     tempCollection->load();
     tempCollection->waitUntilLoaded();
@@ -214,8 +215,8 @@ void QueriesTest::testSetResultWithMultipleCollections()
     auto select = qb.createSelect(tempCollection->name(), 2);
     select->addNewCollection(temp2Collection->name());
 
-    select->setWhere(QStringLiteral("temp"), QStringLiteral("test_field_echo"),
-                     QStringLiteral("temp2"), QStringLiteral("data"));
+    select->setWhere(QStringLiteral("temp"), QStringLiteral("_id"),
+                     QStringLiteral("temp2"), QStringLiteral("con"));
 
     QHash<QString, QVariant> hashResult;
     hashResult.insert(QStringLiteral("temp"), QStringLiteral("test_field_echo"));
@@ -230,7 +231,7 @@ void QueriesTest::testSetResultWithMultipleCollections()
     cursor->waitForResult();
 
     QVERIFY2(cursor->hasErrorOccurred() == false, cursor->errorMessage().toLocal8Bit());
-    QCOMPARE(cursor->count(), 1);
+    QCOMPARE(cursor->count(), 2);
     arangodb::Document * doc = cursor->data().first();
     qDebug() << doc->toJsonString();
 }
