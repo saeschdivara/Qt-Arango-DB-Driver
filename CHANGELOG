@@ -1,1 +1,6 @@
-The versions v0.1 - v0.4 are non existend
+The versions v0.1 - v0.4 are non existing
+
+Version v0.5:
+ - New: Collection can be saved, deleted, loaded into memory and create Document objects for it
+ - New: Queries can now be made for multiple collections
+ - New: Added Filtering and defining the returned values
