@@ -129,6 +129,19 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         void setWhere(const QString & field, const QString & op);
 
         /**
+         * @brief This method assumes that only one collection
+         * is set for the select and therefor the where statement
+         * is set for this collection (first collection in the list)
+         *
+         * @param field
+         * @param op
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void setWhere(const QString &field, bool op);
+
+        /**
          * @brief Set the where conditions for one collection
          * field but gives multiple choices.
          *
@@ -141,6 +154,21 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         void setWhere(const QString & field, const QStringList & op);
 
         /**
+         * @brief Sets the filter where the content of the field1 in
+         * the collection1 is equal field2 in collection2
+         *
+         * @param collection1
+         * @param field1
+         * @param collection2
+         * @param field2
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void setWhere(const QString & collection1, const QString & field1,
+                      const QString & collection2, const QString & field2);
+
+        /**
          * @brief setResult
          *
          * @param collectionName
@@ -149,6 +177,28 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
          * @since 0.5
          */
         void setResult(const QString & collectionName);
+
+        /**
+         * @brief setResult
+         *
+         * @param collectionNames
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void setResult(const QStringList & collectionNames);
+
+        /**
+         * @brief Keys are the collection names and the values
+         * are either an only string with one field name or
+         * a string list which can contain multiple fields
+         *
+         * @param collectionFields
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        void setResult(const QHash<QString, QVariant> & collectionFields);
 
         /**
          * @brief Returns the json representation of the query

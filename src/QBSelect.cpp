@@ -45,6 +45,12 @@ class QBSelectPrivate
 
         QVariant result;
 
+        /**
+         * @brief The ResultType enum
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
         enum class ResultType : quint8 {
             NoResult            = 0,
             StringResult        = 1,
@@ -54,6 +60,14 @@ class QBSelectPrivate
 
         ResultType resultType = ResultType::NoResult;
 
+        /**
+         * @brief getResult
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
         inline QString getResult() const {
             QString realResult;
             ResultType resultType = this->resultType;
@@ -82,6 +96,19 @@ class QBSelectPrivate
                     break;
 
                 case ResultType::HashResult: {
+                        QString results;
+                        QHash<QString, QVariant> resultHash = result.toHash();
+                        QStringList keyList = resultHash.keys();
+                        for ( const QString key : keyList) {
+                            if ( key == keyList.first() ) {
+                                results = getResultPart(resultHash, key);
+                            }
+                            else {
+                                results += QString(",") + getResultPart(resultHash, key);
+                            }
+                        }
+
+                        realResult = QString("[%1]").arg(results);
                     }
                     break;
 
@@ -90,6 +117,15 @@ class QBSelectPrivate
             }
 
             return realResult;
+        }
+
+        QString getResultPart(const QHash<QString, QVariant> hash, const QString & key) const {
+            QVariant part = hash.value(key);
+            if ( part.type() == QVariant::String ) {
+                return QString("%1.%2").arg(getCollectionIdentifier(key), part.toString());
+            }
+            else if ( part.type() == QVariant::StringList ) {
+            }
         }
 
         /**
@@ -193,6 +229,14 @@ void QBSelect::setWhere(const QString & field, const QString & op)
     d->where = QStringLiteral("FILTER %1.%2 == \"%3\"").arg(collectionIdentifier, field, op);
 }
 
+void QBSelect::setWhere(const QString & field, bool op)
+{
+    Q_D(QBSelect);
+    QString collectionIdentifier = d->getCollectionIdentifier(d->getCollectionName());
+    if (op) d->where = QStringLiteral("FILTER %1.%2 == true").arg(collectionIdentifier, field);
+    else d->where = QStringLiteral("FILTER %1.%2 == false").arg(collectionIdentifier, field);
+}
+
 void QBSelect::setWhere(const QString & field, const QStringList & op)
 {
     Q_D(QBSelect);
@@ -202,11 +246,34 @@ void QBSelect::setWhere(const QString & field, const QStringList & op)
     d->whereField = field;
 }
 
+void QBSelect::setWhere(const QString & collection1, const QString & field1,
+                        const QString & collection2, const QString & field2)
+{
+    Q_D(QBSelect);
+    QString identifier1 = d->getCollectionIdentifier(collection1);
+    QString identifier2 = d->getCollectionIdentifier(collection2);
+    d->where = QStringLiteral("FILTER %1.%2 == %3.%4").arg(identifier1, field1, identifier2, field2);
+}
+
 void QBSelect::setResult(const QString & collectionName)
 {
     Q_D(QBSelect);
     d->result = collectionName;
     d->resultType = QBSelectPrivate::ResultType::StringResult;
+}
+
+void QBSelect::setResult(const QStringList & collectionNames)
+{
+    Q_D(QBSelect);
+    d->result = collectionNames;
+    d->resultType = QBSelectPrivate::ResultType::StringListResult;
+}
+
+void QBSelect::setResult(const QHash<QString, QVariant> & collectionFields)
+{
+    Q_D(QBSelect);
+    d->result = collectionFields;
+    d->resultType = QBSelectPrivate::ResultType::HashResult;
 }
 
 QByteArray QBSelect::toJson() const
