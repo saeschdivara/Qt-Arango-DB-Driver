@@ -7,7 +7,9 @@ compiler:
 before_script:
   - sh ./scripts/ArangoDB/arangodb_startup.sh
   - sudo apt-get update
-  - sudo apt-get install qtbase5-dev qt5-default
+  - sudo apt-add-repository -y ppa:canonical-qt5-edgers/qt5-proper
+  - sudo apt-get install qtbase5-dev
+  - sudo apt-get install qt5-default
   - sh ./scripts/travis-ci/build-driver.sh
 
 script:
