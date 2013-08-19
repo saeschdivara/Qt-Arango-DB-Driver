@@ -5,12 +5,12 @@ compiler:
   - gcc
 
 before_script:
-  - sh ./scripts/ArangoDB/arangodb_startup.sh
+  - bash ./scripts/ArangoDB/arangodb_startup.sh
   - sudo apt-add-repository -y ppa:canonical-qt5-edgers/qt5-proper
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
   - sudo apt-get install -qq qt5-qmake qtbase5-dev qt5-default
-  - sh ./scripts/travis-ci/build-driver.sh
+  - bash ./scripts/travis-ci/build-driver.sh
 
 script:
-  - sh ./scripts/travis-ci/build-tests.sh
+  - bash ./scripts/travis-ci/build-tests.sh
