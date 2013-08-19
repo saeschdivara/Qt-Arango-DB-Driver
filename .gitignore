@@ -1,1 +1,6 @@
 /.travis.yml~
+/src/arangodb-driver.pro.*
+/tests/Start/Start.pro.*
+/tests/Queries/Queries.pro.*
+/tests/Collection/Collection.pro.*
+/.gitignore~
