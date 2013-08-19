@@ -9,7 +9,7 @@ before_script:
   - sudo apt-add-repository -y ppa:canonical-qt5-edgers/qt5-proper
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
-  - sudo apt-get install -qq qt5-qmake qtbase5-dev qt5-default
+  - sudo apt-get install -qq qt5-qmake qtbase5-dev qt5-default clang-3.2
   - sudo apt-get upgrade
   - bash ./scripts/travis-ci/build-driver.sh
 
