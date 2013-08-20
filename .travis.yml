@@ -10,9 +10,6 @@ before_script:
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo apt-get update -qq
   - sudo apt-get install -qq qt5-qmake qtbase5-dev qt5-default
-  - echo "deb http://llvm.org/apt/wheezy/ llvm-toolchain-wheezy main"> /etc/apt/sources.list.d/llvm.list
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq clang-3.3
   - bash ./scripts/travis-ci/build-driver.sh
 
 script:
