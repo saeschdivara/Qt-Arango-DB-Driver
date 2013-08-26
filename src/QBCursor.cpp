@@ -164,10 +164,13 @@ void QBCursor::_ar_cursor_result_loaded()
     d->hasMore = obj.value(QStringLiteral("hasMore")).toBool();
     d->id      = obj.value(QStringLiteral("id")).toString();
 
+    Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+
     QJsonArray dataArr = obj.value(QStringLiteral("result")).toArray();
     const int total = dataArr.size();
     for (int i = 0; i < total; ++i) {
         Document * doc = new Document(dataArr.at(i).toObject());
+        if (driver) driver->connectDocument(doc);
         d->docs.append(doc);
     }
 
