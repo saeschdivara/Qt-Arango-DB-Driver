@@ -51,6 +51,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         explicit Document(QObject *parent = 0);
@@ -61,6 +62,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @param collection
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Document(QString collection, QObject *parent = 0);
@@ -72,6 +74,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @param key
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.3
          */
         Document(QString collection, QString key, QObject *parent = 0);
@@ -82,6 +85,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @param obj
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         Document(QJsonObject obj, QObject * parent = 0);
@@ -89,6 +93,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         /**
          * @brief ~Document
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         virtual ~Document();
@@ -98,15 +103,18 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         bool isReady();
 
         /**
-         * @brief isCreated
+         * @brief Returns true if the Document knows that is has
+         * a version of itself saved in the database
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         bool isCreated();
@@ -117,6 +125,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         bool isCurrent();
@@ -126,6 +135,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         virtual QByteArray toJsonString() const;
@@ -135,33 +145,37 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString docID() const;
 
         /**
-         * @brief key
+         * @brief Returns the unique key within the Collection
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString key() const;
 
         /**
-         * @brief rev
+         * @brief Returns the revision of the Document
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString rev() const;
 
         /**
-         * @brief collection
+         * @brief Returns the collection name
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString collection() const;
@@ -180,10 +194,12 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         bool isStoredInCollection();
 
         /**
-         * @brief errorMessage
+         * @brief If an error has occured, it will return
+         * the error message
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString errorMessage() const;
@@ -193,6 +209,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         quint32 errorCode();
@@ -202,6 +219,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         quint32 errorNumber();
@@ -211,6 +229,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         bool hasErrorOccurred();
@@ -221,6 +240,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @param name
          * @param data
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         void set(const QString &key, QVariant data);
@@ -231,6 +251,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @param name
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QVariant get(const QString &key) const;
@@ -242,6 +263,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         bool contains(const QString & key) const;
@@ -251,6 +273,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QStringList dirtyAttributes() const;
@@ -260,6 +283,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         bool isEveryAttributeDirty() const;
@@ -267,6 +291,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         /**
          * @brief waitForResult
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void waitForResult();
@@ -274,6 +299,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         /**
          * @brief deleteAfterFinished
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void deleteAfterFinished();
@@ -315,6 +341,14 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void updateDataStatus(Document *);
 
         /**
+         * @brief updateData
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void updateData(Document *);
+
+        /**
          * @brief syncData
          *
          * @since 0.3
@@ -335,6 +369,14 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.1
          */
         void save();
+
+        /**
+         * @brief update
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void update();
 
         /**
          * @brief sync
@@ -373,6 +415,9 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
 
         /**
          * @brief _ar_dataUpdated
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.1
          */
         void _ar_dataUpdated();
 

@@ -185,6 +185,10 @@ void Arangodbdriver::connectDocument(Document * doc)
             this, &Arangodbdriver::_ar_document_updateStatus
             );
 
+    connect(doc, &Document::updateData,
+            this, &Arangodbdriver::_ar_document_update
+            );
+
     connect(doc, &Document::syncData,
             this, &Arangodbdriver::_ar_document_sync
             );
@@ -360,6 +364,27 @@ void Arangodbdriver::_ar_document_save(Document *doc)
         request.setRawHeader("Content-Length", jsonDataSize);
 
         QNetworkReply *reply = d->networkManager.post(request, d->jsonData);
+
+        connect(reply, &QNetworkReply::finished,
+                doc, &Document::_ar_dataIsAvailable
+                );
+    }
+}
+
+void Arangodbdriver::_ar_document_update(Document * doc)
+{
+    d->jsonData = doc->toJsonString();
+    QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
+
+    if ( doc->isCreated() ) {
+        QUrl url(d->standardUrl + QString("/document/") + doc->docID());
+        QNetworkRequest request(url);
+        request.setRawHeader("Content-Type", "application/json");
+        request.setRawHeader("Content-Length", jsonDataSize);
+
+        QNetworkReply *reply = Q_NULLPTR;
+        d->data.setBuffer(&d->jsonData);
+        reply = d->networkManager.sendCustomRequest(request, QByteArrayLiteral("PATCH"), &d->data);
 
         connect(reply, &QNetworkReply::finished,
                 doc, &Document::_ar_dataIsAvailable

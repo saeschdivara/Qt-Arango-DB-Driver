@@ -67,6 +67,7 @@ Document::Document(QJsonObject obj, QObject * parent) :
         d_func()->data.insert(internal::KEY, obj.value(internal::KEY));
         d_func()->data.insert(internal::REV, obj.value(internal::REV));
         d_func()->isCurrent = false;
+        d_func()->isCreated = true;
     }
     else {
         for ( auto key : obj.keys() ) {
@@ -286,6 +287,11 @@ void Document::save()
 
         emit saveData(this);
     }
+}
+
+void Document::update()
+{
+    emit updateData(this);
 }
 
 void Document::sync()

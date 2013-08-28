@@ -248,15 +248,27 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         void _ar_document_save(Document *doc);
+
+        /**
+         * @brief _ar_document_update
+         *
+         * @param doc
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void _ar_document_update(Document *doc);
 
         /**
          * @brief _ar_document_delete
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         void _ar_document_delete(Document *doc);
@@ -266,6 +278,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         void _ar_document_updateStatus(Document *doc);
@@ -284,6 +297,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         void _ar_edge_save(Document *doc);
@@ -293,6 +307,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         void _ar_edge_delete(Document *doc);
