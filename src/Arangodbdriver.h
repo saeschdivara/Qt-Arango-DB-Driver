@@ -25,11 +25,14 @@
 #define ARANGODBDRIVER_H
 
 #include "arangodb-driver_global.h"
+
 #include "Collection.h"
 #include "Document.h"
 #include "Edge.h"
 #include "QBSelect.h"
 #include "QBCursor.h"
+#include "index/IndexInterface.h"
+
 #include <QtCore/QSharedPointer>
 
 namespace internal {
@@ -341,6 +344,16 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.5
          */
         void _ar_collection_delete(Collection * collection);
+
+        /**
+         * @brief _ar_index_save
+         *
+         * @param index
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void _ar_index_save(index::IndexInterface * index);
 
     private:
         internal::ArangodbdriverPrivate *d;

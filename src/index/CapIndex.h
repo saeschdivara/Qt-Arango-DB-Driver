@@ -52,12 +52,13 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
         /**
          * @brief Constructor
          *
+         * @param collection
          * @param parent
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        explicit CapIndex(QObject *parent = 0);
+        explicit CapIndex(Collection * collection, QObject *parent = 0);
 
         /**
          * @brief setSize
@@ -174,7 +175,8 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
         virtual QString errorString() const Q_DECL_OVERRIDE;
 
         /**
-         * @brief isNewlyCreated
+         * @brief Returns true if the index has not exists
+         * before
          *
          * @return
          *
@@ -185,6 +187,14 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
 
     public Q_SLOTS:
         /**
+         * @brief Creates index in database collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void save() Q_DECL_OVERRIDE;
+
+        /**
          * @brief Deletes the index in the database
          * from the collection
          *
@@ -192,6 +202,17 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
          * @since 0.6
          */
         virtual void deleteInDatabase() Q_DECL_OVERRIDE;
+
+        /**
+         * @brief This method is should not be triggered
+         * by anything else but from ArangodbDriver methods because
+         * as sender will be a QNetworkReply which holds the content
+         * of the save request results
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void _ar_saveRequestFinished() Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
         /**
@@ -219,6 +240,15 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
          * @since 0.6
          */
         void error();
+
+        /**
+         * @brief This signal is emited if CapIndex::save
+         * was triggered
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void saveSignal(IndexInterface *);
 
         /**
          * @brief This signal is emited if CapIndex::deleteInDatabase

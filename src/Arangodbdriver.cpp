@@ -525,3 +525,8 @@ void Arangodbdriver::_ar_collection_delete(Collection * collection)
             collection, &Collection::_ar_isDeleted
             );
 }
+
+void Arangodbdriver::_ar_index_save(index::IndexInterface * index)
+{
+    QUrl url(d->standardUrl + QString("/collection/") + collection->name());
+}

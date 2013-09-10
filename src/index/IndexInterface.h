@@ -147,6 +147,17 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
         virtual bool isNewlyCreated() const = 0;
 
         // Slots
+        // ----------------------------------------
+        // They can be overloaded just like normal
+        // methods
+
+        /**
+         * @brief Creates index in database collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void save() = 0;
 
         /**
          * @brief Deletes the index in the database
@@ -156,6 +167,17 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
          * @since 0.6
          */
         virtual void deleteInDatabase() = 0;
+
+        /**
+         * @brief This method is should not be triggered
+         * by anything else but from ArangodbDriver methods because
+         * as sender will be a QNetworkReply which holds the content
+         * of the save request results
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void _ar_saveRequestFinished() = 0;
 
         // Signals
         // -----------------------------------------
@@ -188,6 +210,15 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
          * @since 0.6
          */
         void error();
+
+        /**
+         * @brief This signal is emited if IndexInterface::save
+         * was triggered
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void saveSignal(IndexInterface *);
 
         /**
          * @brief This signal is emited if IndexInterface::deleteInDatabase

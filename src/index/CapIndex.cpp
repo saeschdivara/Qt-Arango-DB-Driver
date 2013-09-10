@@ -27,6 +27,8 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 
+#include <QtNetwork/QNetworkReply>
+
 namespace arangodb
 {
 namespace index
@@ -55,11 +57,12 @@ class CapIndexPrivate
 
 const QString CAP_INDEX_NAME = QStringLiteral("cap");
 
-CapIndex::CapIndex(QObject *parent) :
+CapIndex::CapIndex(Collection * collection, QObject *parent) :
     QObject(parent),
     d_ptr(new CapIndexPrivate)
 {
     d_ptr->clearError();
+    d_ptr->collection = collection;
 }
 
 void CapIndex::setSize(int size)
@@ -143,9 +146,45 @@ bool CapIndex::isNewlyCreated() const
     return d->isNewlyCreated;
 }
 
+void CapIndex::save()
+{
+    Q_EMIT saveSignal(this);
+}
+
 void CapIndex::deleteInDatabase()
 {
     Q_EMIT deleteSignal(this);
+}
+
+void CapIndex::_ar_saveRequestFinished()
+{
+    Q_D(CapIndex);
+
+    QNetworkReply * reply = qobject_cast<QNetworkReply *>(sender());
+    if ( !reply ) return;
+
+    QByteArray replyContent = reply->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(replyContent);
+    QJsonObject obj = doc.object();
+
+    if ( obj.isEmpty() ) return;
+
+    bool hasError = obj.value("error").toBool(true);
+    if ( hasError ) {
+        d->hasError = true;
+        d->errorNumber = obj.value("errorNum").toDouble(-1);
+        d->errorMessage = obj.value("errorMessage").toString();
+
+        Q_EMIT error();
+    }
+    else {
+        d->id = obj.value("id").toString();
+        d->isNewlyCreated = obj.value("isNewlyCreated").toBool();
+
+        d->clearError();
+
+        Q_EMIT ready();
+    }
 }
 
 }
