@@ -385,7 +385,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void deleteAll();
 
         /**
-         * @brief load
+         * @brief Loads collection into memory
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
@@ -402,7 +402,8 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void waitUntilReady();
 
         /**
-         * @brief waitUntilLoaded
+         * @brief Waits until the collection is loaded
+         * into memory or an error occurs
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
@@ -410,7 +411,8 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void waitUntilLoaded();
 
         /**
-         * @brief waitUntilDeleted
+         * @brief Waits until the collection is deleted
+         * or an error occurs
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
@@ -418,7 +420,8 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         void waitUntilDeleted();
 
         /**
-         * @brief toJsonString
+         * @brief Serializes all data and returns it
+         * in the json format
          *
          * @return
          *
