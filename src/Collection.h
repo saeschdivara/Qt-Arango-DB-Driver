@@ -216,6 +216,16 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         QString name() const;
 
         /**
+         * @brief Returns the type of the collection
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Collection::Type type() const;
+
+        /**
          * @brief waitForSync (optional, default: false): If true then the data is synchro-
          * nised to disk before returning from a create or update of an document.
          *

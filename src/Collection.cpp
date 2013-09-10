@@ -113,6 +113,12 @@ QString Collection::name() const
     return d->name;
 }
 
+Collection::Type Collection::type() const
+{
+    Q_D(const Collection);
+    return d->type;
+}
+
 bool Collection::isWaitingForSync()
 {
     Q_D(Collection);
