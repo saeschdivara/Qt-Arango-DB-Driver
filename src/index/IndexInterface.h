@@ -41,6 +41,8 @@ namespace index
 class ARANGODBDRIVERSHARED_EXPORT IndexInterface
 {
     public:
+        // Normal public methods
+
         /**
          * @brief Returns the unique id of the index
          *
@@ -62,21 +64,139 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
         virtual QString name() const = 0;
 
         /**
-         * @brief collectionType
+         * @brief Returns the collection for which
+         * the index is used for
          *
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual Collection::Type collectionType() const = 0;
+        virtual Collection* collection() const = 0;
 
+        /**
+         * @brief Returns a json representation of the
+         * index
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
         virtual QByteArray toJson() const = 0;
 
+        /**
+         * @brief Returns only after the index data is loaded
+         * and is therefor ready or an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
         virtual void waitUntilReady() = 0;
+
+        /**
+         * @brief Returns only after the index data is deleted
+         * and therefor the object useless is or an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
         virtual void waitUntilDeleted() = 0;
 
-        virtual void _ar_signal_delete(IndexInterface *) = 0;
+        /**
+         * @brief Returns if during a network operation or through
+         * a database request an error has occured
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual bool hasErrorOccured() const = 0;
+
+        /**
+         * @brief If an error has occured, it returns the error
+         * number, else it returns 0
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual int errorCode() const = 0;
+
+        /**
+         * @brief If an error has occured, it returns the error
+         * message, else it returns an empty string
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual QString errorString() const = 0;
+
+        /**
+         * @brief isNewlyCreated
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual bool isNewlyCreated() const = 0;
+
+        // Slots
+
+        /**
+         * @brief Deletes the index in the database
+         * from the collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void deleteInDatabase() = 0;
+
+        // Signals
+        // -----------------------------------------
+        // They can neither be pure nor virtual but
+        // the declaration here insures that every
+        // class which implements the rest, needs to define it
+
+        /**
+         * @brief This signal is emited when a request
+         * has successfully ended
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void ready();
+
+        /**
+         * @brief This signal is emited when the index
+         * has been successfully deleted in the database
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void deleted();
+
+        /**
+         * @brief This signal is emited when an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void error();
+
+        /**
+         * @brief This signal is emited if IndexInterface::deleteInDatabase
+         * was triggered
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void deleteSignal(IndexInterface *);
 };
 
 }

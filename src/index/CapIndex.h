@@ -24,10 +24,8 @@
 #ifndef CAPINDEX_H
 #define CAPINDEX_H
 
-#include "arangodb-driver_global.h"
 #include "IndexInterface.h"
 
-#include <QtCore/QJsonObject>
 #include <QtCore/QString>
 
 namespace arangodb
@@ -35,8 +33,13 @@ namespace arangodb
 namespace index
 {
 
+class CapIndexPrivate;
+
 /**
- * @brief The CapIndex class
+ * @brief The cap constraint does not index particular attributes of the documents
+ * in a collection, but limits the number of documents in the collection to a maximum
+ * value. The cap constraint thus does not support attribute names specified in the
+ * fields attribute nor uniqueness of any kind via the unique attribute.
  *
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.6
@@ -44,13 +47,41 @@ namespace index
 class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterface
 {
         Q_OBJECT
-    public:
-        explicit CapIndex(QObject *parent = 0);
-
-        // IndexInterface interface
+        Q_PROPERTY(int size READ size WRITE setSize)
     public:
         /**
-         * @brief id
+         * @brief Constructor
+         *
+         * @param parent
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        explicit CapIndex(QObject *parent = 0);
+
+        /**
+         * @brief setSize
+         * @param size
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setSize(int size);
+
+        /**
+         * @brief Returns the maximal number of documents
+         * which can be stored into the collection
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        int size() const;
+
+        // IndexInterface interface
+        /**
+         * @brief Returns the unique id of the index
          *
          * @return
          *
@@ -58,24 +89,151 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
          * @since 0.6
          */
         virtual QString id() const Q_DECL_OVERRIDE;
-        virtual QString name() const
-        {
-        }
-        virtual Collection::Type collectionType() const
-        {
-        }
-        virtual QByteArray toJson() const
-        {
-        }
-        virtual void waitUntilReady()
-        {
-        }
-        virtual void waitUntilDeleted()
-        {
-        }
+
+        /**
+         * @brief Returns the name/type of the index
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual QString name() const Q_DECL_OVERRIDE;
+
+        /**
+         * @brief Returns the collection for which
+         * the index is used for
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual Collection* collection() const Q_DECL_OVERRIDE;
+
+        /**
+         * @brief Returns a json representation of the
+         * index
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual QByteArray toJson() const Q_DECL_OVERRIDE;
+
+        /**
+         * @brief Returns only after the index data is loaded
+         * and is therefor ready or an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void waitUntilReady() Q_DECL_OVERRIDE;
+
+        /**
+         * @brief Returns only after the index data is deleted
+         * and therefor the object useless is or an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void waitUntilDeleted() Q_DECL_OVERRIDE;
+
+        /**
+         * @brief Returns if during a network operation or through
+         * a database request an error has occured
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual bool hasErrorOccured() const Q_DECL_OVERRIDE;
+
+        /**
+         * @brief If an error has occured, it returns the error
+         * number, else it returns 0
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual int errorCode() const Q_DECL_OVERRIDE;
+
+        /**
+         * @brief If an error has occured, it returns the error
+         * message, else it returns an empty string
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual QString errorString() const Q_DECL_OVERRIDE;
+
+        /**
+         * @brief isNewlyCreated
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual bool isNewlyCreated() const Q_DECL_OVERRIDE;
+
+    public Q_SLOTS:
+        /**
+         * @brief Deletes the index in the database
+         * from the collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual void deleteInDatabase() Q_DECL_OVERRIDE;
 
     Q_SIGNALS:
-        virtual void _ar_signal_delete(IndexInterface *);
+        /**
+         * @brief This signal is emited when a request
+         * has successfully ended
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void ready();
+
+        /**
+         * @brief This signal is emited when the index
+         * has been successfully deleted in the database
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void deleted();
+
+        /**
+         * @brief This signal is emited when an error occured
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void error();
+
+        /**
+         * @brief This signal is emited if CapIndex::deleteInDatabase
+         * was triggered
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void deleteSignal(IndexInterface *);
+
+    protected:
+        CapIndexPrivate *d_ptr;
+
+    private:
+        Q_DECLARE_PRIVATE(CapIndex)
 };
 
 }
