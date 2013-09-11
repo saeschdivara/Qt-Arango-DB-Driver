@@ -26,6 +26,8 @@
 
 #include "arangodb-driver_global.h"
 #include "QBSelect.h"
+#include "QBSimpleSelect.h"
+
 #include <QtCore/QSharedPointer>
 
 namespace arangodb
@@ -43,7 +45,8 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
         QueryBuilder();
 
         /**
-         * @brief createSelect
+         * @brief Method to create a QBSelect to get
+         * the first number of Document's (batchSize)
          *
          * @param collection
          * @param batchSize
@@ -53,7 +56,7 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.3
          */
-        QSharedPointer<QBSelect> createSelect(QString collection, int batchSize = 15);
+        static QSharedPointer<QBSelect> createSelect(QString collection, int batchSize = 15);
 
         /**
          * @brief createSelect
@@ -66,7 +69,19 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
-        QSharedPointer<QBSelect> createSelect(QStringList & collections, int batchSize = 15);
+        static QSharedPointer<QBSelect> createSelect(QStringList & collections, int batchSize = 15);
+
+        /**
+         * @brief createGetAllSelect
+         *
+         * @param collection
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        static QSharedPointer<QBSimpleSelect> createGetAllSelect(const QString & collection);
 };
 
 }

@@ -42,4 +42,9 @@ QSharedPointer<QBSelect> QueryBuilder::createSelect(QStringList & collections, i
     return select;
 }
 
+QSharedPointer<QBSimpleSelect> QueryBuilder::createGetAllSelect(const QString & collection)
+{
+    //
+}
+
 }
