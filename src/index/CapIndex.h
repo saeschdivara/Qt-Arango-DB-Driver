@@ -150,7 +150,7 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual bool hasErrorOccured() const Q_DECL_OVERRIDE;
+        virtual bool hasErrorOccurred() const Q_DECL_OVERRIDE;
 
         /**
          * @brief If an error has occured, it returns the error
@@ -172,7 +172,7 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual QString errorString() const Q_DECL_OVERRIDE;
+        virtual QString errorMessage() const Q_DECL_OVERRIDE;
 
         /**
          * @brief Returns true if the index has not exists

@@ -122,7 +122,7 @@ void CapIndex::waitUntilDeleted()
     loop.exec();
 }
 
-bool CapIndex::hasErrorOccured() const
+bool CapIndex::hasErrorOccurred() const
 {
     Q_D(const CapIndex);
     return d->hasError;
@@ -134,7 +134,7 @@ int CapIndex::errorCode() const
     return d->errorNumber;
 }
 
-QString CapIndex::errorString() const
+QString CapIndex::errorMessage() const
 {
     Q_D(const CapIndex);
     return d->errorMessage;

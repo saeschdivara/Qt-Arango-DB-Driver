@@ -123,7 +123,7 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual bool hasErrorOccured() const = 0;
+        virtual bool hasErrorOccurred() const = 0;
 
         /**
          * @brief If an error has occured, it returns the error
@@ -145,7 +145,7 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual QString errorString() const = 0;
+        virtual QString errorMessage() const = 0;
 
         /**
          * @brief isNewlyCreated
