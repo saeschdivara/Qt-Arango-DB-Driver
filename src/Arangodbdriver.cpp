@@ -29,7 +29,7 @@
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-
+#include <QtCore/QMetaMethod>
 #include <memory>
 
 using namespace arangodb;
@@ -249,12 +249,11 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
 
 void Arangodbdriver::connectIndex(index::IndexInterface * index)
 {
-    using namespace index;
 
     QObject * obj = dynamic_cast<QObject *>(index);
 
-    connect( obj, SIGNAL(saveSignal(index::IndexInterface*)),
-             this,  SLOT(_ar_index_save(index::IndexInterface*))
+    connect( obj, SIGNAL(saveSignal(IndexInterface*)),
+             this,  SLOT(_ar_index_save(IndexInterface*))
              );
 }
 
@@ -539,5 +538,18 @@ void Arangodbdriver::_ar_collection_delete(Collection * collection)
 
 void Arangodbdriver::_ar_index_save(index::IndexInterface * index)
 {
-    QUrl url(d->standardUrl + QString("/collection/") + index->collection()->name());
+    d->jsonData = index->toJson();
+    QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
+    QUrl url(d->standardUrl + QString("/index?collection=") + index->collection()->name());
+    QNetworkRequest request(url);
+    request.setRawHeader("Content-Type", "application/json");
+    request.setRawHeader("Content-Length", jsonDataSize);
+
+    QNetworkReply *reply = d->networkManager.post(request, d->jsonData);
+
+    QObject * obj = dynamic_cast<QObject *>(index);
+
+    connect(reply, SIGNAL(finished()),
+            obj, SLOT(_ar_saveRequestFinished())
+            );
 }

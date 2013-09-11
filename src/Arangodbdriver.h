@@ -42,6 +42,8 @@ class ArangodbdriverPrivate;
 namespace arangodb
 {
 
+using namespace index;
+
 /**
  * @brief The Arangodbdriver class
  *
@@ -378,7 +380,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void _ar_index_save(index::IndexInterface * index);
+        void _ar_index_save(IndexInterface * index);
 
     private:
         internal::ArangodbdriverPrivate *d;

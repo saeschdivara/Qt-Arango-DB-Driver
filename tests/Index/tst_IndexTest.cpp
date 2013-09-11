@@ -71,6 +71,12 @@ void IndexTest::testCreatingIndex()
     CapIndex * index = dynamic_cast<CapIndex *>(tempCollection->createIndex(IndexType::CapIndex));
     QVERIFY(index != Q_NULLPTR);
 
+    index->setSize(1);
+    index->save();
+    index->waitUntilReady();
+
+    QVERIFY2(!index->hasErrorOccured(), qPrintable(index->errorString()));
+
     index->deleteLater();
 }
 
