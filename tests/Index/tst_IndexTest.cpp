@@ -41,7 +41,7 @@ class IndexTest : public QObject
     private Q_SLOTS:
         void initTestCase();
         void cleanupTestCase();
-        void testCreatingIndex();
+        void testCreatingCapIndex();
 
     protected:
         Arangodbdriver driver;
@@ -66,7 +66,7 @@ void IndexTest::cleanupTestCase()
     tempCollection->waitUntilDeleted();
 }
 
-void IndexTest::testCreatingIndex()
+void IndexTest::testCreatingCapIndex()
 {
     CapIndex * index = dynamic_cast<CapIndex *>(tempCollection->createIndex(IndexType::CapIndex));
     QVERIFY(index != Q_NULLPTR);
