@@ -281,12 +281,12 @@ QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSimpleSe
     QSharedPointer<QBCursor> cursor(new QBCursor(this));
 
     QByteArray jsonSelect = select->toJson();
-    QUrl url(d->standardUrl + QString("/cursor"));
+    QUrl url(d->standardUrl + select->url());
     QNetworkRequest request(url);
     request.setRawHeader("Content-Type", "application/json");
     request.setRawHeader("Content-Length", QByteArray::number(jsonSelect.size()));
 
-    QNetworkReply *reply = d->networkManager.post(request, jsonSelect);
+    QNetworkReply *reply = d->networkManager.put(request, jsonSelect);
 
     connect(reply, &QNetworkReply::finished,
             cursor.data(), &QBCursor::_ar_cursor_result_loaded

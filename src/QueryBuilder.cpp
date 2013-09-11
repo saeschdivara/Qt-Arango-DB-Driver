@@ -44,7 +44,8 @@ QSharedPointer<QBSelect> QueryBuilder::createSelect(QStringList & collections, i
 
 QSharedPointer<QBSimpleSelect> QueryBuilder::createGetAllSelect(const QString & collection)
 {
-    //
+    QSharedPointer<QBSimpleSelect> select(new QBSimpleSelect(QBSimpleSelect::Type::GetAllDocumentsType, collection));
+    return select;
 }
 
 }

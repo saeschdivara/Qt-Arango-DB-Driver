@@ -91,6 +91,19 @@ void IndexTest::testCreatingIndex()
 
     QVERIFY2(!doc2->hasErrorOccurred(), qPrintable(doc2->errorMessage()));
 
+    auto cursor = tempCollection->getAllDocuments();
+    cursor->waitForResult();
+
+    QVERIFY2(!cursor->hasErrorOccurred(), qPrintable(cursor->errorMessage()));
+    QList<Document *> data = cursor->data();
+
+    QCOMPARE(data.size(), 1);
+    Document * dataDoc = data.first();
+
+    // This shows that everything can be saved into the database
+    // but after limit it starts to override older entries
+    QCOMPARE(dataDoc->key(), doc2->key());
+
     index->deleteLater();
     doc1->deleteLater();
     doc2->deleteLater();

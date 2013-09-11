@@ -23,22 +23,71 @@
 
 #include "QBSimpleSelect.h"
 
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+
 namespace arangodb
 {
 
 class QBSimpleSelectPrivate
 {
     public:
+        QBSimpleSelect::Type type;
+        QString collection;
 };
 
-QBSimpleSelect::QBSimpleSelect() :
+QBSimpleSelect::QBSimpleSelect(Type type, const QString & collection) :
     d_ptr(new QBSimpleSelectPrivate)
 {
+    d_ptr->type = type;
+    d_ptr->collection = collection;
+}
+
+QBSimpleSelect::Type QBSimpleSelect::type() const
+{
+    Q_D(const QBSimpleSelect);
+    return d->type;
+}
+
+QString QBSimpleSelect::url() const
+{
+    Q_D(const QBSimpleSelect);
+
+    QString url;
+
+    switch (d->type)
+    {
+        case Type::GetAllDocumentsType:
+            url = QLatin1String("/simple/all");
+            break;
+        case Type::UnknownType:
+            break;
+        default:
+            break;
+    }
+
+    return url;
 }
 
 QByteArray QBSimpleSelect::toJson() const
 {
-    //
+    Q_D(const QBSimpleSelect);
+
+    QJsonDocument doc;
+    QJsonObject obj;
+
+    obj.insert(QLatin1String("collection"), d->collection);
+
+    switch (d->type) {
+        case Type::GetAllDocumentsType: {
+            }
+            break;
+        default:
+            break;
+    }
+
+    doc.setObject(obj);
+    return doc.toJson();
 }
 
 }

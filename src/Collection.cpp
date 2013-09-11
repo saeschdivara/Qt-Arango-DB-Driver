@@ -32,6 +32,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
+#include <QtCore/QSharedPointer>
+
 #include <QtNetwork/QNetworkReply>
 
 namespace arangodb
@@ -192,7 +194,7 @@ QSharedPointer<QBCursor> Collection::getAllDocuments()
     Arangodbdriver * driver = Q_NULLPTR;
     if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
         auto select = QueryBuilder::createGetAllSelect(d->name);
-        cursor.reset(driver->executeSelect(select));
+        cursor = driver->executeSelect(select);
     }
 
     return cursor;

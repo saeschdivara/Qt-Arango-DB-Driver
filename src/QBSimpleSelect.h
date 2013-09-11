@@ -31,6 +31,7 @@ namespace arangodb
 
 class QBSimpleSelectPrivate;
 
+
 /**
  * @brief The QBSimpleSelect class
  *
@@ -40,8 +41,56 @@ class QBSimpleSelectPrivate;
 class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
 {
     public:
-        QBSimpleSelect();
+        /**
+         * @brief The Type enum
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        enum class Type {
+            UnknownType,
+            GetAllDocumentsType
+        };
 
+        /**
+         * @brief QBSimpleSelect
+         *
+         * @param type
+         * @param collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QBSimpleSelect(Type type, const QString & collection);
+
+        /**
+         * @brief type
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Type type() const;
+
+        /**
+         * @brief url
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QString url() const;
+
+        /**
+         * @brief toJson
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
         QByteArray toJson() const;
 
     protected:
