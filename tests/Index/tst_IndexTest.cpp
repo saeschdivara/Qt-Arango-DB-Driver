@@ -26,6 +26,10 @@
 
 #include <arangodb/Arangodbdriver.h>
 #include <arangodb/QueryBuilder.h>
+#include <arangodb/index/CapIndex.h>
+
+using namespace arangodb;
+using namespace arangodb::index;
 
 class IndexTest : public QObject
 {
@@ -40,9 +44,9 @@ class IndexTest : public QObject
         void testCreatingIndex();
 
     protected:
-        arangodb::Arangodbdriver driver;
-        arangodb::QueryBuilder qb;
-        arangodb::Collection * tempCollection = Q_NULLPTR;
+        Arangodbdriver driver;
+        QueryBuilder qb;
+        Collection * tempCollection = Q_NULLPTR;
 };
 
 IndexTest::IndexTest()
@@ -64,7 +68,10 @@ void IndexTest::cleanupTestCase()
 
 void IndexTest::testCreatingIndex()
 {
-    QVERIFY2(true, "Failure");
+    CapIndex * index = dynamic_cast<CapIndex *>(tempCollection->createIndex(IndexType::CapIndex));
+    QVERIFY(index != Q_NULLPTR);
+
+    index->deleteLater();
 }
 
 QTEST_GUILESS_MAIN(IndexTest)

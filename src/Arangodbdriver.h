@@ -45,6 +45,7 @@ namespace arangodb
 /**
  * @brief The Arangodbdriver class
  *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.1
  */
 class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
@@ -58,6 +59,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param host
          * @param port
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Arangodbdriver(QString protocol = QString("http"),
@@ -67,6 +69,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         /**
          * @brief ~Arangodbdriver
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         virtual ~Arangodbdriver();
@@ -76,6 +79,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         bool isColllectionExisting(const QString & collectionName);
@@ -86,6 +90,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param name
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Collection* getCollection(QString name);
@@ -96,6 +101,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param name
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         Collection * createCollection(const QString & name,
@@ -111,6 +117,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param collection
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
         void connectCollection(Collection * collection);
@@ -121,6 +128,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param id
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Document* getDocument(QString id);
@@ -131,6 +139,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param collection
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Document* createDocument(QString collection);
@@ -144,6 +153,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Document* createDocument(QString collection, QString key);
@@ -153,6 +163,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void connectDocument(Document * doc);
@@ -163,6 +174,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param id
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Edge* getEdge(QString id);
@@ -173,9 +185,19 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param collection
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Edge* createEdge(QString collection, Document *fromDoc, Document *toDoc);
+
+        /**
+         * @brief connectIndex
+         * @param index
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void connectIndex(index::IndexInterface * index);
 
         /**
          * @brief executeSelect
@@ -183,6 +205,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @param select
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.3
          */
         QSharedPointer<QBCursor> executeSelect(QSharedPointer<QBSelect> select);
@@ -192,6 +215,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param cursor
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.4
          */
         void loadMoreResults(QBCursor * cursor);
@@ -291,6 +315,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          *
          * @param doc
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.3
          */
         void _ar_document_sync(Document *doc);

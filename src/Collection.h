@@ -25,6 +25,7 @@
 #define COLLECTION_H
 
 #include "arangodb-driver_global.h"
+#include "index/IndexInterface.h"
 
 #include <QtCore/QJsonObject>
 #include <QtCore/QString>
@@ -367,6 +368,16 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         Document * createDocument(const QString & key);
+
+        /**
+         * @brief createIndex
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        index::IndexInterface * createIndex(index::IndexType type);
 
         /**
          * @brief save

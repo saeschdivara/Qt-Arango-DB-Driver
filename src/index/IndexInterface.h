@@ -25,12 +25,23 @@
 #define INDEXINTERFACE_H
 
 #include "arangodb-driver_global.h"
-#include <Collection.h>
 
 namespace arangodb
 {
+
+class Collection;
+
 namespace index
 {
+
+enum class IndexType {
+    UnknownIndex    = 0,
+    CapIndex        = 1,
+    GeoIndex        = 2,
+    HashIndex       = 3,
+    FulltextIndex   = 4,
+    SkipListIndex   = 5
+};
 
 /**
  * @brief The IndexInterface class

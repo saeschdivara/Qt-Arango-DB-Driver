@@ -26,6 +26,8 @@
 #include "Arangodbdriver.h"
 #include "Document.h"
 
+#include "index/CapIndex.h"
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
@@ -191,6 +193,29 @@ Document *Collection::createDocument(const QString & key)
     else {
         return new Document(d->name, key);
     }
+}
+
+index::IndexInterface *Collection::createIndex(index::IndexType type)
+{
+    index::IndexInterface * i = Q_NULLPTR;
+    Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+
+    switch (type)
+    {
+        case index::IndexType::CapIndex:
+            if ( driver == Q_NULLPTR )
+                i = new index::CapIndex(this, this);
+            else
+                i = new index::CapIndex(this, driver);
+            break;
+        default:
+            break;
+    }
+
+    if ( driver )
+        driver->connectIndex(i);
+
+    return i;
 }
 
 void Collection::save()

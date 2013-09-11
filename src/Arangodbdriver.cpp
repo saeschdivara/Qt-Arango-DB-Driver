@@ -247,6 +247,17 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
     return e;
 }
 
+void Arangodbdriver::connectIndex(index::IndexInterface * index)
+{
+    using namespace index;
+
+    QObject * obj = dynamic_cast<QObject *>(index);
+
+    connect( obj, SIGNAL(saveSignal(index::IndexInterface*)),
+             this,  SLOT(_ar_index_save(index::IndexInterface*))
+             );
+}
+
 QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSelect> select)
 {
     QSharedPointer<QBCursor> cursor(new QBCursor(this));
@@ -528,5 +539,5 @@ void Arangodbdriver::_ar_collection_delete(Collection * collection)
 
 void Arangodbdriver::_ar_index_save(index::IndexInterface * index)
 {
-    QUrl url(d->standardUrl + QString("/collection/") + collection->name());
+    QUrl url(d->standardUrl + QString("/collection/") + index->collection()->name());
 }
