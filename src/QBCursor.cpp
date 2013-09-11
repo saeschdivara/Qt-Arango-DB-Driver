@@ -161,7 +161,7 @@ void QBCursor::_ar_cursor_result_loaded()
         return;
     }
 
-    d->hasMore = obj.value(QStringLiteral("hasMore")).toBool();
+    d->hasMore = obj.value(QStringLiteral("hasMore")).toBool(false);
     d->id      = obj.value(QStringLiteral("id")).toString();
 
     Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());

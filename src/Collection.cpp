@@ -25,6 +25,7 @@
 
 #include "Arangodbdriver.h"
 #include "Document.h"
+#include "QueryBuilder.h"
 
 #include "index/CapIndex.h"
 
@@ -180,6 +181,21 @@ Document *Collection::createDocument()
     else {
         return new Document(d->name);
     }
+}
+
+QSharedPointer<QBCursor> Collection::getAllDocuments()
+{
+    Q_D(Collection);
+
+    QSharedPointer<QBCursor> cursor;
+
+    Arangodbdriver * driver = Q_NULLPTR;
+    if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
+        auto select = QueryBuilder::createGetAllSelect(d->name);
+        cursor.reset(driver->executeSelect(select));
+    }
+
+    return cursor;
 }
 
 Document *Collection::createDocument(const QString & key)

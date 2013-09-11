@@ -26,8 +26,19 @@
 namespace arangodb
 {
 
-QBSimpleSelect::QBSimpleSelect()
+class QBSimpleSelectPrivate
 {
+    public:
+};
+
+QBSimpleSelect::QBSimpleSelect() :
+    d_ptr(new QBSimpleSelectPrivate)
+{
+}
+
+QByteArray QBSimpleSelect::toJson() const
+{
+    //
 }
 
 }

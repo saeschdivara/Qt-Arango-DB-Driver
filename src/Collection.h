@@ -25,6 +25,7 @@
 #define COLLECTION_H
 
 #include "arangodb-driver_global.h"
+#include "QBCursor.h"
 #include "index/IndexInterface.h"
 
 #include <QtCore/QJsonObject>
@@ -356,6 +357,17 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @since 0.5
          */
         Document * createDocument();
+
+        /**
+         * @brief Returns QBCursor, when it emits the
+         * QBCursor::ready signal, all data is loaded
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        QSharedPointer<QBCursor> getAllDocuments();
 
         /**
          * @brief createDocument

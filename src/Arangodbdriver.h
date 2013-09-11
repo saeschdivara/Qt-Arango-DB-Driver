@@ -30,6 +30,7 @@
 #include "Document.h"
 #include "Edge.h"
 #include "QBSelect.h"
+#include "QBSimpleSelect.h"
 #include "QBCursor.h"
 #include "index/IndexInterface.h"
 
@@ -201,6 +202,8 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          */
         void connectIndex(index::IndexInterface * index);
 
+        // TODO: Create interface (QBQueryInterface) for QBSelect and QBSimpleSelect
+        // TODO: Rename QBSimpleSelect to QBSimpleQuery
         /**
          * @brief executeSelect
          *
@@ -211,6 +214,18 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @since 0.3
          */
         QSharedPointer<QBCursor> executeSelect(QSharedPointer<QBSelect> select);
+
+        /**
+         * @brief executeSelect
+         *
+         * @param select
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QSharedPointer<QBCursor> executeSelect(QSharedPointer<QBSimpleSelect> select);
 
         /**
          * @brief loadMoreResults

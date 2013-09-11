@@ -29,6 +29,8 @@
 namespace arangodb
 {
 
+class QBSimpleSelectPrivate;
+
 /**
  * @brief The QBSimpleSelect class
  *
@@ -39,6 +41,14 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
 {
     public:
         QBSimpleSelect();
+
+        QByteArray toJson() const;
+
+    protected:
+        QBSimpleSelectPrivate * d_ptr;
+
+    private:
+        Q_DECLARE_PRIVATE(QBSimpleSelect)
 };
 
 }
