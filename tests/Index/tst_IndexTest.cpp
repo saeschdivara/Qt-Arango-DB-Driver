@@ -75,9 +75,25 @@ void IndexTest::testCreatingIndex()
     index->save();
     index->waitUntilReady();
 
-    QVERIFY2(!index->hasErrorOccured(), qPrintable(index->errorString()));
+    QVERIFY2(!index->hasErrorOccurred(), qPrintable(index->errorMessage()));
+    QCOMPARE(index->isNewlyCreated(), true);
+
+    Document * doc1 = tempCollection->createDocument();
+    Document * doc2 = tempCollection->createDocument();
+
+    doc1->save();
+    doc1->waitForResult();
+
+    QVERIFY2(!doc1->hasErrorOccurred(), qPrintable(doc1->errorMessage()));
+
+    doc2->save();
+    doc2->waitForResult();
+
+    QVERIFY2(!doc2->hasErrorOccurred(), qPrintable(doc2->errorMessage()));
 
     index->deleteLater();
+    doc1->deleteLater();
+    doc2->deleteLater();
 }
 
 QTEST_GUILESS_MAIN(IndexTest)
