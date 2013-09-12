@@ -34,6 +34,10 @@ class QBSimpleSelectPrivate
     public:
         QBSimpleSelect::Type type;
         QString collection;
+
+        // QBSimpleSelect::Type::GetAllDocumentsType
+        int skiptNumber = -1;
+        int limit = -1;
 };
 
 QBSimpleSelect::QBSimpleSelect(Type type, const QString & collection) :
@@ -41,6 +45,30 @@ QBSimpleSelect::QBSimpleSelect(Type type, const QString & collection) :
 {
     d_ptr->type = type;
     d_ptr->collection = collection;
+}
+
+void QBSimpleSelect::setSkipNumber(int skip)
+{
+    Q_D(QBSimpleSelect);
+    d->skiptNumber = skip;
+}
+
+int QBSimpleSelect::skiptNumber() const
+{
+    Q_D(const QBSimpleSelect);
+    return d->skiptNumber;
+}
+
+void QBSimpleSelect::setLimit(int limit)
+{
+    Q_D(QBSimpleSelect);
+    d->limit = limit;
+}
+
+int QBSimpleSelect::limit() const
+{
+    Q_D(const QBSimpleSelect);
+    return d->limit;
 }
 
 QBSimpleSelect::Type QBSimpleSelect::type() const
@@ -80,6 +108,13 @@ QByteArray QBSimpleSelect::toJson() const
 
     switch (d->type) {
         case Type::GetAllDocumentsType: {
+                // If skipNumber is bigger than 0, it is applied
+                if ( d->skiptNumber > 0 )
+                    obj.insert(QLatin1String("skip"), d->skiptNumber);
+
+                // If limit is bigger than 0, it is applied
+                if ( d->limit > 0 )
+                    obj.insert(QLatin1String("limit"), d->limit);
             }
             break;
         default:

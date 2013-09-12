@@ -64,6 +64,51 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
         QBSimpleSelect(Type type, const QString & collection);
 
         /**
+         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
+         * The number of documents to skip in the query (optional).
+         *
+         * @param skip
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setSkipNumber(int skip);
+
+        /**
+         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
+         * If nothing should be skipped, it returns -1
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        int skiptNumber() const;
+
+        /**
+         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
+         * The maximal amount of documents to return. The skip is applied
+         * before the limit restriction. (optional)
+         *
+         * @param limit
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setLimit(int limit);
+
+        /**
+         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
+         * If there should be no limit, it returns -1
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        int limit() const;
+
+        /**
          * @brief type
          *
          * @return
