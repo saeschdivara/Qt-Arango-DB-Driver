@@ -47,6 +47,12 @@ class IndexTest : public QObject
         Arangodbdriver driver;
         QueryBuilder qb;
         Collection * tempCollection = Q_NULLPTR;
+
+        Document * saveDoc(Collection * collection) {
+            Document * doc = collection->createDocument();
+            doc->save();
+            doc->waitForResult();
+        }
 };
 
 IndexTest::IndexTest()
@@ -78,17 +84,10 @@ void IndexTest::testCreatingCapIndex()
     QVERIFY2(!index->hasErrorOccurred(), qPrintable(index->errorMessage()));
     QCOMPARE(index->isNewlyCreated(), true);
 
-    Document * doc1 = tempCollection->createDocument();
-    Document * doc2 = tempCollection->createDocument();
-
-    doc1->save();
-    doc1->waitForResult();
+    Document * doc1 = saveDoc(tempCollection);
+    Document * doc2 = saveDoc(tempCollection);
 
     QVERIFY2(!doc1->hasErrorOccurred(), qPrintable(doc1->errorMessage()));
-
-    doc2->save();
-    doc2->waitForResult();
-
     QVERIFY2(!doc2->hasErrorOccurred(), qPrintable(doc2->errorMessage()));
 
     auto cursor = tempCollection->getAllDocuments();
