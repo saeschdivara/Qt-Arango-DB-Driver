@@ -34,6 +34,13 @@ class Collection;
 namespace index
 {
 
+/**
+ * @brief Enum which describes all available
+ * index types
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.6
+ */
 enum class IndexType {
     UnknownIndex    = 0,
     CapIndex        = 1,
@@ -44,7 +51,7 @@ enum class IndexType {
 };
 
 /**
- * @brief The IndexInterface class
+ * @brief Interface for all index classes
  *
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.6

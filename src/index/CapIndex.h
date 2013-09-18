@@ -61,7 +61,9 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public QObject, public IndexInterfa
         explicit CapIndex(Collection * collection, QObject *parent = 0);
 
         /**
-         * @brief setSize
+         * @brief Sets the max number of Document's which
+         * can be stored into the Collection
+         *
          * @param size
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
