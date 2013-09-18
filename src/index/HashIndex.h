@@ -45,7 +45,78 @@ class ARANGODBDRIVERSHARED_EXPORT HashIndex : public QObject, public IndexInterf
 {
         Q_OBJECT
     public:
+        /**
+         * @brief Constructor
+         *
+         * @param collection
+         * @param parent
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
         explicit HashIndex(Collection * collection, QObject *parent = 0);
+
+        /**
+         * @brief Sets according to isUnique, if the fields
+         * values have to be unique
+         *
+         * @param isUnique
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setUnique(bool isUnique);
+
+        /**
+         * @brief Returns if the fields values have to
+         * be unique
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        bool isUnique() const;
+
+        /**
+         * @brief Set for which fields this HashIndex is created
+         *
+         * @param fields
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setFields(const QStringList & fields);
+
+        /**
+         * @brief Add field to the fields list
+         *
+         * @param field
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void addField(const QString & field);
+
+        /**
+         * @brief Removes field from the fields list
+         *
+         * @param field
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void removeField(const QString & field);
+
+        /**
+         * @brief Returns all fields which have this HashIndex
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QStringList fields() const;
 
         // IndexInterface interface
         /**

@@ -24,6 +24,7 @@
 #include "HashIndex.h"
 
 #include <QtCore/QEventLoop>
+#include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QStringList>
@@ -67,6 +68,42 @@ HashIndex::HashIndex(Collection * collection, QObject *parent) :
     d_ptr->collection = collection;
 }
 
+void HashIndex::setUnique(bool isUnique)
+{
+    Q_D(HashIndex);
+    d->isUnique = isUnique;
+}
+
+bool HashIndex::isUnique() const
+{
+    Q_D(const HashIndex);
+    return d->isUnique;
+}
+
+void HashIndex::setFields(const QStringList & fields)
+{
+    Q_D(HashIndex);
+    d->fields = fields;
+}
+
+void HashIndex::addField(const QString & field)
+{
+    Q_D(HashIndex);
+    d->fields.append(field);
+}
+
+void HashIndex::removeField(const QString & field)
+{
+    Q_D(HashIndex);
+    d->fields.removeOne(field);
+}
+
+QStringList HashIndex::fields() const
+{
+    Q_D(const HashIndex);
+    return d->fields;
+}
+
 QString HashIndex::id() const
 {
     Q_D(const HashIndex);
@@ -86,11 +123,14 @@ Collection *HashIndex::collection() const
 
 QByteArray HashIndex::toJson() const
 {
+    Q_D(const HashIndex);
+
     QJsonDocument doc;
     QJsonObject obj;
 
     obj.insert(QLatin1String("type"), name());
-    //obj.insert(QLatin1String("size"), QJsonValue(size()));
+    obj.insert(QLatin1String("fields"), QJsonArray::fromStringList(d->fields));
+    obj.insert(QLatin1String("unique"), QJsonValue(d->isUnique));
 
     doc.setObject(obj);
     return doc.toJson();
