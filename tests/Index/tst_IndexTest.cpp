@@ -27,6 +27,7 @@
 #include <arangodb/Arangodbdriver.h>
 #include <arangodb/QueryBuilder.h>
 #include <arangodb/index/CapIndex.h>
+#include <arangodb/index/HashIndex.h>
 
 using namespace arangodb;
 using namespace arangodb::index;
@@ -42,6 +43,7 @@ class IndexTest : public QObject
         void initTestCase();
         void cleanupTestCase();
         void testCreatingCapIndex();
+        void testCreatingUniqueHashIndex();
 
     protected:
         Arangodbdriver driver;
@@ -52,6 +54,8 @@ class IndexTest : public QObject
             Document * doc = collection->createDocument();
             doc->save();
             doc->waitForResult();
+
+            return doc;
         }
 };
 
@@ -59,6 +63,12 @@ IndexTest::IndexTest()
 {
 }
 
+/**
+ * @brief IndexTest::initTestCase
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.6
+ */
 void IndexTest::initTestCase()
 {
     tempCollection = driver.createCollection("temp");
@@ -66,12 +76,24 @@ void IndexTest::initTestCase()
     tempCollection->waitUntilReady();
 }
 
+/**
+ * @brief IndexTest::cleanupTestCase
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.6
+ */
 void IndexTest::cleanupTestCase()
 {
     tempCollection->deleteAll();
     tempCollection->waitUntilDeleted();
 }
 
+/**
+ * @brief IndexTest::testCreatingCapIndex
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.6
+ */
 void IndexTest::testCreatingCapIndex()
 {
     CapIndex * index = dynamic_cast<CapIndex *>(tempCollection->createIndex(IndexType::CapIndex));
@@ -102,6 +124,52 @@ void IndexTest::testCreatingCapIndex()
     // This shows that everything can be saved into the database
     // but after limit it starts to override older entries
     QCOMPARE(dataDoc->key(), doc2->key());
+
+    index->deleteLater();
+    doc1->deleteLater();
+    doc2->deleteLater();
+}
+
+/**
+ * @brief IndexTest::testCreatingHashIndex
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.6
+ */
+void IndexTest::testCreatingUniqueHashIndex()
+{
+    HashIndex * index = dynamic_cast<HashIndex *>(tempCollection->createIndex(IndexType::HashIndex));
+    QVERIFY(index != Q_NULLPTR);
+
+    index->setUnique(true);
+    index->addField(QLatin1String("my_unique_field"));
+    index->save();
+    index->waitUntilReady();
+
+    QVERIFY2(!index->hasErrorOccurred(), qPrintable(index->errorMessage()));
+    QCOMPARE(index->isNewlyCreated(), true);
+
+    Document * doc1 = tempCollection->createDocument();
+    doc1->set(QLatin1String("my_unique_field"), "FuBar");
+    doc1->save();
+    doc1->waitForResult();
+
+    Document * doc2 = tempCollection->createDocument();
+    doc2->set(QLatin1String("my_unique_field"), "FuBar");
+    doc2->save();
+    doc2->waitForResult();
+
+    QVERIFY2(!doc1->hasErrorOccurred(), qPrintable(doc1->errorMessage()));
+    // Document is not created because of the unique constraint
+    QVERIFY2(doc2->hasErrorOccurred(), qPrintable(doc2->errorMessage()));
+
+    auto cursor = tempCollection->getAllDocuments();
+    cursor->waitForResult();
+
+    QVERIFY2(!cursor->hasErrorOccurred(), qPrintable(cursor->errorMessage()));
+    QList<Document *> data = cursor->data();
+
+    QCOMPARE(data.size(), 1);
 
     index->deleteLater();
     doc1->deleteLater();
