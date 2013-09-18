@@ -28,6 +28,7 @@
 #include "QueryBuilder.h"
 
 #include "index/CapIndex.h"
+#include "index/HashIndex.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QJsonDocument>
@@ -225,6 +226,13 @@ index::IndexInterface *Collection::createIndex(index::IndexType type)
                 i = new index::CapIndex(this, this);
             else
                 i = new index::CapIndex(this, driver);
+            break;
+
+        case index::IndexType::HashIndex:
+            if ( driver == Q_NULLPTR )
+                i = new index::HashIndex(this, this);
+            else
+                i = new index::HashIndex(this, driver);
             break;
         default:
             break;
