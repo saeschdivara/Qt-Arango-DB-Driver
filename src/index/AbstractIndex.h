@@ -56,7 +56,7 @@ enum class IndexType {
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.6
  */
-class ARANGODBDRIVERSHARED_EXPORT IndexInterface
+class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
 {
     public:
         // Normal public methods
@@ -236,7 +236,7 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void saveSignal(IndexInterface *);
+        void saveSignal(AbstractIndex *);
 
         /**
          * @brief This signal is emited if IndexInterface::deleteInDatabase
@@ -245,7 +245,7 @@ class ARANGODBDRIVERSHARED_EXPORT IndexInterface
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void deleteSignal(IndexInterface *);
+        void deleteSignal(AbstractIndex *);
 };
 
 }

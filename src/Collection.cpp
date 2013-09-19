@@ -214,9 +214,9 @@ Document *Collection::createDocument(const QString & key)
     }
 }
 
-index::IndexInterface *Collection::createIndex(index::IndexType type)
+index::AbstractIndex *Collection::createIndex(index::IndexType type)
 {
-    index::IndexInterface * i = Q_NULLPTR;
+    index::AbstractIndex * i = Q_NULLPTR;
     Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
 
     switch (type)

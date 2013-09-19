@@ -247,13 +247,13 @@ Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document
     return e;
 }
 
-void Arangodbdriver::connectIndex(index::IndexInterface * index)
+void Arangodbdriver::connectIndex(index::AbstractIndex * index)
 {
 
     QObject * obj = dynamic_cast<QObject *>(index);
 
-    connect( obj, SIGNAL(saveSignal(IndexInterface*)),
-             this,  SLOT(_ar_index_save(IndexInterface*))
+    connect( obj, SIGNAL(saveSignal(AbstractIndex*)),
+             this,  SLOT(_ar_index_save(AbstractIndex*))
              );
 }
 
@@ -555,7 +555,7 @@ void Arangodbdriver::_ar_collection_delete(Collection * collection)
             );
 }
 
-void Arangodbdriver::_ar_index_save(index::IndexInterface * index)
+void Arangodbdriver::_ar_index_save(index::AbstractIndex * index)
 {
     d->jsonData = index->toJson();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());

@@ -200,7 +200,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void connectIndex(index::IndexInterface * index);
+        void connectIndex(index::AbstractIndex* index);
 
         // TODO: Create interface (QBQueryInterface) for QBSelect and QBSimpleSelect
         // TODO: Rename QBSimpleSelect to QBSimpleQuery
@@ -395,7 +395,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void _ar_index_save(IndexInterface * index);
+        void _ar_index_save(AbstractIndex* index);
 
     private:
         internal::ArangodbdriverPrivate *d;

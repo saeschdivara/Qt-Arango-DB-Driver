@@ -389,7 +389,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        index::IndexInterface * createIndex(index::IndexType type);
+        index::AbstractIndex * createIndex(index::IndexType type);
 
         /**
          * @brief save

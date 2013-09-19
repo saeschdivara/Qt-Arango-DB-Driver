@@ -45,7 +45,7 @@ HEADERS += Arangodbdriver.h\
     QBSelect.h \
     QBCursor.h \
     index/CapIndex.h \
-    index/IndexInterface.h \
     QBSimpleSelect.h \
     index/HashIndex.h \
-    index/SkipListIndex.h
+    index/SkipListIndex.h \
+    index/AbstractIndex.h
