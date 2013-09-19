@@ -32,7 +32,8 @@ SOURCES += Arangodbdriver.cpp \
     QBCursor.cpp \
     index/CapIndex.cpp \
     QBSimpleSelect.cpp \
-    index/HashIndex.cpp
+    index/HashIndex.cpp \
+    index/SkipListIndex.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
@@ -46,4 +47,5 @@ HEADERS += Arangodbdriver.h\
     index/CapIndex.h \
     index/IndexInterface.h \
     QBSimpleSelect.h \
-    index/HashIndex.h
+    index/HashIndex.h \
+    index/SkipListIndex.h
