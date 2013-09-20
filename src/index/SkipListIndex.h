@@ -24,18 +24,53 @@
 #ifndef SKIPLISTINDEX_H
 #define SKIPLISTINDEX_H
 
-#include <QObject>
+#include "HashIndex.h"
 
-class SkipListIndex : public QObject
+#include <QtCore/QString>
+
+namespace arangodb
+{
+namespace index
+{
+
+class SkipListIndexPrivate;
+
+/**
+ * @brief The SkipListIndex class
+ *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
+ * @since 0.6
+ */
+class SkipListIndex : public HashIndex
 {
         Q_OBJECT
     public:
-        explicit SkipListIndex(QObject *parent = 0);
-        
-    signals:
-        
-    public slots:
-        
+        /**
+         * @brief SkipListIndex
+         *
+         * @param collection
+         * @param parent
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        explicit SkipListIndex(Collection * collection, QObject *parent = 0);
+
+        /**
+         * @brief Returns the name/type of the index
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual QString name() const Q_DECL_OVERRIDE;
+
+    private:
+        Q_DECLARE_PRIVATE(SkipListIndex)
 };
+
+}
+}
 
 #endif // SKIPLISTINDEX_H

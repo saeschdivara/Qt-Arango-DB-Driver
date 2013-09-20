@@ -21,35 +21,26 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "SkipListIndex.h"
-#include "private/HashIndex_p.h"
+#ifndef HASHINDEX_P_H
+#define HASHINDEX_P_H
 
-#include <QtCore/QEventLoop>
-#include <QtCore/QJsonArray>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
+#include "AbstractIndex_p.h"
+
+#include <QtCore/QStringList>
 
 namespace arangodb
 {
 namespace index
 {
 
-class SkipListIndexPrivate : public HashIndexPrivate
+class HashIndexPrivate : public AbstractIndexPrivate
 {
     public:
+        QStringList fields;
+        bool isUnique;
 };
 
-const QString SKIPLIST_INDEX_NAME = QStringLiteral("skiplist");
-
-SkipListIndex::SkipListIndex(Collection * collection, QObject *parent) :
-    HashIndex(collection, new SkipListIndexPrivate, parent)
-{
+}
 }
 
-QString SkipListIndex::name() const
-{
-    return SKIPLIST_INDEX_NAME;
-}
-
-}
-}
+#endif // HASHINDEX_P_H

@@ -21,10 +21,9 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "SkipListIndex.h"
+#include "GeoIndex.h"
 #include "private/HashIndex_p.h"
 
-#include <QtCore/QEventLoop>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
@@ -34,21 +33,59 @@ namespace arangodb
 namespace index
 {
 
-class SkipListIndexPrivate : public HashIndexPrivate
+class GeoIndexPrivate : public HashIndexPrivate
 {
     public:
+        bool isGeoJson;
+        bool isConstraint;
+        bool ignoreNull;
 };
 
-const QString SKIPLIST_INDEX_NAME = QStringLiteral("skiplist");
+QString GEO_INDEX_NAME = QStringLiteral("geo");
 
-SkipListIndex::SkipListIndex(Collection * collection, QObject *parent) :
-    HashIndex(collection, new SkipListIndexPrivate, parent)
+GeoIndex::GeoIndex(Collection * collection, QObject *parent) :
+    HashIndex(collection, new GeoIndexPrivate, parent)
 {
 }
 
-QString SkipListIndex::name() const
+void GeoIndex::setIsGeoJson(bool b)
 {
-    return SKIPLIST_INDEX_NAME;
+    Q_D(GeoIndex);
+    d->isGeoJson = b;
+}
+
+bool GeoIndex::isGeoJson() const
+{
+    Q_D(const GeoIndex);
+    return d->isGeoJson;
+}
+
+QString GeoIndex::name() const
+{
+    return GEO_INDEX_NAME;
+}
+
+QByteArray GeoIndex::toJson() const
+{
+    Q_D(const GeoIndex);
+
+    QJsonDocument doc;
+    QJsonObject obj;
+
+    obj.insert(QLatin1String("type"), name());
+    obj.insert(QLatin1String("fields"), QJsonArray::fromStringList(d->fields));
+    obj.insert(QLatin1String("geoJson"), QJsonValue(d->isGeoJson));
+    obj.insert(QLatin1String("ignoreNull"), QJsonValue(d->ignoreNull));
+
+    if ( d->isUnique && d->isConstraint )
+        qWarning() << Q_FUNC_INFO << " Geo Index cannot be both unique and contraint";
+    else if ( d->isConstraint )
+        obj.insert(QLatin1String("constraint"), QJsonValue(d->isConstraint));
+    else if ( d->isUnique )
+        obj.insert(QLatin1String("unique"), QJsonValue(d->isUnique));
+
+    doc.setObject(obj);
+    return doc.toJson();
 }
 
 }

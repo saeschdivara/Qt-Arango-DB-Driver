@@ -22,50 +22,23 @@
  *********************************************************************************/
 
 #include "HashIndex.h"
+#include "private/HashIndex_p.h"
 
-#include <QtCore/QEventLoop>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QStringList>
-#include <QtNetwork/QNetworkReply>
 
 namespace arangodb
 {
 namespace index
 {
 
-class HashIndexPrivate
-{
-    public:
-        QString id;
-        Collection * collection;
-
-        QStringList fields;
-        bool isUnique;
-
-        bool isNewlyCreated = false;
-
-        // Error related
-        bool hasError;
-        int errorNumber;
-        QString errorMessage;
-
-        inline void clearError() {
-            hasError = false;
-            errorNumber = 0;
-            errorMessage.clear();
-        }
-};
-
 const QString HASH_INDEX_NAME = QStringLiteral("hash");
 
 HashIndex::HashIndex(Collection * collection, QObject *parent) :
-    QObject(parent),
-    d_ptr(new HashIndexPrivate)
+    AbstractIndex(collection, new HashIndexPrivate, parent)
 {
-    d_ptr->clearError();
-    d_ptr->collection = collection;
 }
 
 void HashIndex::setUnique(bool isUnique)
@@ -104,21 +77,9 @@ QStringList HashIndex::fields() const
     return d->fields;
 }
 
-QString HashIndex::id() const
-{
-    Q_D(const HashIndex);
-    return d->id;
-}
-
 QString HashIndex::name() const
 {
     return HASH_INDEX_NAME;
-}
-
-Collection *HashIndex::collection() const
-{
-    Q_D(const HashIndex);
-    return d->collection;
 }
 
 QByteArray HashIndex::toJson() const
@@ -136,85 +97,9 @@ QByteArray HashIndex::toJson() const
     return doc.toJson();
 }
 
-void HashIndex::waitUntilReady()
+HashIndex::HashIndex(Collection * collection, HashIndexPrivate * d, QObject * parent) :
+    AbstractIndex(collection, d, parent)
 {
-    QEventLoop loop;
-    QObject::connect( this, &HashIndex::ready, &loop, &QEventLoop::quit );
-    QObject::connect( this, &HashIndex::error, &loop, &QEventLoop::quit );
-    loop.exec();
-}
-
-void HashIndex::waitUntilDeleted()
-{
-    QEventLoop loop;
-    QObject::connect( this, &HashIndex::deleted, &loop, &QEventLoop::quit );
-    QObject::connect( this, &HashIndex::error, &loop, &QEventLoop::quit );
-    loop.exec();
-}
-
-bool HashIndex::hasErrorOccurred() const
-{
-    Q_D(const HashIndex);
-    return d->hasError;
-}
-
-int HashIndex::errorCode() const
-{
-    Q_D(const HashIndex);
-    return d->errorNumber;
-}
-
-QString HashIndex::errorMessage() const
-{
-    Q_D(const HashIndex);
-    return d->errorMessage;
-}
-
-bool HashIndex::isNewlyCreated() const
-{
-    Q_D(const HashIndex);
-    return d->isNewlyCreated;
-}
-
-void HashIndex::save()
-{
-    Q_EMIT saveSignal(this);
-}
-
-void HashIndex::deleteInDatabase()
-{
-    Q_EMIT deleteSignal(this);
-}
-
-void HashIndex::_ar_saveRequestFinished()
-{
-    Q_D(HashIndex);
-
-    QNetworkReply * reply = qobject_cast<QNetworkReply *>(sender());
-    if ( !reply ) return;
-
-    QByteArray replyContent = reply->readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(replyContent);
-    QJsonObject obj = doc.object();
-
-    if ( obj.isEmpty() ) return;
-
-    bool hasError = obj.value("error").toBool(true);
-    if ( hasError ) {
-        d->hasError = true;
-        d->errorNumber = obj.value("errorNum").toDouble(-1);
-        d->errorMessage = obj.value("errorMessage").toString();
-
-        Q_EMIT error();
-    }
-    else {
-        d->id = obj.value("id").toString();
-        d->isNewlyCreated = obj.value("isNewlyCreated").toBool();
-
-        d->clearError();
-
-        Q_EMIT ready();
-    }
 }
 
 }

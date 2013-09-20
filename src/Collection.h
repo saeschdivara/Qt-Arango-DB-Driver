@@ -26,7 +26,7 @@
 
 #include "arangodb-driver_global.h"
 #include "QBCursor.h"
-#include "index/IndexInterface.h"
+#include "index/AbstractIndex.h"
 
 #include <QtCore/QJsonObject>
 #include <QtCore/QString>

@@ -32,7 +32,7 @@
 #include "QBSelect.h"
 #include "QBSimpleSelect.h"
 #include "QBCursor.h"
-#include "index/IndexInterface.h"
+#include "index/AbstractIndex.h"
 
 #include <QtCore/QSharedPointer>
 

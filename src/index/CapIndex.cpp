@@ -22,6 +22,7 @@
  *********************************************************************************/
 
 #include "CapIndex.h"
+#include "private/AbstractIndex_p.h"
 
 #include <QtCore/QEventLoop>
 #include <QtCore/QJsonDocument>
@@ -34,35 +35,17 @@ namespace arangodb
 namespace index
 {
 
-class CapIndexPrivate
+class CapIndexPrivate : public AbstractIndexPrivate
 {
     public:
-        QString id;
-        Collection * collection;
         int size;
-
-        bool isNewlyCreated = false;
-
-        // Error related
-        bool hasError;
-        int errorNumber;
-        QString errorMessage;
-
-        inline void clearError() {
-            hasError = false;
-            errorNumber = 0;
-            errorMessage.clear();
-        }
 };
 
 const QString CAP_INDEX_NAME = QStringLiteral("cap");
 
 CapIndex::CapIndex(Collection * collection, QObject *parent) :
-    QObject(parent),
-    d_ptr(new CapIndexPrivate)
+    AbstractIndex(collection, new CapIndexPrivate, parent)
 {
-    d_ptr->clearError();
-    d_ptr->collection = collection;
 }
 
 void CapIndex::setSize(int size)
@@ -77,21 +60,9 @@ int CapIndex::size() const
     return d->size;
 }
 
-QString CapIndex::id() const
-{
-    Q_D(const CapIndex);
-    return d->id;
-}
-
 QString CapIndex::name() const
 {
     return CAP_INDEX_NAME;
-}
-
-Collection *CapIndex::collection() const
-{
-    Q_D(const CapIndex);
-    return d->collection;
 }
 
 QByteArray CapIndex::toJson() const
@@ -104,87 +75,6 @@ QByteArray CapIndex::toJson() const
 
     doc.setObject(obj);
     return doc.toJson();
-}
-
-void CapIndex::waitUntilReady()
-{
-    QEventLoop loop;
-    QObject::connect( this, &CapIndex::ready, &loop, &QEventLoop::quit );
-    QObject::connect( this, &CapIndex::error, &loop, &QEventLoop::quit );
-    loop.exec();
-}
-
-void CapIndex::waitUntilDeleted()
-{
-    QEventLoop loop;
-    QObject::connect( this, &CapIndex::deleted, &loop, &QEventLoop::quit );
-    QObject::connect( this, &CapIndex::error, &loop, &QEventLoop::quit );
-    loop.exec();
-}
-
-bool CapIndex::hasErrorOccurred() const
-{
-    Q_D(const CapIndex);
-    return d->hasError;
-}
-
-int CapIndex::errorCode() const
-{
-    Q_D(const CapIndex);
-    return d->errorNumber;
-}
-
-QString CapIndex::errorMessage() const
-{
-    Q_D(const CapIndex);
-    return d->errorMessage;
-}
-
-bool CapIndex::isNewlyCreated() const
-{
-    Q_D(const CapIndex);
-    return d->isNewlyCreated;
-}
-
-void CapIndex::save()
-{
-    Q_EMIT saveSignal(this);
-}
-
-void CapIndex::deleteInDatabase()
-{
-    Q_EMIT deleteSignal(this);
-}
-
-void CapIndex::_ar_saveRequestFinished()
-{
-    Q_D(CapIndex);
-
-    QNetworkReply * reply = qobject_cast<QNetworkReply *>(sender());
-    if ( !reply ) return;
-
-    QByteArray replyContent = reply->readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(replyContent);
-    QJsonObject obj = doc.object();
-
-    if ( obj.isEmpty() ) return;
-
-    bool hasError = obj.value("error").toBool(true);
-    if ( hasError ) {
-        d->hasError = true;
-        d->errorNumber = obj.value("errorNum").toDouble(-1);
-        d->errorMessage = obj.value("errorMessage").toString();
-
-        Q_EMIT error();
-    }
-    else {
-        d->id = obj.value("id").toString();
-        d->isNewlyCreated = obj.value("isNewlyCreated").toBool();
-
-        d->clearError();
-
-        Q_EMIT ready();
-    }
 }
 
 }

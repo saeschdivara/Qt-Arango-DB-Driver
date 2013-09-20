@@ -21,33 +21,55 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef CAPINDEX_H
-#define CAPINDEX_H
+#ifndef GEOINDEX_H
+#define GEOINDEX_H
 
-#include "AbstractIndex.h"
-
-#include <QtCore/QString>
+#include "HashIndex.h"
 
 namespace arangodb
 {
 namespace index
 {
 
-class CapIndexPrivate;
+class GeoIndexPrivate;
 
 /**
- * @brief The cap constraint does not index particular attributes of the documents
- * in a collection, but limits the number of documents in the collection to a maximum
- * value. The cap constraint thus does not support attribute names specified in the
- * fields attribute nor uniqueness of any kind via the unique attribute.
+ * @brief Expects an object containing the index details.
+ *
+ * • type: must be equal to "geo".
+ *
+ * • fields: A list with one or two attribute paths.
+ * If it is a list with one attribute path location, then a geo-spatial index on
+ * all documents is created using location as path to the coordinates. The
+ * value of the attribute must be a list with at least two double values. The list
+ * must contain the latitude (first value) and the longitude (second value). All
+ * documents, which do not have the attribute path or with value that are not
+ * suitable, are ignored.
+ * If it is a list with two attribute paths latitude and longitude, then a
+ * geo-spatial index on all documents is created using latitude and longitude
+ * as paths the latitude and the longitude. The value of the attribute latitude
+ * and of the attribute longitude must a double. All documents, which do
+ * not have the attribute paths or which values are not suitable, are ignored.
+ *
+ * • geoJson: If a geo-spatial index on a location is constructed and geo-
+ * Json is true, then the order within the list is longitude followed by lat-
+ * itude. This corresponds to the format described in http://geojson.org/geojson-spec.html#positions
+ *
+ * • constraint: If constraint is true, then a geo-spatial constraint is
+ * created. The constraint is a non-unique variant of the index. Note that it
+ * is also possible to set the unique attribute instead of the constraint
+ * attribute.
+ *
+ * • ignoreNull: If a geo-spatial constraint is created and ignoreNull
+ * is true, then documents with a null in location or at least one null in
+ * latitude or longitude are ignored.
  *
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.6
  */
-class ARANGODBDRIVERSHARED_EXPORT CapIndex : public AbstractIndex
+class GeoIndex : public HashIndex
 {
         Q_OBJECT
-        Q_PROPERTY(int size READ size WRITE setSize)
     public:
         /**
          * @brief Constructor
@@ -58,29 +80,29 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        explicit CapIndex(Collection * collection, QObject *parent = 0);
+        explicit GeoIndex(Collection * collection, QObject *parent = 0);
 
         /**
-         * @brief Sets the max number of Document's which
-         * can be stored into the Collection
+         * @brief If a geo-spatial index on a location is constructed and geo-
+         * Json is true, then the order within the list is longitude followed by lat-
+         * itude.
          *
-         * @param size
+         * @param b
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void setSize(int size);
+        void setIsGeoJson(bool b);
 
         /**
-         * @brief Returns the maximal number of documents
-         * which can be stored into the collection
+         * @brief Returns if geo json format is used
          *
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        int size() const;
+        bool isGeoJson() const;
 
         /**
          * @brief Returns the name/type of the index
@@ -104,10 +126,10 @@ class ARANGODBDRIVERSHARED_EXPORT CapIndex : public AbstractIndex
         virtual QByteArray toJson() const Q_DECL_OVERRIDE;
 
     private:
-        Q_DECLARE_PRIVATE(CapIndex)
+        Q_DECLARE_PRIVATE(GeoIndex)
 };
 
 }
 }
 
-#endif // CAPINDEX_H
+#endif // GEOINDEX_H

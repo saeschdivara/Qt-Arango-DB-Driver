@@ -21,8 +21,8 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef INDEXINTERFACE_H
-#define INDEXINTERFACE_H
+#ifndef ABSTRACTINDEX_H
+#define ABSTRACTINDEX_H
 
 #include "arangodb-driver_global.h"
 
@@ -33,6 +33,8 @@ class Collection;
 
 namespace index
 {
+
+class AbstractIndexPrivate;
 
 /**
  * @brief Enum which describes all available
@@ -51,15 +53,23 @@ enum class IndexType {
 };
 
 /**
- * @brief Interface for all index classes
+ * @brief Abstract class for all index classes
  *
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.6
  */
-class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
+class ARANGODBDRIVERSHARED_EXPORT AbstractIndex : public QObject
 {
+        Q_OBJECT
     public:
         // Normal public methods
+        /**
+         * @brief Deletes d_ptr
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual ~AbstractIndex();
 
         /**
          * @brief Returns the unique id of the index
@@ -69,7 +79,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual QString id() const = 0;
+        QString id() const;
 
         /**
          * @brief Returns the name/type of the index
@@ -90,7 +100,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual Collection* collection() const = 0;
+        Collection* collection() const;
 
         /**
          * @brief Returns a json representation of the
@@ -110,7 +120,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual void waitUntilReady() = 0;
+        void waitUntilReady();
 
         /**
          * @brief Returns only after the index data is deleted
@@ -119,7 +129,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual void waitUntilDeleted() = 0;
+        void waitUntilDeleted();
 
         /**
          * @brief Returns if during a network operation or through
@@ -130,7 +140,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual bool hasErrorOccurred() const = 0;
+        bool hasErrorOccurred() const;
 
         /**
          * @brief If an error has occured, it returns the error
@@ -141,7 +151,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual int errorCode() const = 0;
+        int errorCode() const;
 
         /**
          * @brief If an error has occured, it returns the error
@@ -152,7 +162,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual QString errorMessage() const = 0;
+        QString errorMessage() const;
 
         /**
          * @brief isNewlyCreated
@@ -162,12 +172,9 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual bool isNewlyCreated() const = 0;
+        bool isNewlyCreated() const;
 
-        // Slots
-        // ----------------------------------------
-        // They can be overloaded just like normal
-        // methods
+    public Q_SLOTS:
 
         /**
          * @brief Creates index in database collection
@@ -175,7 +182,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual void save() = 0;
+        void save();
 
         /**
          * @brief Deletes the index in the database
@@ -184,7 +191,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual void deleteInDatabase() = 0;
+        void deleteInDatabase();
 
         /**
          * @brief This method is should not be triggered
@@ -195,13 +202,9 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        virtual void _ar_saveRequestFinished() = 0;
+        void _ar_saveRequestFinished();
 
-        // Signals
-        // -----------------------------------------
-        // They can neither be pure nor virtual but
-        // the declaration here insures that every
-        // class which implements the rest, needs to define it
+    Q_SIGNALS:
 
         /**
          * @brief This signal is emited when a request
@@ -230,7 +233,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
         void error();
 
         /**
-         * @brief This signal is emited if IndexInterface::save
+         * @brief This signal is emited if AbstractIndex::save
          * was triggered
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
@@ -239,16 +242,34 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex
         void saveSignal(AbstractIndex *);
 
         /**
-         * @brief This signal is emited if IndexInterface::deleteInDatabase
+         * @brief This signal is emited if AbstractIndex::deleteInDatabase
          * was triggered
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
         void deleteSignal(AbstractIndex *);
+
+    protected:
+        AbstractIndexPrivate * d_ptr;
+
+        /**
+         * @brief AbstractIndex
+         *
+         * @param collection
+         * @param d
+         * @param parent
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        AbstractIndex(Collection * collection, AbstractIndexPrivate *d, QObject * parent);
+
+    private:
+        Q_DECLARE_PRIVATE(AbstractIndex)
 };
 
 }
 }
 
-#endif // INDEXINTERFACE_H
+#endif // ABSTRACTINDEX
