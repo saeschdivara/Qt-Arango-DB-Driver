@@ -35,7 +35,8 @@ SOURCES += Arangodbdriver.cpp \
     index/HashIndex.cpp \
     index/SkipListIndex.cpp \
     index/AbstractIndex.cpp \
-    index/GeoIndex.cpp
+    index/GeoIndex.cpp \
+    index/FulltextIndex.cpp
 
 HEADERS += Arangodbdriver.h\
         arangodb-driver_global.h \
@@ -53,4 +54,5 @@ HEADERS += Arangodbdriver.h\
     index/AbstractIndex.h \
     index/private/AbstractIndex_p.h \
     index/private/HashIndex_p.h \
-    index/GeoIndex.h
+    index/GeoIndex.h \
+    index/FulltextIndex.h
