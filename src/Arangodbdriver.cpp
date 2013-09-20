@@ -555,7 +555,7 @@ void Arangodbdriver::_ar_collection_delete(Collection * collection)
             );
 }
 
-void Arangodbdriver::_ar_index_save(index::AbstractIndex * index)
+void Arangodbdriver::_ar_index_save(AbstractIndex * index)
 {
     d->jsonData = index->toJson();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -566,9 +566,7 @@ void Arangodbdriver::_ar_index_save(index::AbstractIndex * index)
 
     QNetworkReply *reply = d->networkManager.post(request, d->jsonData);
 
-    QObject * obj = dynamic_cast<QObject *>(index);
-
-    connect(reply, SIGNAL(finished()),
-            obj, SLOT(_ar_saveRequestFinished())
+    connect(reply, &QNetworkReply::finished,
+            index, &AbstractIndex::_ar_saveRequestFinished
             );
 }

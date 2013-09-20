@@ -105,6 +105,52 @@ class GeoIndex : public HashIndex
         bool isGeoJson() const;
 
         /**
+         * @brief If constraint is true, then a geo-spatial constraint is
+         * created. The constraint is a non-unique variant of the index. Note that it
+         * is also possible to set the unique attribute instead of the constraint
+         * attribute.
+         *
+         * @param b
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setHasConstraint(bool b);
+
+        /**
+         * @brief Returns if index has constraint
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        bool hasConstraint() const;
+
+        /**
+         * @brief  If a geo-spatial constraint is created and ignoreNull
+         * is true, then documents with a null in location or at least one null in
+         * latitude or longitude are ignored.
+         *
+         * @param b
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setIgnoreNull(bool b);
+
+        /**
+         * @brief Returns if documents with null in location or at least one null in
+         * latitude or longitude are ignored
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        bool ignoreNull() const;
+
+        /**
          * @brief Returns the name/type of the index
          *
          * @return

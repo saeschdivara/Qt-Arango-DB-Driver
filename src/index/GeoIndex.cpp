@@ -37,7 +37,7 @@ class GeoIndexPrivate : public HashIndexPrivate
 {
     public:
         bool isGeoJson;
-        bool isConstraint;
+        bool hasConstraint;
         bool ignoreNull;
 };
 
@@ -60,6 +60,30 @@ bool GeoIndex::isGeoJson() const
     return d->isGeoJson;
 }
 
+void GeoIndex::setHasConstraint(bool b)
+{
+    Q_D(GeoIndex);
+    d->hasConstraint = b;
+}
+
+bool GeoIndex::hasConstraint() const
+{
+    Q_D(const GeoIndex);
+    return d->hasConstraint;
+}
+
+void GeoIndex::setIgnoreNull(bool b)
+{
+    Q_D(GeoIndex);
+    d->ignoreNull = b;
+}
+
+bool GeoIndex::ignoreNull() const
+{
+    Q_D(const GeoIndex);
+    return d->ignoreNull;
+}
+
 QString GeoIndex::name() const
 {
     return GEO_INDEX_NAME;
@@ -77,10 +101,10 @@ QByteArray GeoIndex::toJson() const
     obj.insert(QLatin1String("geoJson"), QJsonValue(d->isGeoJson));
     obj.insert(QLatin1String("ignoreNull"), QJsonValue(d->ignoreNull));
 
-    if ( d->isUnique && d->isConstraint )
-        qWarning() << Q_FUNC_INFO << " Geo Index cannot be both unique and contraint";
-    else if ( d->isConstraint )
-        obj.insert(QLatin1String("constraint"), QJsonValue(d->isConstraint));
+    if ( d->isUnique && d->hasConstraint )
+        qWarning() << Q_FUNC_INFO << " Geo Index cannot be unique and has contraint";
+    else if ( d->hasConstraint )
+        obj.insert(QLatin1String("constraint"), QJsonValue(d->hasConstraint));
     else if ( d->isUnique )
         obj.insert(QLatin1String("unique"), QJsonValue(d->isUnique));
 

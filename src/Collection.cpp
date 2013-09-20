@@ -28,7 +28,9 @@
 #include "QueryBuilder.h"
 
 #include "index/CapIndex.h"
+#include "index/GeoIndex.h"
 #include "index/HashIndex.h"
+#include "index/SkipListIndex.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QJsonDocument>
@@ -233,6 +235,20 @@ index::AbstractIndex *Collection::createIndex(index::IndexType type)
                 i = new index::HashIndex(this, this);
             else
                 i = new index::HashIndex(this, driver);
+            break;
+
+        case index::IndexType::SkipListIndex:
+            if ( driver == Q_NULLPTR )
+                i = new index::SkipListIndex(this, this);
+            else
+                i = new index::SkipListIndex(this, driver);
+            break;
+
+        case index::IndexType::GeoIndex:
+            if ( driver == Q_NULLPTR )
+                i = new index::GeoIndex(this, this);
+            else
+                i = new index::GeoIndex(this, driver);
             break;
         default:
             break;
