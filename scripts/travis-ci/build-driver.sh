@@ -2,6 +2,7 @@
 
 qmake -v
 
+mkdir ./../arangodb-driver-dist/release/
 cd ./src
 
 if [[ "$CXX" == "g++" ]]
@@ -19,5 +20,6 @@ make -j6
 
 ls .
 ls ..
+ls ./../../arangodb-driver-dist/release/
 
 cd ..
