@@ -133,6 +133,24 @@ void AbstractIndex::_ar_saveRequestFinished()
     }
 }
 
+void AbstractIndex::_ar_deleteRequestFinished()
+{
+    Q_D(AbstractIndex);
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
+
+    bool hasError = obj.value("error").toBool();
+    if ( hasError ) {
+        d->errorMessage = obj.value("errorMessage").toString();
+        d->errorNumber  = obj.value("errorNum").toVariant().toInt();
+        d->errorNumber  = obj.value("code").toVariant().toInt();
+        Q_EMIT error();
+    }
+    else {
+        Q_EMIT deleted();
+    }
+}
+
 AbstractIndex::AbstractIndex(Collection * collection, AbstractIndexPrivate * d, QObject * parent) :
     QObject(parent),
     d_ptr(d)

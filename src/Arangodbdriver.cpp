@@ -570,3 +570,14 @@ void Arangodbdriver::_ar_index_save(AbstractIndex * index)
             index, &AbstractIndex::_ar_saveRequestFinished
             );
 }
+
+void Arangodbdriver::_ar_index_delete(AbstractIndex * index)
+{
+    QUrl url(d->standardUrl + QString("/index/") + index->id());
+    QNetworkRequest request(url);
+    QNetworkReply *reply = d->networkManager.deleteResource(request);
+
+    connect(reply, &QNetworkReply::finished,
+            index, &AbstractIndex::_ar_deleteRequestFinished
+            );
+}

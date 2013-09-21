@@ -204,6 +204,17 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractIndex : public QObject
          */
         void _ar_saveRequestFinished();
 
+        /**
+         * @brief This method is should not be triggered
+         * by anything else but from ArangodbDriver methods because
+         * as sender will be a QNetworkReply which holds the content
+         * of the delete request results
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void _ar_deleteRequestFinished();
+
     Q_SIGNALS:
 
         /**

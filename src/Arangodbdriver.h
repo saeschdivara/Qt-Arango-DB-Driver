@@ -388,14 +388,24 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         void _ar_collection_delete(Collection * collection);
 
         /**
-         * @brief _ar_index_save
+         * @brief Saves the index
          *
          * @param index
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void _ar_index_save(AbstractIndex* index);
+        void _ar_index_save(AbstractIndex * index);
+
+        /**
+         * @brief Deletes the index from the collection
+         *
+         * @param index
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void _ar_index_delete(AbstractIndex * index);
 
     private:
         internal::ArangodbdriverPrivate *d;
