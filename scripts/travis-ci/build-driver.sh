@@ -13,7 +13,7 @@ then
   whereis g++
 
   gcc --version
-  sudo update-alternatives --install /usr/local/bin/gcc gcc /usr/bin/gcc-4.6 60 --slave /usr/local/bin/g++ g++ /usr/bin/g++-4.6
+  #sudo update-alternatives --install /usr/local/bin/gcc gcc /usr/bin/gcc-4.6 60 --slave /usr/local/bin/g++ g++ /usr/bin/g++-4.6
   sudo update-alternatives --install /usr/local/bin/gcc gcc /usr/bin/gcc-4.7 70 --slave /usr/local/bin/g++ g++ /usr/bin/g++-4.7
   sudo update-alternatives --config gcc
   gcc --version
