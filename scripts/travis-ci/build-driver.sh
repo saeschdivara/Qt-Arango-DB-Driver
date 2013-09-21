@@ -1,4 +1,8 @@
 #!/bin/bash
+
+which clang++
+clang --version
+
 qmake -v
 
 if [[ "$CXX" == "g++" ]]
