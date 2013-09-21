@@ -6,6 +6,7 @@ compiler:
 
 before_script:
   - sh ./scripts/ArangoDB/arangodb_startup.sh
+  - sudo apt-get remove -qq --force-yes clang
   - sudo apt-add-repository -y ppa:canonical-qt5-edgers/qt5-proper
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo add-apt-repository --yes ppa:kxstudio-team/builds
