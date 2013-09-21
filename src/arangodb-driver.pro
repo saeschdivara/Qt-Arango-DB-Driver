@@ -8,12 +8,7 @@ QT       += network
 
 QT       -= gui
 
-contains(CONFIG, TRAVIS_CI_GCC) {
-    QMAKE_CXXFLAGS += -std=c++0x
-}
-else {
-    QMAKE_CXXFLAGS += -std=c++11
-}
+QMAKE_CXXFLAGS += -std=c++11
 
 TARGET = arangodb-driver
 TEMPLATE = lib
