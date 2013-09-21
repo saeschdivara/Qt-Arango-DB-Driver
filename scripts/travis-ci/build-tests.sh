@@ -1,17 +1,14 @@
 #!/bin/bash
+
 qmake -v
+
+cd ./tests/Collection
 
 if [[ "$CXX" == "g++" ]]
 then
-  qmake ./tests/Collection/Collection.pro -r -spec linux-g++
+  qmake ./Collection.pro -r -spec linux-g++
 else
-  qmake ./tests/Collection/Collection.pro -r -spec linux-clang
+  qmake ./Collection.pro -r -spec linux-clang
 fi
 
-make -j4
-
-
-ls .
-echo "--------------------------------------------------------------------------------------------"
-ls ..
-echo "--------------------------------------------------------------------------------------------"
+make -j6
