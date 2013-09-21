@@ -12,4 +12,4 @@ Now what is driver already able to do:
 * Creating, getting, modifing, deleting and updating of Edge's
 * Creating, getting and deleting Colllection's
 * Creating from Collection's index's is possible
-* The following index's can be created: cap, fulltext, geo, hash, skiplist
+* The following index's can be created and deleted: cap, fulltext, geo, hash, skiplist
