@@ -2,8 +2,10 @@
 
 qmake -v
 
-mkdir ./../arangodb-driver-dist/release/
-cd ./src
+cd ..
+mkdir arangodb-driver-dist/
+mkdir arangodb-driver-dist/release/
+cd ./Qt-Arango-DB-Driver/src
 
 if [[ "$CXX" == "g++" ]]
 then
