@@ -3,6 +3,11 @@
 which clang++
 clang --version
 
+ls -lh /usr/bin/gcc
+ls -lh /usr/bin/g++
+ls -lh /usr/bin/clang
+ls -lh /usr/bin/clang++
+
 qmake -v
 
 if [[ "$CXX" == "g++" ]]

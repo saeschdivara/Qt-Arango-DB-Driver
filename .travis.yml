@@ -8,8 +8,10 @@ before_script:
   - sh ./scripts/ArangoDB/arangodb_startup.sh
   - sudo apt-get remove -qq --force-yes clang
   - sudo apt-get remove -qq --force-yes g++
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D1106511179518B2
+  - sudo apt-get update -qq
   - sudo apt-add-repository -y ppa:canonical-qt5-edgers/qt5-proper
-  - sudo add-apt-repository --yes ppa:Ubuntu-toolchain-r/test
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo add-apt-repository --yes ppa:kxstudio-team/builds
   - sudo apt-get update -qq
