@@ -16,7 +16,6 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11
 
-
 SOURCES += tst_CollectionTest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 

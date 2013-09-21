@@ -2,6 +2,10 @@
 
 qmake -v
 
+mkdir ../arangodb-driver-dist
+mkdir ../arangodb-driver-dist/debug
+mkdir ../arangodb-driver-dist/release
+
 if [[ "$CXX" == "g++" ]]
 then
   g++ --version
@@ -18,6 +22,7 @@ else
 
   clang --version
   sudo update-alternatives --install /usr/local/bin/clang clang /usr/bin/clang 70 --slave /usr/local/bin/clang++ clang++ /usr/bin/clang++
+  sudo update-alternatives --config clang
   clang --version
 
   qmake ./src/arangodb-driver.pro -r -spec linux-clang CONFIG+=debug

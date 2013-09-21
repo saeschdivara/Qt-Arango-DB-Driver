@@ -13,8 +13,14 @@ QMAKE_CXXFLAGS += -std=c++11
 TARGET = arangodb-driver
 TEMPLATE = lib
 
-CONFIG(release, debug|release):DEFINES += AR_RELEASE_BUILD
-CONFIG(debug, debug|release):DEFINES += AR_DEBUG_BUILD
+CONFIG(release, debug|release){
+    TARGET = $$PWD/../../../arangodb-driver-dist/release/
+    DEFINES += AR_RELEASE_BUILD
+}
+CONFIG(debug, debug|release){
+    TARGET = $$PWD/../../../arangodb-driver-dist/debug/
+    DEFINES += AR_DEBUG_BUILD
+}
 
 DEFINES += ARANGODBDRIVER_LIBRARY
 
