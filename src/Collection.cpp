@@ -28,6 +28,7 @@
 #include "QueryBuilder.h"
 
 #include "index/CapIndex.h"
+#include "index/FulltextIndex.h"
 #include "index/GeoIndex.h"
 #include "index/HashIndex.h"
 #include "index/SkipListIndex.h"
@@ -220,36 +221,35 @@ index::AbstractIndex *Collection::createIndex(index::IndexType type)
 {
     index::AbstractIndex * i = Q_NULLPTR;
     Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+    QObject * parent = Q_NULLPTR;
+
+    if ( driver == Q_NULLPTR )
+        parent = this;
+    else
+        parent = driver;
 
     switch (type)
     {
         case index::IndexType::CapIndex:
-            if ( driver == Q_NULLPTR )
-                i = new index::CapIndex(this, this);
-            else
-                i = new index::CapIndex(this, driver);
+                i = new index::CapIndex(this, parent);
             break;
 
         case index::IndexType::HashIndex:
-            if ( driver == Q_NULLPTR )
-                i = new index::HashIndex(this, this);
-            else
-                i = new index::HashIndex(this, driver);
+                i = new index::HashIndex(this, parent);
             break;
 
         case index::IndexType::SkipListIndex:
-            if ( driver == Q_NULLPTR )
-                i = new index::SkipListIndex(this, this);
-            else
-                i = new index::SkipListIndex(this, driver);
+                i = new index::SkipListIndex(this, parent);
             break;
 
         case index::IndexType::GeoIndex:
-            if ( driver == Q_NULLPTR )
-                i = new index::GeoIndex(this, this);
-            else
-                i = new index::GeoIndex(this, driver);
+                i = new index::GeoIndex(this, parent);
             break;
+
+        case index::IndexType::FulltextIndex:
+                i = new index::FulltextIndex(this, parent);
+            break;
+
         default:
             break;
     }
