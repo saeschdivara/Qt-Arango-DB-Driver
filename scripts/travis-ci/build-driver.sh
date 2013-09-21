@@ -2,10 +2,6 @@
 
 qmake -v
 
-mkdir ../arangodb-driver-dist
-mkdir ../arangodb-driver-dist/debug
-mkdir ../arangodb-driver-dist/release
-
 if [[ "$CXX" == "g++" ]]
 then
   sudo update-alternatives --install /usr/local/bin/gcc gcc /usr/bin/gcc-4.7 70 --slave /usr/local/bin/g++ g++ /usr/bin/g++-4.7
@@ -22,6 +18,4 @@ make -j6
 ls .
 echo "--------------------------------------------------------------------------------------------"
 ls ..
-echo "--------------------------------------------------------------------------------------------"
-ls ../arangodb-driver-dist/release
 echo "--------------------------------------------------------------------------------------------"
