@@ -7,11 +7,14 @@ compiler:
 before_script:
   - sh ./scripts/ArangoDB/arangodb_startup.sh
   - sudo apt-get remove -qq --force-yes clang
+  - sudo apt-get remove -qq --force-yes g++
   - sudo apt-add-repository -y ppa:canonical-qt5-edgers/qt5-proper
+  - sudo add-apt-repository --yes ppa:Ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
   - sudo add-apt-repository --yes ppa:kxstudio-team/builds
   - sudo apt-get update -qq
   - sudo apt-get install -qq --force-yes clang
+  - sudo apt-get install gcc-4.7 g++-4.7
   - sudo apt-get install -qq --force-yes qt5-qmake qtbase5-dev qt5-default
   - bash ./scripts/travis-ci/build-driver.sh
 
