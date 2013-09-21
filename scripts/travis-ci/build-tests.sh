@@ -12,3 +12,6 @@ else
 fi
 
 make -j6
+
+ls .
+ls ..

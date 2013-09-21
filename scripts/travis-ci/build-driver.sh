@@ -17,4 +17,7 @@ fi
 
 make -j6
 
+ls .
+ls ..
+
 cd ..
