@@ -50,27 +50,8 @@ class StartTest : public QObject
         void testEdgeHeadOperation();
 
     private:
-        /**
-         * @brief waitForDocumentReady
-         * @param doc
-         */
-        inline void waitForDocumentReady(Document* doc) {
-            QEventLoop loop;
-            connect(doc, &Document::error, &loop, &QEventLoop::quit);
-            connect(doc, &Document::ready, &loop, &QEventLoop::quit);
-            loop.exec();
-        }
-
-        /**
-         * @brief waitForDocumentReady
-         * @param doc
-         */
-        inline void waitForDocumentDeleted(Document* doc) {
-            QEventLoop loop;
-            connect(doc, &Document::error, &loop, &QEventLoop::quit);
-            connect(doc, &Document::dataDeleted, &loop, &QEventLoop::quit);
-            loop.exec();
-        }
+        Arangodbdriver driver;
+        Collection * testCollection;
 };
 
 /**
@@ -85,6 +66,9 @@ StartTest::StartTest()
  */
 void StartTest::initTestCase()
 {
+    testCollection = driver.createCollection("test");
+    testCollection->save();
+    testCollection->waitUntilReady();
 }
 
 /**
@@ -92,6 +76,9 @@ void StartTest::initTestCase()
  */
 void StartTest::cleanupTestCase()
 {
+    testCollection->deleteAll();
+    testCollection->waitUntilDeleted();
+    delete testCollection;
 }
 
 /**
@@ -99,20 +86,19 @@ void StartTest::cleanupTestCase()
  */
 void StartTest::testDocumentSaveAndDelete()
 {
-    Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
     // Set fuu with ss
     doc->set("fuu", QVariant("ss"));
     // Save the document
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     // Check if the flag isCreated is set
     Q_ASSERT_X(doc->isCreated(), "testSaveAndDeleteDocument", doc->errorMessage().toLocal8Bit());
 
     // Get the same document from the db again
     Document *docFromDb = driver.getDocument(doc->docID());
-    waitForDocumentReady(docFromDb);
+    docFromDb->waitForResult();
 
     // check if there is really the document
     Q_ASSERT_X( !docFromDb->hasErrorOccurred(), "testSaveAndDeleteDocument", docFromDb->errorMessage().toLocal8Bit() );
@@ -121,11 +107,11 @@ void StartTest::testDocumentSaveAndDelete()
 
     // Delete the test document again
     doc->drop();
-    waitForDocumentDeleted(doc);
+    doc->waitUntilDeleted();
 
     // Try get the same document from the db again
     docFromDb = driver.getDocument(doc->docID());
-    waitForDocumentReady(docFromDb);
+    docFromDb->waitForResult();
 
     // check if the document doesn't exist anymore
     Q_ASSERT( docFromDb->hasErrorOccurred() );
@@ -136,11 +122,10 @@ void StartTest::testDocumentSaveAndDelete()
  */
 void StartTest::testDocumentSave2Times()
 {
-    Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
     // Save the document
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     // Change the document and save/update
     doc->set("lll", QVariant("aaa"));
@@ -149,14 +134,14 @@ void StartTest::testDocumentSave2Times()
     Q_ASSERT(doc->isEveryAttributeDirty());
 
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     // check if there wasn't an error
     Q_ASSERT_X( !doc->hasErrorOccurred(), "!doc->hasErrorOccurred()", doc->errorMessage().toLocal8Bit() );
 
     // Delete the test document again
     doc->drop();
-    waitForDocumentDeleted(doc);
+    doc->waitUntilDeleted();
 }
 
 /**
@@ -164,14 +149,13 @@ void StartTest::testDocumentSave2Times()
  */
 void StartTest::testDocumentPartialUpdate()
 {
-    Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
     doc->set("lll", QVariant("aaa"));
     doc->set("dd", QVariant("aaa"));
     doc->set("aa", QVariant("aaa"));
     // Save the document
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     // Change the document and save/update
     doc->set("lll", QVariant("bb"));
@@ -180,14 +164,14 @@ void StartTest::testDocumentPartialUpdate()
     Q_ASSERT( !doc->isEveryAttributeDirty() );
 
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     // check if there wasn't an error
     Q_ASSERT_X( !doc->hasErrorOccurred(), "!doc->hasErrorOccurred()", doc->errorMessage().toLocal8Bit() );
 
     // Delete the test document again
     doc->drop();
-    waitForDocumentDeleted(doc);
+    doc->waitUntilDeleted();
 }
 
 /**
@@ -195,38 +179,37 @@ void StartTest::testDocumentPartialUpdate()
  */
 void StartTest::testDocumentHeadOperation()
 {
-    Arangodbdriver driver;
     Document *doc = driver.createDocument("test");
     doc->set("lll", QVariant("aaa"));
     // Save the document
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     // Try get the same document from the db again
     Document *docFromDb = driver.getDocument(doc->docID());
-    waitForDocumentReady(docFromDb);
+    docFromDb->waitForResult();
 
     docFromDb->updateStatus();
-    waitForDocumentReady(docFromDb);
+    docFromDb->waitForResult();
 
     QCOMPARE( docFromDb->isCreated(), true );
     QCOMPARE( docFromDb->isCurrent(), true );
 
     doc->set("lllmmmm", "fuu");
     doc->save();
-    waitForDocumentReady(doc);
+    doc->waitForResult();
 
     docFromDb->updateStatus();
-    waitForDocumentReady(docFromDb);
+    docFromDb->waitForResult();
 
     QCOMPARE( docFromDb->isCreated(), true );
     QCOMPARE( docFromDb->isCurrent(), false );
 
     doc->drop();
-    waitForDocumentDeleted(doc);
+    doc->waitUntilDeleted();
 
     docFromDb->updateStatus();
-    waitForDocumentReady(docFromDb);
+    docFromDb->waitForResult();
 
     QCOMPARE( docFromDb->isCreated(), false );
     QCOMPARE( docFromDb->isCurrent(), false );
@@ -237,27 +220,26 @@ void StartTest::testDocumentHeadOperation()
  */
 void StartTest::testEdgeSaveAndDelete()
 {
-    Arangodbdriver driver;
     Document *doc1 = driver.createDocument("test");
     Document *doc2 = driver.createDocument("test");
 
     doc1->save();
-    waitForDocumentReady(doc1);
+    doc1->waitForResult();
 
     doc2->save();
-    waitForDocumentReady(doc2);
+    doc2->waitForResult();
 
     Edge *e = driver.createEdge("fubar", doc1, doc2);
     e->save();
-    waitForDocumentReady(e);
+    e->waitForResult();
 
     Edge *dbEdge = driver.getEdge(e->docID());
-    waitForDocumentReady(dbEdge);
+    dbEdge->waitForResult();
 
     QVERIFY2( dbEdge->isCreated() == true, dbEdge->errorMessage().toLocal8Bit() );
 
     e->drop();
-    waitForDocumentDeleted(e);
+    e->waitUntilDeleted();
 
     QCOMPARE( e->isCreated(), false );
 
@@ -267,31 +249,29 @@ void StartTest::testEdgeSaveAndDelete()
 
 void StartTest::testEdgePartialUpdate()
 {
-    Arangodbdriver driver;
-
     Document *doc1 = driver.createDocument("test");
     Document *doc2 = driver.createDocument("test");
 
     doc1->save();
-    waitForDocumentReady(doc1);
+    doc1->waitForResult();
 
     doc2->save();
-    waitForDocumentReady(doc2);
+    doc2->waitForResult();
 
     Edge *e = driver.createEdge("fubar", doc1, doc2);
     e->set("ll-", "FLUU");
     e->set("ss-", "DD");
     e->save();
-    waitForDocumentReady(e);
+    e->waitForResult();
 
     QVERIFY2( e->isCreated() == true, e->errorMessage().toLocal8Bit() );
 
     e->set("k", "dfj");
     e->save();
-    waitForDocumentReady(e);
+    e->waitForResult();
 
     Edge *dbEdge = driver.getEdge(e->docID());
-    waitForDocumentReady(dbEdge);
+    dbEdge->waitForResult();
 
     QVERIFY2( dbEdge->isCreated() == true, dbEdge->errorMessage().toLocal8Bit() );
     QCOMPARE( dbEdge->get("ll-").toString(), QString("FLUU") );
@@ -299,7 +279,7 @@ void StartTest::testEdgePartialUpdate()
     QCOMPARE( dbEdge->get("k").toString(), QString("dfj") );
 
     e->drop();
-    waitForDocumentDeleted(e);
+    e->waitUntilDeleted();
 
     QCOMPARE( e->isCreated(), false );
 
@@ -312,47 +292,46 @@ void StartTest::testEdgePartialUpdate()
  */
 void StartTest::testEdgeHeadOperation()
 {
-    Arangodbdriver driver;
     Document *doc1 = driver.createDocument("test");
     Document *doc2 = driver.createDocument("test");
 
     doc1->save();
-    waitForDocumentReady(doc1);
+    doc1->waitForResult();
 
     doc2->save();
-    waitForDocumentReady(doc2);
+    doc2->waitForResult();
 
     Edge *edge = driver.createEdge("fubar", doc1, doc2);
     edge->set("lll", QVariant("aaa"));
     // Save the document
     edge->save();
-    waitForDocumentReady(edge);
+    edge->waitForResult();
 
     // Try get the same document from the db again
     Edge *edgeFromDb = driver.getEdge(edge->docID());
-    waitForDocumentReady(edgeFromDb);
+    edgeFromDb->waitForResult();
 
     edgeFromDb->updateStatus();
-    waitForDocumentReady(edgeFromDb);
+    edgeFromDb->waitForResult();
 
     QCOMPARE( edgeFromDb->isCreated(), true );
     QCOMPARE( edgeFromDb->isCurrent(), true );
 
     edge->set("lllmmmm", "fuu");
     edge->save();
-    waitForDocumentReady(edge);
+    edge->waitForResult();
 
     edgeFromDb->updateStatus();
-    waitForDocumentReady(edgeFromDb);
+    edgeFromDb->waitForResult();
 
     QCOMPARE( edgeFromDb->isCreated(), true );
     QCOMPARE( edgeFromDb->isCurrent(), false );
 
     edge->drop();
-    waitForDocumentDeleted(edge);
+    edge->waitUntilDeleted();
 
     edgeFromDb->updateStatus();
-    waitForDocumentReady(edgeFromDb);
+    edgeFromDb->waitForResult();
 
     QCOMPARE( edgeFromDb->isCreated(), false );
     QCOMPARE( edgeFromDb->isCurrent(), false );
