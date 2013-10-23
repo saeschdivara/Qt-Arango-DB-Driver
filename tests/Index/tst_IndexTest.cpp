@@ -24,10 +24,10 @@
 #include <QString>
 #include <QtTest>
 
-#include <arangodb/Arangodbdriver.h>
-#include <arangodb/QueryBuilder.h>
-#include <arangodb/index/CapIndex.h>
-#include <arangodb/index/HashIndex.h>
+#include <arangodb/ArangoDbDriver>
+#include <arangodb/QueryBuilder>
+#include <arangodb/index/CapIndex>
+#include <arangodb/index/HashIndex>
 
 using namespace arangodb;
 using namespace arangodb::index;
