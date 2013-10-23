@@ -57,11 +57,11 @@ void QueriesTest::initTestCase()
 {
     tempCollection = driver.createCollection("temp");
     tempCollection->save();
+    tempCollection->waitUntilReady();
 
     temp2Collection = driver.createCollection("temp2");
     temp2Collection->save();
-
-    driver.waitUntilFinished(tempCollection, temp2Collection);
+    temp2Collection->waitUntilReady();
 
     arangodb::Document * doc1 = tempCollection->createDocument();
     doc1->set("test", true);
@@ -110,7 +110,7 @@ void QueriesTest::cleanupTestCase()
 
 void QueriesTest::testGetAllDocuments()
 {
-    auto select = qb.createSelect(QStringLiteral("temp"));
+    auto select = qb.createSelect(tempCollection->name());
 
     QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 15);
@@ -125,7 +125,7 @@ void QueriesTest::testGetAllDocuments()
 
 void QueriesTest::testLoadMoreResults()
 {
-    auto select = qb.createSelect(QStringLiteral("temp"), 2);
+    auto select = qb.createSelect(tempCollection->name(), 2);
 
     QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 2);
@@ -148,7 +148,7 @@ void QueriesTest::testLoadMoreResults()
 
 void QueriesTest::testGetDocByWhere()
 {
-    auto select = qb.createSelect(QStringLiteral("temp"), 2);
+    auto select = qb.createSelect(tempCollection->name(), 2);
 
     QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 2);
@@ -166,15 +166,15 @@ void QueriesTest::testGetDocByWhere()
 
 void QueriesTest::testGetMultipleDocsByWhere()
 {
-    auto select = qb.createSelect(QStringLiteral("webuser"), 2);
+    auto select = qb.createSelect(tempCollection->name(), 2);
 
-    QCOMPARE(select->collections().first(), QStringLiteral("webuser"));
+    QCOMPARE(select->collections().first(), QStringLiteral("temp"));
     QCOMPARE(select->batchSize(), 2);
     QCOMPARE(select->isCounting(), false);
 
     QStringList vars;
-    vars << "saeschdivara" << "root";
-    select->setWhere(QStringLiteral("username"), vars);
+    vars << "11s" << "ddaaa";
+    select->setWhere(QStringLiteral("test_field_fire"), vars);
 
     auto cursor = driver.executeSelect(select);
     cursor->waitForResult();
