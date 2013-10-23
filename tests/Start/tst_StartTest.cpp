@@ -52,6 +52,7 @@ class StartTest : public QObject
     private:
         Arangodbdriver driver;
         Collection * testCollection;
+        Collection * testFubarCollection;
 };
 
 /**
@@ -69,6 +70,10 @@ void StartTest::initTestCase()
     testCollection = driver.createCollection("test");
     testCollection->save();
     testCollection->waitUntilReady();
+
+    testFubarCollection = driver.createCollection("fubar", Collection::Type::EdgesType);
+    testFubarCollection->save();
+    testFubarCollection->waitUntilReady();
 }
 
 /**
@@ -79,6 +84,10 @@ void StartTest::cleanupTestCase()
     testCollection->deleteAll();
     testCollection->waitUntilDeleted();
     delete testCollection;
+
+    testFubarCollection->deleteAll();
+    testFubarCollection->waitUntilDeleted();
+    delete testFubarCollection;
 }
 
 /**
