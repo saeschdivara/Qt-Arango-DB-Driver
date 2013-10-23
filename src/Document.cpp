@@ -200,19 +200,19 @@ bool Document::isEveryAttributeDirty() const
 
 void Document::waitForResult()
 {
-    bool b = true;
-    QMetaObject::Connection conn1 = QObject::connect(this, &Document::ready, [&] {
-        b = false;
-    });
-    QMetaObject::Connection conn2 = QObject::connect(this, &Document::error, [&] {
-        b = false;
-    });
-    while (b) {
-        qApp->processEvents();
-    }
-    QObject::disconnect(conn1);
-    QObject::disconnect(conn2);
+    QEventLoop loop;
+    connect(this, &Document::error, &loop, &QEventLoop::quit);
+    connect(this, &Document::ready, &loop, &QEventLoop::quit);
+    loop.exec();
 
+}
+
+void Document::waitUntilDeleted()
+{
+    QEventLoop loop;
+    connect(this, &Document::error, &loop, &QEventLoop::quit);
+    connect(this, &Document::dataDeleted, &loop, &QEventLoop::quit);
+    loop.exec();
 }
 
 void Document::deleteAfterFinished()

@@ -297,6 +297,14 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
         void waitForResult();
 
         /**
+         * @brief waitUntilDeleted
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void waitUntilDeleted();
+
+        /**
          * @brief deleteAfterFinished
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
