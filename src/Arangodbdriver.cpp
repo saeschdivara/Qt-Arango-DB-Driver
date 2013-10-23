@@ -111,7 +111,7 @@ Collection *Arangodbdriver::getCollection(QString name)
     return collection;
 }
 
-Collection *Arangodbdriver::createCollection(const QString & name, bool waitForSync, int journalSize, bool isSystem, bool isVolatile, Collection::KeyOption * keyOption, Collection::Type type)
+Collection *Arangodbdriver::createCollection(const QString & name, Collection::Type type, bool waitForSync, int journalSize, bool isSystem, bool isVolatile, Collection::KeyOption * keyOption)
 {
     Collection *collection = new Collection(name,
                                             waitForSync,

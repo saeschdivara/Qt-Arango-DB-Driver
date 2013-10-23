@@ -99,24 +99,25 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         Collection* getCollection(QString name);
 
         /**
-         * @brief createCollection
+         * @brief Creates a collection with all default values
          *
          * @param name
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
-         * @since 0.5
+         * @since 0.6
          */
         Collection * createCollection(const QString & name,
+                                      Collection::Type type = Collection::Type::DocumentType,
                                       bool waitForSync = false,
                                       int journalSize = -1,
                                       bool isSystem = false,
                                       bool isVolatile = false,
-                                      Collection::KeyOption * keyOption = Q_NULLPTR,
-                                      Collection::Type type = Collection::Type::DocumentType);
+                                      Collection::KeyOption * keyOption = Q_NULLPTR);
 
         /**
-         * @brief connectCollection
+         * @brief Connects all the needed signals from the collection
+         * to the slots from the driver
          *
          * @param collection
          *
