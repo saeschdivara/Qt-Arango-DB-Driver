@@ -180,8 +180,8 @@ Document *Collection::createDocument()
 {
     Q_D(Collection);
 
-    Arangodbdriver * driver = Q_NULLPTR;
-    if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
+    ArangoDBDriver * driver = Q_NULLPTR;
+    if ( (driver = qobject_cast<ArangoDBDriver *>(parent())) ) {
         return driver->createDocument(d->name);
     }
     else {
@@ -195,8 +195,8 @@ QSharedPointer<QBCursor> Collection::getAllDocuments()
 
     QSharedPointer<QBCursor> cursor;
 
-    Arangodbdriver * driver = Q_NULLPTR;
-    if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
+    ArangoDBDriver * driver = Q_NULLPTR;
+    if ( (driver = qobject_cast<ArangoDBDriver *>(parent())) ) {
         auto select = QueryBuilder::createGetAllSelect(d->name);
         cursor = driver->executeSelect(select);
     }
@@ -208,8 +208,8 @@ Document *Collection::createDocument(const QString & key)
 {
     Q_D(Collection);
 
-    Arangodbdriver * driver = Q_NULLPTR;
-    if ( (driver = qobject_cast<Arangodbdriver *>(parent())) ) {
+    ArangoDBDriver * driver = Q_NULLPTR;
+    if ( (driver = qobject_cast<ArangoDBDriver *>(parent())) ) {
         return driver->createDocument(d->name, key);
     }
     else {
@@ -220,7 +220,7 @@ Document *Collection::createDocument(const QString & key)
 index::AbstractIndex *Collection::createIndex(index::IndexType type)
 {
     index::AbstractIndex * i = Q_NULLPTR;
-    Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+    ArangoDBDriver * driver = qobject_cast<ArangoDBDriver *>(parent());
     QObject * parent = Q_NULLPTR;
 
     if ( driver == Q_NULLPTR )

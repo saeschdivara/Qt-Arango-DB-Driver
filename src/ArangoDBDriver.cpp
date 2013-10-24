@@ -36,7 +36,7 @@ using namespace arangodb;
 
 namespace internal {
 
-class ArangodbdriverPrivate
+class ArangoDBDriverPrivate
 {
     public:
         QString protocol;
@@ -56,8 +56,8 @@ class ArangodbdriverPrivate
 
 }
 
-Arangodbdriver::Arangodbdriver(QString protocol, QString host, qint32 port) :
-    d(new internal::ArangodbdriverPrivate)
+ArangoDBDriver::ArangoDBDriver(QString protocol, QString host, qint32 port) :
+    d(new internal::ArangoDBDriverPrivate)
 {
     d->protocol = protocol;
     d->host = host;
@@ -66,12 +66,12 @@ Arangodbdriver::Arangodbdriver(QString protocol, QString host, qint32 port) :
     d->createStandardUrl();
 }
 
-Arangodbdriver::~Arangodbdriver()
+ArangoDBDriver::~ArangoDBDriver()
 {
     delete d;
 }
 
-bool Arangodbdriver::isColllectionExisting(const QString & collectionName)
+bool ArangoDBDriver::isColllectionExisting(const QString & collectionName)
 {
     QUrl url(d->standardUrl + QString("/collection/") + collectionName);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
@@ -92,7 +92,7 @@ bool Arangodbdriver::isColllectionExisting(const QString & collectionName)
     return reply->error() == QNetworkReply::NoError;
 }
 
-Collection *Arangodbdriver::getCollection(QString name)
+Collection *ArangoDBDriver::getCollection(QString name)
 {
     Collection *collection = new Collection(name, this);
 
@@ -108,7 +108,7 @@ Collection *Arangodbdriver::getCollection(QString name)
     return collection;
 }
 
-Collection *Arangodbdriver::createCollection(const QString & name, Collection::Type type, bool waitForSync, int journalSize, bool isSystem, bool isVolatile, Collection::KeyOption * keyOption)
+Collection *ArangoDBDriver::createCollection(const QString & name, Collection::Type type, bool waitForSync, int journalSize, bool isSystem, bool isVolatile, Collection::KeyOption * keyOption)
 {
     Collection *collection = new Collection(name,
                                             waitForSync,
@@ -123,20 +123,20 @@ Collection *Arangodbdriver::createCollection(const QString & name, Collection::T
     return collection;
 }
 
-void Arangodbdriver::connectCollection(Collection * collection)
+void ArangoDBDriver::connectCollection(Collection * collection)
 {
     connect( collection, &Collection::saveData,
-             this, &Arangodbdriver::_ar_collection_save
+             this, &ArangoDBDriver::_ar_collection_save
              );
     connect( collection, &Collection::loadIntoMemory,
-             this, &Arangodbdriver::_ar_collection_save
+             this, &ArangoDBDriver::_ar_collection_save
              );
     connect( collection, &Collection::deleteData,
-             this, &Arangodbdriver::_ar_collection_delete
+             this, &ArangoDBDriver::_ar_collection_delete
              );
 }
 
-Document *Arangodbdriver::getDocument(QString id)
+Document *ArangoDBDriver::getDocument(QString id)
 {
     Document *doc = new Document(this);
 
@@ -152,7 +152,7 @@ Document *Arangodbdriver::getDocument(QString id)
     return doc;
 }
 
-Document *Arangodbdriver::createDocument(QString collection)
+Document *ArangoDBDriver::createDocument(QString collection)
 {
     Document *doc = new Document(collection, this);
     connectDocument(doc);
@@ -160,7 +160,7 @@ Document *Arangodbdriver::createDocument(QString collection)
     return doc;
 }
 
-Document *Arangodbdriver::createDocument(QString collection, QString key)
+Document *ArangoDBDriver::createDocument(QString collection, QString key)
 {
     Document *doc = new Document(collection, key, this);
     connectDocument(doc);
@@ -168,30 +168,30 @@ Document *Arangodbdriver::createDocument(QString collection, QString key)
     return doc;
 }
 
-void Arangodbdriver::connectDocument(Document * doc)
+void ArangoDBDriver::connectDocument(Document * doc)
 {
     connect(doc, &Document::saveData,
-            this, &Arangodbdriver::_ar_document_save
+            this, &ArangoDBDriver::_ar_document_save
             );
 
     connect(doc, &Document::deleteData,
-            this, &Arangodbdriver::_ar_document_delete
+            this, &ArangoDBDriver::_ar_document_delete
             );
 
     connect(doc, &Document::updateDataStatus,
-            this, &Arangodbdriver::_ar_document_updateStatus
+            this, &ArangoDBDriver::_ar_document_updateStatus
             );
 
     connect(doc, &Document::updateData,
-            this, &Arangodbdriver::_ar_document_update
+            this, &ArangoDBDriver::_ar_document_update
             );
 
     connect(doc, &Document::syncData,
-            this, &Arangodbdriver::_ar_document_sync
+            this, &ArangoDBDriver::_ar_document_sync
             );
 }
 
-Edge *Arangodbdriver::getEdge(QString id)
+Edge *ArangoDBDriver::getEdge(QString id)
 {
     Edge *e = new Edge(this);
 
@@ -203,48 +203,48 @@ Edge *Arangodbdriver::getEdge(QString id)
             );
 
     connect(e, &Edge::saveData,
-            this, &Arangodbdriver::_ar_edge_save
+            this, &ArangoDBDriver::_ar_edge_save
             );
 
     connect(e, &Edge::deleteData,
-            this, &Arangodbdriver::_ar_edge_delete
+            this, &ArangoDBDriver::_ar_edge_delete
             );
 
     connect(e, &Edge::updateDataStatus,
-            this, &Arangodbdriver::_ar_document_updateStatus
+            this, &ArangoDBDriver::_ar_document_updateStatus
             );
 
     connect(e, &Edge::syncData,
-            this, &Arangodbdriver::_ar_document_sync
+            this, &ArangoDBDriver::_ar_document_sync
             );
 
     return e;
 }
 
-Edge *Arangodbdriver::createEdge(QString collection, Document *fromDoc, Document *toDoc)
+Edge *ArangoDBDriver::createEdge(QString collection, Document *fromDoc, Document *toDoc)
 {
     Edge *e = new Edge(collection, fromDoc, toDoc, this);
 
     connect(e, &Edge::saveData,
-            this, &Arangodbdriver::_ar_edge_save
+            this, &ArangoDBDriver::_ar_edge_save
             );
 
     connect(e, &Edge::deleteData,
-            this, &Arangodbdriver::_ar_edge_delete
+            this, &ArangoDBDriver::_ar_edge_delete
             );
 
     connect(e, &Edge::updateDataStatus,
-            this, &Arangodbdriver::_ar_document_updateStatus
+            this, &ArangoDBDriver::_ar_document_updateStatus
             );
 
     connect(e, &Edge::syncData,
-            this, &Arangodbdriver::_ar_document_sync
+            this, &ArangoDBDriver::_ar_document_sync
             );
 
     return e;
 }
 
-void Arangodbdriver::connectIndex(index::AbstractIndex * index)
+void ArangoDBDriver::connectIndex(index::AbstractIndex * index)
 {
 
     QObject * obj = dynamic_cast<QObject *>(index);
@@ -254,7 +254,7 @@ void Arangodbdriver::connectIndex(index::AbstractIndex * index)
              );
 }
 
-QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSelect> select)
+QSharedPointer<QBCursor> ArangoDBDriver::executeSelect(QSharedPointer<QBSelect> select)
 {
     QSharedPointer<QBCursor> cursor(new QBCursor(this));
 
@@ -273,7 +273,7 @@ QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSelect> 
     return cursor;
 }
 
-QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSimpleSelect> select)
+QSharedPointer<QBCursor> ArangoDBDriver::executeSelect(QSharedPointer<QBSimpleSelect> select)
 {
     QSharedPointer<QBCursor> cursor(new QBCursor(this));
 
@@ -292,7 +292,7 @@ QSharedPointer<QBCursor> Arangodbdriver::executeSelect(QSharedPointer<QBSimpleSe
     return cursor;
 }
 
-void Arangodbdriver::loadMoreResults(QBCursor * cursor)
+void ArangoDBDriver::loadMoreResults(QBCursor * cursor)
 {
     QUrl url(d->standardUrl + QString("/cursor/") + cursor->id());
     QNetworkRequest request(url);
@@ -305,7 +305,7 @@ void Arangodbdriver::loadMoreResults(QBCursor * cursor)
             );
 }
 
-void Arangodbdriver::_ar_document_save(Document *doc)
+void ArangoDBDriver::_ar_document_save(Document *doc)
 {
     d->jsonData = doc->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -344,7 +344,7 @@ void Arangodbdriver::_ar_document_save(Document *doc)
     }
 }
 
-void Arangodbdriver::_ar_document_update(Document * doc)
+void ArangoDBDriver::_ar_document_update(Document * doc)
 {
     d->jsonData = doc->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -365,7 +365,7 @@ void Arangodbdriver::_ar_document_update(Document * doc)
     }
 }
 
-void Arangodbdriver::_ar_document_delete(Document *doc)
+void ArangoDBDriver::_ar_document_delete(Document *doc)
 {
     QUrl url(d->standardUrl + QString("/document/") + doc->docID());
     QNetworkRequest request(url);
@@ -376,7 +376,7 @@ void Arangodbdriver::_ar_document_delete(Document *doc)
             );
 }
 
-void Arangodbdriver::_ar_document_updateStatus(Document *doc)
+void ArangoDBDriver::_ar_document_updateStatus(Document *doc)
 {
     QUrl url(d->standardUrl + QString("/document/") + doc->docID());
     QNetworkRequest request(url);
@@ -388,7 +388,7 @@ void Arangodbdriver::_ar_document_updateStatus(Document *doc)
             );
 }
 
-void Arangodbdriver::_ar_document_sync(Document *doc)
+void ArangoDBDriver::_ar_document_sync(Document *doc)
 {
     QUrl url(d->standardUrl + QString("/document/") + doc->docID());
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
@@ -398,7 +398,7 @@ void Arangodbdriver::_ar_document_sync(Document *doc)
             );
 }
 
-void Arangodbdriver::_ar_edge_save(Document *doc)
+void ArangoDBDriver::_ar_edge_save(Document *doc)
 {
     Edge *e = qobject_cast<Edge *>(doc);
     d->jsonData = e->toJsonString();
@@ -444,7 +444,7 @@ void Arangodbdriver::_ar_edge_save(Document *doc)
     }
 }
 
-void Arangodbdriver::_ar_edge_delete(Document *doc)
+void ArangoDBDriver::_ar_edge_delete(Document *doc)
 {
     QUrl url(d->standardUrl + QString("/edge/") + doc->docID());
     QNetworkRequest request(url);
@@ -455,7 +455,7 @@ void Arangodbdriver::_ar_edge_delete(Document *doc)
             );
 }
 
-void Arangodbdriver::_ar_collection_save(Collection * collection)
+void ArangoDBDriver::_ar_collection_save(Collection * collection)
 {
     d->jsonData = collection->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -472,7 +472,7 @@ void Arangodbdriver::_ar_collection_save(Collection * collection)
             );
 }
 
-void Arangodbdriver::_ar_collection_load(Collection * collection)
+void ArangoDBDriver::_ar_collection_load(Collection * collection)
 {
     d->jsonData = QByteArrayLiteral("{}");
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -488,7 +488,7 @@ void Arangodbdriver::_ar_collection_load(Collection * collection)
             );
 }
 
-void Arangodbdriver::_ar_collection_delete(Collection * collection)
+void ArangoDBDriver::_ar_collection_delete(Collection * collection)
 {
     QUrl url(d->standardUrl + QString("/collection/") + collection->name());
     QNetworkRequest request(url);
@@ -499,7 +499,7 @@ void Arangodbdriver::_ar_collection_delete(Collection * collection)
             );
 }
 
-void Arangodbdriver::_ar_index_save(AbstractIndex * index)
+void ArangoDBDriver::_ar_index_save(AbstractIndex * index)
 {
     d->jsonData = index->toJson();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
@@ -515,7 +515,7 @@ void Arangodbdriver::_ar_index_save(AbstractIndex * index)
             );
 }
 
-void Arangodbdriver::_ar_index_delete(AbstractIndex * index)
+void ArangoDBDriver::_ar_index_delete(AbstractIndex * index)
 {
     QUrl url(d->standardUrl + QString("/index/") + index->id());
     QNetworkRequest request(url);

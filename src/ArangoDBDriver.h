@@ -37,7 +37,7 @@
 #include <QtCore/QSharedPointer>
 
 namespace internal {
-class ArangodbdriverPrivate;
+class ArangoDBDriverPrivate;
 }
 
 namespace arangodb
@@ -51,7 +51,7 @@ using namespace index;
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.1
  */
-class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
+class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
 {
         Q_OBJECT
     public:
@@ -65,7 +65,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        Arangodbdriver(QString protocol = QString("http"),
+        ArangoDBDriver(QString protocol = QString("http"),
                        QString host = QString("localhost"),
                        qint32 port = 8529);
 
@@ -75,7 +75,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        virtual ~Arangodbdriver();
+        virtual ~ArangoDBDriver();
 
         /**
          * @brief existsCollection
@@ -360,7 +360,7 @@ class ARANGODBDRIVERSHARED_EXPORT Arangodbdriver : public QObject
         void _ar_index_delete(AbstractIndex * index);
 
     private:
-        internal::ArangodbdriverPrivate *d;
+        internal::ArangoDBDriverPrivate *d;
 };
 
 }

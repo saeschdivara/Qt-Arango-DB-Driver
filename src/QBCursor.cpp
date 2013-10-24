@@ -110,7 +110,7 @@ int QBCursor::count() const
 
 void QBCursor::getMoreData()
 {
-    Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+    ArangoDBDriver * driver = qobject_cast<ArangoDBDriver *>(parent());
     if (driver) {
         driver->loadMoreResults(this);
     }
@@ -164,7 +164,7 @@ void QBCursor::_ar_cursor_result_loaded()
     d->hasMore = obj.value(QStringLiteral("hasMore")).toBool(false);
     d->id      = obj.value(QStringLiteral("id")).toString();
 
-    Arangodbdriver * driver = qobject_cast<Arangodbdriver *>(parent());
+    ArangoDBDriver * driver = qobject_cast<ArangoDBDriver *>(parent());
 
     QJsonArray dataArr = obj.value(QStringLiteral("result")).toArray();
     const int total = dataArr.size();

@@ -23,7 +23,7 @@ CONFIG(debug, debug|release){
 
 DEFINES += ARANGODBDRIVER_LIBRARY
 
-SOURCES += Arangodbdriver.cpp \
+SOURCES += \
     Document.cpp \
     Collection.cpp \
     Edge.cpp \
@@ -36,9 +36,10 @@ SOURCES += Arangodbdriver.cpp \
     index/SkipListIndex.cpp \
     index/AbstractIndex.cpp \
     index/GeoIndex.cpp \
-    index/FulltextIndex.cpp
+    index/FulltextIndex.cpp \
+    ArangoDBDriver.cpp
 
-HEADERS += Arangodbdriver.h\
+HEADERS +=\
         arangodb-driver_global.h \
     Document.h \
     Collection.h \
@@ -55,4 +56,5 @@ HEADERS += Arangodbdriver.h\
     index/private/AbstractIndex_p.h \
     index/private/HashIndex_p.h \
     index/GeoIndex.h \
-    index/FulltextIndex.h
+    index/FulltextIndex.h \
+    ArangoDBDriver.h
