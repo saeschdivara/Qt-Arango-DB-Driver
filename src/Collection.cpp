@@ -23,7 +23,7 @@
 
 #include "Collection.h"
 
-#include "Arangodbdriver.h"
+#include "ArangoDBDriver.h"
 #include "Document.h"
 #include "QueryBuilder.h"
 
@@ -80,17 +80,27 @@ Collection::Collection(const QString & name, QObject * parent) :
 }
 
 Collection::Collection(const QString & name, bool waitForSync, int journalSize, bool isSystem, bool isVolatile, KeyOption * keyOption, Type type, QObject *parent) :
-    QObject(parent),
-    d_ptr(new CollectionPrivate)
+    Collection(name, parent)
 {
     Q_D(Collection);
-    d->name = name;
     d->waitForSync = waitForSync;
     d->journalSize = journalSize;
     d->isSystem = isSystem;
     d->isVolatile = isVolatile;
     d->keyOption = keyOption;
     d->type = type;
+}
+
+Collection::Collection(const QString &name, Collection::CreateOptions options, QObject *parent) :
+    Collection(name, parent)
+{
+    Q_D(Collection);
+    d->waitForSync  = options.waitForSync;
+    d->journalSize  = options.journalSize;
+    d->isSystem     = options.isSystem;
+    d->isVolatile   = options.isVolatile;
+    d->keyOption    = options.keyOption;
+    d->type         = options.type;
 }
 
 Collection::~Collection()

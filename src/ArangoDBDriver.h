@@ -88,7 +88,8 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         bool isColllectionExisting(const QString & collectionName);
 
         /**
-         * @brief getCollection
+         * @brief Returns a new collection object which asynchronly
+         * loads collection data
          *
          * @param name
          * @return
@@ -99,13 +100,20 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         Collection* getCollection(QString name);
 
         /**
-         * @brief Creates a collection with all default values
+         * @brief createCollection
          *
          * @param name
+         * @param type
+         * @param waitForSync
+         * @param journalSize
+         * @param isSystem
+         * @param isVolatile
+         * @param keyOption
+         *
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
-         * @since 0.6
+         * @since 0.5
          */
         Collection * createCollection(const QString & name,
                                       Collection::Type type = Collection::Type::DocumentType,
@@ -114,6 +122,29 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
                                       bool isSystem = false,
                                       bool isVolatile = false,
                                       Collection::KeyOption * keyOption = Q_NULLPTR);
+
+        /**
+         * @brief createCollection
+         *
+         * @param name
+         * @param options
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Collection * createCollection(const QString & name, Collection::CreateOptions options = defaultCollectionCreationOptions());
+
+        /**
+         * @brief defaultCollectionCreationOptions
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        static Collection::CreateOptions defaultCollectionCreationOptions();
 
         /**
          * @brief Connects all the needed signals from the collection

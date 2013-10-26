@@ -22,7 +22,7 @@
  *********************************************************************************/
 
 #include "QBCursor.h"
-#include "Arangodbdriver.h"
+#include "ArangoDBDriver.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>

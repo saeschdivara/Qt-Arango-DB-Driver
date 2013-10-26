@@ -105,6 +105,14 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                  */
                 uint offset;
 
+                /**
+                 * @brief object
+                 *
+                 * @return
+                 *
+                 * @author Sascha Häusler <saeschdivara@gmail.com>
+                 * @since 0.5
+                 */
                 QJsonObject object() {
                     QJsonObject obj;
 
@@ -132,6 +140,44 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         enum class Type {
             DocumentType = 2,
             EdgesType = 3
+        };
+
+        /**
+         * @brief The CreateOptions struct
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        struct CreateOptions {
+                /**
+                 * @brief Flag if the data is written to the disk before returning
+                 */
+                bool waitForSync;
+
+                /**
+                 * @brief journalSize
+                 */
+                int journalSize;
+
+                /**
+                 * @brief Flag if the collection is a system collection
+                 */
+                bool isSystem;
+
+                /**
+                 * @brief Flag if the collection is never persisted (and only in-memory)
+                 */
+                bool isVolatile;
+
+                /**
+                 * @brief Options for keys of the collection
+                 */
+                Collection::KeyOption * keyOption;
+
+                /**
+                 * @brief Collection type (Document|Edge)
+                 */
+                Collection::Type type;
         };
 
         /**
@@ -168,6 +214,20 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
                             Collection::KeyOption * keyOption,
                             Collection::Type type,
                             QObject *parent = 0);
+
+        /**
+         * @brief Collection
+         *
+         * @param name
+         * @param options
+         * @param parent
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        explicit Collection(const QString & name,
+                            CreateOptions options,
+                            QObject * parent = 0);
 
         /**
          * @brief ~Collection

@@ -21,7 +21,7 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#include "Arangodbdriver.h"
+#include "ArangoDBDriver.h"
 
 #include <QtCore/QBuffer>
 #include <QtCore/QCoreApplication>
@@ -31,8 +31,6 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtCore/QMetaMethod>
 #include <memory>
-
-using namespace arangodb;
 
 namespace internal {
 
@@ -55,6 +53,9 @@ class ArangoDBDriverPrivate
 };
 
 }
+
+namespace arangodb
+{
 
 ArangoDBDriver::ArangoDBDriver(QString protocol, QString host, qint32 port) :
     d(new internal::ArangoDBDriverPrivate)
@@ -121,6 +122,27 @@ Collection *ArangoDBDriver::createCollection(const QString & name, Collection::T
 
     connectCollection(collection);
     return collection;
+}
+
+Collection *ArangoDBDriver::createCollection(const QString &name, Collection::CreateOptions options)
+{
+    Collection * collection = new Collection(name, options, this);
+    connectCollection(collection);
+    return collection;
+}
+
+Collection::CreateOptions ArangoDBDriver::defaultCollectionCreationOptions()
+{
+    Collection::CreateOptions options;
+    // Default values
+    options.waitForSync = false;
+    options.isSystem = false;
+    options.isVolatile = false;
+    options.journalSize = -1;
+    options.type = Collection::Type::DocumentType;
+    options.keyOption = Q_NULLPTR;
+
+    return options;
 }
 
 void ArangoDBDriver::connectCollection(Collection * collection)
@@ -524,4 +546,6 @@ void ArangoDBDriver::_ar_index_delete(AbstractIndex * index)
     connect(reply, &QNetworkReply::finished,
             index, &AbstractIndex::_ar_deleteRequestFinished
             );
+}
+
 }
