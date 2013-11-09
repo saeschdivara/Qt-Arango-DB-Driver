@@ -37,6 +37,7 @@ namespace arangodb
 /**
  * @brief The Edge class
  *
+ * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.1
  */
 class ARANGODBDRIVERSHARED_EXPORT Edge : public Document
@@ -48,6 +49,7 @@ class ARANGODBDRIVERSHARED_EXPORT Edge : public Document
          *
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         explicit Edge(QObject *parent = 0);
@@ -58,6 +60,7 @@ class ARANGODBDRIVERSHARED_EXPORT Edge : public Document
          * @param collection
          * @param parent
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         Edge(QString collection, Document *fromDoc, Document *toDoc, QObject *parent = 0);
@@ -67,6 +70,7 @@ class ARANGODBDRIVERSHARED_EXPORT Edge : public Document
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString from();
@@ -76,6 +80,7 @@ class ARANGODBDRIVERSHARED_EXPORT Edge : public Document
          *
          * @return
          *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
         QString to();

@@ -137,7 +137,13 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         Collection * createCollection(const QString & name, Collection::CreateOptions options = defaultCollectionCreationOptions());
 
         /**
-         * @brief defaultCollectionCreationOptions
+         * @brief Options:
+         * options.waitForSync = false
+         * options.isSystem = false
+         * options.isVolatile = false
+         * options.journalSize = -1
+         * options.type = Collection::Type::DocumentType
+         * options.keyOption = Q_NULLPTR
          *
          * @return
          *
