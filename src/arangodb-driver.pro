@@ -37,7 +37,8 @@ SOURCES += \
     index/AbstractIndex.cpp \
     index/GeoIndex.cpp \
     index/FulltextIndex.cpp \
-    ArangoDBDriver.cpp
+    ArangoDBDriver.cpp \
+    TransactionController.cpp
 
 HEADERS +=\
         arangodb-driver_global.h \
@@ -57,4 +58,5 @@ HEADERS +=\
     index/private/HashIndex_p.h \
     index/GeoIndex.h \
     index/FulltextIndex.h \
-    ArangoDBDriver.h
+    ArangoDBDriver.h \
+    TransactionController.h
