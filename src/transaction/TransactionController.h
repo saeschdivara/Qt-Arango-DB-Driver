@@ -26,6 +26,11 @@
 
 #include "arangodb-driver_global.h"
 
+#include <ArangoDBDriver.h>
+#include <transaction/Transaction.h>
+
+#include <QtCore/QSharedPointer>
+
 namespace arangodb
 {
 
@@ -50,6 +55,35 @@ class ARANGODBDRIVERSHARED_EXPORT TransactionController : public QObject
          * @since 0.6
          */
         explicit TransactionController(QObject *parent = 0);
+
+        /**
+         * @brief ~TransactionController
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        virtual ~TransactionController();
+
+        /**
+         * @brief createTransaction
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QSharedPointer<Transaction> createTransaction();
+
+    Q_SIGNALS:
+        /**
+         * @brief transactionCommittedSignal
+         *
+         * @param
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Q_SIGNAL void transactionCommittedSignal(Transaction *);
 
     protected:
         TransactionControllerPrivate * d_ptr;

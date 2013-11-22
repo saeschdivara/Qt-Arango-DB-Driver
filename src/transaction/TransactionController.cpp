@@ -32,8 +32,26 @@ class TransactionControllerPrivate
 };
 
 TransactionController::TransactionController(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    d_ptr(new TransactionControllerPrivate)
 {
+}
+
+TransactionController::~TransactionController()
+{
+    delete d_ptr;
+}
+
+QSharedPointer<Transaction> TransactionController::createTransaction()
+{
+    QSharedPointer<Transaction> transaction(new Transaction);
+    transaction->setController(this);
+
+    QObject::connect( transaction.data(), &Transaction::commitSignal,
+                      this, &TransactionController::transactionCommittedSignal
+                      );
+
+    return transaction;
 }
 
 }

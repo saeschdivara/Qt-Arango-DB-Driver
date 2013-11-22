@@ -327,6 +327,13 @@ void ArangoDBDriver::loadMoreResults(QBCursor * cursor)
             );
 }
 
+void ArangoDBDriver::connectTransactionController(TransactionController *ctrl)
+{
+    connect( ctrl, &TransactionController::transactionCommittedSignal,
+             this, &ArangoDBDriver::_ar_transaction_commit
+             );
+}
+
 void ArangoDBDriver::_ar_document_save(Document *doc)
 {
     d->jsonData = doc->toJsonString();
@@ -546,6 +553,11 @@ void ArangoDBDriver::_ar_index_delete(AbstractIndex * index)
     connect(reply, &QNetworkReply::finished,
             index, &AbstractIndex::_ar_deleteRequestFinished
             );
+}
+
+void ArangoDBDriver::_ar_transaction_commit(Transaction *transaction)
+{
+    //
 }
 
 }

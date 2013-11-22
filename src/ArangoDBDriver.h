@@ -33,6 +33,7 @@
 #include "QBSimpleSelect.h"
 #include "QBCursor.h"
 #include "index/AbstractIndex.h"
+#include "transaction/TransactionController.h"
 
 #include <QtCore/QSharedPointer>
 
@@ -275,6 +276,16 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          */
         void loadMoreResults(QBCursor * cursor);
 
+        /**
+         * @brief connectTransactionController
+         *
+         * @param ctrl
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void connectTransactionController(TransactionController * ctrl);
+
     protected Q_SLOTS:
         /**
          * @brief _ar_document_save
@@ -284,7 +295,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        void _ar_document_save(Document *doc);
+        Q_SLOT void _ar_document_save(Document *doc);
 
         /**
          * @brief _ar_document_update
@@ -294,7 +305,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void _ar_document_update(Document *doc);
+        Q_SLOT void _ar_document_update(Document *doc);
 
         /**
          * @brief _ar_document_delete
@@ -304,7 +315,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        void _ar_document_delete(Document *doc);
+        Q_SLOT void _ar_document_delete(Document *doc);
 
         /**
          * @brief _ar_document_updateStatus
@@ -314,7 +325,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        void _ar_document_updateStatus(Document *doc);
+        Q_SLOT void _ar_document_updateStatus(Document *doc);
 
         /**
          * @brief _ar_document_sync
@@ -324,7 +335,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.3
          */
-        void _ar_document_sync(Document *doc);
+        Q_SLOT void _ar_document_sync(Document *doc);
 
         /**
          * @brief _ar_edge_save
@@ -334,7 +345,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        void _ar_edge_save(Document *doc);
+        Q_SLOT void _ar_edge_save(Document *doc);
 
         /**
          * @brief _ar_edge_delete
@@ -344,7 +355,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.1
          */
-        void _ar_edge_delete(Document *doc);
+        Q_SLOT void _ar_edge_delete(Document *doc);
 
         /**
          * @brief _ar_collection_save
@@ -354,7 +365,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
-        void _ar_collection_save(Collection * collection);
+        Q_SLOT void _ar_collection_save(Collection * collection);
 
         /**
          * @brief _ar_collection_load
@@ -364,7 +375,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
-        void _ar_collection_load(Collection * collection);
+        Q_SLOT void _ar_collection_load(Collection * collection);
 
         /**
          * @brief _ar_collection_delete
@@ -374,7 +385,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
          */
-        void _ar_collection_delete(Collection * collection);
+        Q_SLOT void _ar_collection_delete(Collection * collection);
 
         /**
          * @brief Saves the index
@@ -384,7 +395,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void _ar_index_save(AbstractIndex * index);
+        Q_SLOT void _ar_index_save(AbstractIndex * index);
 
         /**
          * @brief Deletes the index from the collection
@@ -394,7 +405,15 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        void _ar_index_delete(AbstractIndex * index);
+        Q_SLOT void _ar_index_delete(AbstractIndex * index);
+
+        /**
+         * @brief
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Q_SLOT void _ar_transaction_commit(Transaction * transaction);
 
     private:
         internal::ArangoDBDriverPrivate *d;
