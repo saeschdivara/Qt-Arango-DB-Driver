@@ -181,7 +181,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         };
 
         /**
-         * @brief Collection
+         * @brief This constructor shouldn't be used
          *
          * @param name
          * @param parent
@@ -409,7 +409,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         bool hasErrorOccurred();
 
         /**
-         * @brief createDocument
+         * @brief Creates document object (is not saved in database)
          *
          * @return
          *
@@ -419,18 +419,7 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         Document * createDocument();
 
         /**
-         * @brief Returns QBCursor, when it emits the
-         * QBCursor::ready signal, all data is loaded
-         *
-         * @return
-         *
-         * @author Sascha Häusler <saeschdivara@gmail.com>
-         * @since 0.5
-         */
-        QSharedPointer<QBCursor> getAllDocuments();
-
-        /**
-         * @brief createDocument
+         * @brief This creates a document with a specific key
          *
          * @param key
          *
@@ -452,7 +441,18 @@ class ARANGODBDRIVERSHARED_EXPORT Collection : public QObject
         index::AbstractIndex * createIndex(index::IndexType type);
 
         /**
-         * @brief save
+         * @brief Returns QBCursor, when it emits the
+         * QBCursor::ready signal, all data is loaded
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.5
+         */
+        QSharedPointer<QBCursor> getAllDocuments();
+
+        /**
+         * @brief Saves collection in db (creates persistence in database)
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.5
