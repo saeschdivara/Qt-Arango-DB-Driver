@@ -32,3 +32,4 @@ DEPENDPATH += $$PWD/../../../arangodb-driver-dist/release
 }
 
 INCLUDEPATH += $$PWD/../../src
+INCLUDEPATH += $$PWD/../../include

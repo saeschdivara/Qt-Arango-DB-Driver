@@ -24,7 +24,7 @@
 #include <QtTest>
 #include <QtCore>
 #include <QtNetwork>
-#include <Arangodbdriver.h>
+#include <arangodb/ArangoDbDriver>
 
 using namespace arangodb;
 
@@ -50,7 +50,7 @@ class StartTest : public QObject
         void testEdgeHeadOperation();
 
     private:
-        Arangodbdriver driver;
+        ArangoDBDriver driver;
         Collection * testCollection;
         Collection * testFubarCollection;
 };
@@ -67,7 +67,7 @@ StartTest::StartTest()
  */
 void StartTest::initTestCase()
 {
-    testCollection = driver.createCollection("test");
+    testCollection = driver.createCollection(QStringLiteral("test"));
     testCollection->save();
     testCollection->waitUntilReady();
 

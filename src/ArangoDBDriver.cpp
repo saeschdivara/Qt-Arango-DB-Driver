@@ -23,13 +23,16 @@
 
 #include "ArangoDBDriver.h"
 
+#include <transaction/TransactionController.h>
+
 #include <QtCore/QBuffer>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QMetaMethod>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-#include <QtCore/QMetaMethod>
+
 #include <memory>
 
 namespace internal {
@@ -557,7 +560,7 @@ void ArangoDBDriver::_ar_index_delete(AbstractIndex * index)
 
 void ArangoDBDriver::_ar_transaction_commit(Transaction *transaction)
 {
-    //
+    qDebug() << transaction;
 }
 
 }

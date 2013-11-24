@@ -33,7 +33,6 @@
 #include "QBSimpleSelect.h"
 #include "QBCursor.h"
 #include "index/AbstractIndex.h"
-#include "transaction/TransactionController.h"
 
 #include <QtCore/QSharedPointer>
 
@@ -43,6 +42,9 @@ class ArangoDBDriverPrivate;
 
 namespace arangodb
 {
+
+class Transaction;
+class TransactionController;
 
 using namespace index;
 
@@ -117,7 +119,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @since 0.5
          */
         Collection * createCollection(const QString & name,
-                                      Collection::Type type = Collection::Type::DocumentType,
+                                      Collection::Type type,
                                       bool waitForSync = false,
                                       int journalSize = -1,
                                       bool isSystem = false,
