@@ -67,7 +67,7 @@ StartTest::StartTest()
  */
 void StartTest::initTestCase()
 {
-    testCollection = driver.createCollection(QStringLiteral("test"));
+    testCollection = driver.createCollection("test");
     testCollection->save();
     testCollection->waitUntilReady();
 
