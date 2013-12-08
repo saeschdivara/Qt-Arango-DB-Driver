@@ -24,6 +24,9 @@
 #include <QString>
 #include <QtTest>
 
+#include <arangodb/ArangoDbDriver>
+#include <transaction/TransactionController.h>
+
 class TransactionTest : public QObject
 {
         Q_OBJECT
@@ -35,6 +38,10 @@ class TransactionTest : public QObject
         void initTestCase();
         void cleanupTestCase();
         void testCase1();
+
+    private:
+        arangodb::ArangoDBDriver driver;
+        arangodb::TransactionController transactionCtrl;
 };
 
 TransactionTest::TransactionTest()
@@ -43,6 +50,7 @@ TransactionTest::TransactionTest()
 
 void TransactionTest::initTestCase()
 {
+    driver.connectTransactionController(&transactionCtrl);
 }
 
 void TransactionTest::cleanupTestCase()
@@ -51,9 +59,25 @@ void TransactionTest::cleanupTestCase()
 
 void TransactionTest::testCase1()
 {
-    QVERIFY2(true, "Failure");
+    auto transaction = transactionCtrl.createTransaction();
+    transaction->setAutoCommit(false);
+    // Start transaction so all actions will be recorded (if the objects are connected to it)
+    transaction->start();
+
+    auto collection = driver.createCollection("test_coll");
+    // The transaction now records every action
+    transaction->connectCollection(collection);
+
+    // Collection shouldn't be really saved, only saved as transaction operation
+    collection->save();
+
+    transaction->commit();
+
+    // For now it needs to be disconnected manually
+    transaction->disconnectCollection(collection);
+    QFAIL("For now not usable");
 }
 
-QTEST_APPLESS_MAIN(TransactionTest)
+QTEST_GUILESS_MAIN(TransactionTest)
 
 #include "tst_TransactionTest.moc"
