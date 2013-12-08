@@ -46,7 +46,7 @@ class IndexTest : public QObject
         void testCreatingUniqueHashIndex();
 
     protected:
-        Arangodbdriver driver;
+        ArangoDBDriver driver;
         QueryBuilder qb;
         Collection * tempCollection = Q_NULLPTR;
 
