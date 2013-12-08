@@ -161,6 +161,19 @@ void ArangoDBDriver::connectCollection(Collection * collection)
              );
 }
 
+void ArangoDBDriver::disconnectCollection(Collection *collection)
+{
+    disconnect( collection, &Collection::saveData,
+             this, &ArangoDBDriver::_ar_collection_save
+             );
+    disconnect( collection, &Collection::loadIntoMemory,
+             this, &ArangoDBDriver::_ar_collection_save
+             );
+    disconnect( collection, &Collection::deleteData,
+             this, &ArangoDBDriver::_ar_collection_delete
+             );
+}
+
 Document *ArangoDBDriver::getDocument(QString id)
 {
     Document *doc = new Document(this);
@@ -212,6 +225,29 @@ void ArangoDBDriver::connectDocument(Document * doc)
             );
 
     connect(doc, &Document::syncData,
+            this, &ArangoDBDriver::_ar_document_sync
+            );
+}
+
+void ArangoDBDriver::disconnectDocument(Document *doc)
+{
+    disconnect(doc, &Document::saveData,
+            this, &ArangoDBDriver::_ar_document_save
+            );
+
+    disconnect(doc, &Document::deleteData,
+            this, &ArangoDBDriver::_ar_document_delete
+            );
+
+    disconnect(doc, &Document::updateDataStatus,
+            this, &ArangoDBDriver::_ar_document_updateStatus
+            );
+
+    disconnect(doc, &Document::updateData,
+            this, &ArangoDBDriver::_ar_document_update
+            );
+
+    disconnect(doc, &Document::syncData,
             this, &ArangoDBDriver::_ar_document_sync
             );
 }
@@ -271,11 +307,15 @@ Edge *ArangoDBDriver::createEdge(QString collection, Document *fromDoc, Document
 
 void ArangoDBDriver::connectIndex(index::AbstractIndex * index)
 {
+    connect( index, &index::AbstractIndex::saveSignal,
+             this, &ArangoDBDriver::_ar_index_save
+             );
+}
 
-    QObject * obj = dynamic_cast<QObject *>(index);
-
-    connect( obj, SIGNAL(saveSignal(AbstractIndex*)),
-             this,  SLOT(_ar_index_save(AbstractIndex*))
+void ArangoDBDriver::disconnectIndex(AbstractIndex *index)
+{
+    disconnect( index, &index::AbstractIndex::saveSignal,
+             this, &ArangoDBDriver::_ar_index_save
              );
 }
 
@@ -560,7 +600,7 @@ void ArangoDBDriver::_ar_index_delete(AbstractIndex * index)
 
 void ArangoDBDriver::_ar_transaction_commit(Transaction *transaction)
 {
-    qDebug() << transaction;
+    qDebug() << this << "commit from" << transaction;
 }
 
 }

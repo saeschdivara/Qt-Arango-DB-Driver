@@ -167,6 +167,16 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         void connectCollection(Collection * collection);
 
         /**
+         * @brief disconnectCollection
+         *
+         * @param collection
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void disconnectCollection(Collection * collection);
+
+        /**
          * @brief getDocument
          *
          * @param id
@@ -213,9 +223,20 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         void connectDocument(Document * doc);
 
         /**
+         * @brief disconnectDocument
+         *
+         * @param doc
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void disconnectDocument(Document * doc);
+
+        /**
          * @brief getEdge
          *
          * @param id
+         *
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
@@ -227,6 +248,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @brief createEdge
          *
          * @param collection
+         *
          * @return
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
@@ -236,12 +258,23 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
 
         /**
          * @brief connectIndex
+         *
          * @param index
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
         void connectIndex(index::AbstractIndex* index);
+
+        /**
+         * @brief disconnectIndex
+         *
+         * @param index
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void disconnectIndex(index::AbstractIndex* index);
 
         // TODO: Create interface (QBQueryInterface) for QBSelect and QBSimpleSelect
         // TODO: Rename QBSimpleSelect to QBSimpleQuery
@@ -410,7 +443,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         Q_SLOT void _ar_index_delete(AbstractIndex * index);
 
         /**
-         * @brief
+         * @brief _ar_transaction_commit
          *
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
