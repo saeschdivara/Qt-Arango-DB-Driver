@@ -14,9 +14,8 @@ class TransactionOperationPrivate;
  * @author Sascha Häusler <saeschdivara@gmail.com>
  * @since 0.6
  */
-class TransactionOperation : public QObject
+class TransactionOperation
 {
-        Q_OBJECT
     public:
         /**
          * @brief The Type enum
@@ -24,10 +23,23 @@ class TransactionOperation : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        enum class Type {
+        enum class Type : quint8 {
             Save,
             Delete,
             Update
+        };
+
+        /**
+         * @brief The Source enum
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        enum class Source : quint8 {
+            Collection,
+            Document,
+            Edge,
+            Index
         };
 
         /**
@@ -38,7 +50,7 @@ class TransactionOperation : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
          */
-        explicit TransactionOperation(QObject *parent = 0);
+        explicit TransactionOperation(Source source, Type type);
 
         /**
          * @brief ~TransactionOperation
@@ -47,6 +59,26 @@ class TransactionOperation : public QObject
          * @since 0.6
          */
         virtual ~TransactionOperation();
+
+        /**
+         * @brief source
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Source source() const;
+
+        /**
+         * @brief type
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Type type() const;
 
     protected:
         TransactionOperationPrivate * d_ptr;
