@@ -8,7 +8,8 @@ QT       += network
 
 QT       -= gui
 
-QMAKE_CXXFLAGS += -std=c++11
+#QMAKE_CXXFLAGS += -std=c++11
+CONFIG+=c++11
 
 TARGET = arangodb-driver
 TEMPLATE = lib
