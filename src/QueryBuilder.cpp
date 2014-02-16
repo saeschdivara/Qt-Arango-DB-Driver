@@ -23,6 +23,8 @@
 
 #include "QueryBuilder.h"
 
+#include <QtCore/QJsonObject>
+
 namespace arangodb
 {
 

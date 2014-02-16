@@ -41,7 +41,9 @@ SOURCES += \
     ArangoDBDriver.cpp \
     transaction/TransactionController.cpp \
     transaction/Transaction.cpp \
-    transaction/TransactionOperation.cpp
+    transaction/TransactionOperation.cpp \
+    Database.cpp \
+    AbstractDbObject.cpp
 
 HEADERS +=\
         arangodb-driver_global.h \
@@ -64,4 +66,7 @@ HEADERS +=\
     ArangoDBDriver.h \
     transaction/TransactionController.h \
     transaction/Transaction.h \
-    transaction/TransactionOperation.h
+    transaction/TransactionOperation.h \
+    Database.h \
+    AbstractDbObject.h \
+    private/AbstractDbObject_p.h

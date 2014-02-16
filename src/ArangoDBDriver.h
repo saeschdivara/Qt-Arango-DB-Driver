@@ -27,6 +27,7 @@
 #include "arangodb-driver_global.h"
 
 #include "Collection.h"
+#include "Database.h"
 #include "Document.h"
 #include "Edge.h"
 #include "QBSelect.h"
@@ -79,6 +80,8 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @since 0.1
          */
         virtual ~ArangoDBDriver();
+
+
 
         /**
          * @brief existsCollection
@@ -322,6 +325,16 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         void connectTransactionController(TransactionController * ctrl);
 
     protected Q_SLOTS:
+        /**
+          * @brief _ar_database_save
+          *
+          * @param db
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+          */
+        Q_SLOT void _ar_database_save(Database * db);
+
         /**
          * @brief _ar_document_save
          *

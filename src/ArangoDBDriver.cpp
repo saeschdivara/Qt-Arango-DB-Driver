@@ -377,6 +377,23 @@ void ArangoDBDriver::connectTransactionController(TransactionController *ctrl)
              );
 }
 
+void ArangoDBDriver::_ar_database_save(Database *db)
+{
+    d->jsonData = db->toJsonString();
+    QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
+
+    QUrl url(d->standardUrl + QString("/database"));
+    QNetworkRequest request(url);
+    request.setRawHeader("Content-Type", "application/json");
+    request.setRawHeader("Content-Length", jsonDataSize);
+
+    QNetworkReply *reply = d->networkManager.post(request, d->jsonData);
+
+    connect(reply, &QNetworkReply::finished,
+            db, &AbstractDbObject::_ar_dataIsAvailable
+            );
+}
+
 void ArangoDBDriver::_ar_document_save(Document *doc)
 {
     d->jsonData = doc->toJsonString();
