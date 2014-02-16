@@ -48,4 +48,12 @@ QSharedPointer<QBSimpleSelect> QueryBuilder::createGetAllSelect(const QString & 
     return select;
 }
 
+QSharedPointer<QBSimpleSelect> QueryBuilder::createByExampleSelect(const QString &collection, QJsonObject example)
+{
+    QSharedPointer<QBSimpleSelect> select(new QBSimpleSelect(QBSimpleSelect::Type::GetByExample, collection));
+    select->setExample(example);
+
+    return select;
+}
+
 }

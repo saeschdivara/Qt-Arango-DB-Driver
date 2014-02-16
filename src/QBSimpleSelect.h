@@ -49,7 +49,8 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
          */
         enum class Type {
             UnknownType,
-            GetAllDocumentsType
+            GetAllDocumentsType,
+            GetByExample
         };
 
         /**
@@ -64,8 +65,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
         QBSimpleSelect(Type type, const QString & collection);
 
         /**
-         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
-         * The number of documents to skip in the query (optional).
+         * @brief The number of documents to skip in the query (optional).
          *
          * @param skip
          *
@@ -75,8 +75,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
         void setSkipNumber(int skip);
 
         /**
-         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
-         * If nothing should be skipped, it returns -1
+         * @brief If nothing should be skipped, it returns -1
          *
          * @return
          *
@@ -86,8 +85,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
         int skiptNumber() const;
 
         /**
-         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
-         * The maximal amount of documents to return. The skip is applied
+         * @brief The maximal amount of documents to return. The skip is applied
          * before the limit restriction. (optional)
          *
          * @param limit
@@ -98,8 +96,7 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
         void setLimit(int limit);
 
         /**
-         * @brief This method is only used for QBSimpleSelect::Type::GetAllDocumentsType.
-         * If there should be no limit, it returns -1
+         * @brief If there should be no limit, it returns -1
          *
          * @return
          *
@@ -109,7 +106,27 @@ class ARANGODBDRIVERSHARED_EXPORT QBSimpleSelect
         int limit() const;
 
         /**
-         * @brief type
+         * @brief Sets the example which is in the name of the type.
+         *
+         * @param example
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setExample(QJsonObject example);
+
+        /**
+         * @brief example
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QJsonObject example() const;
+
+        /**
+         * @brief Returns select type
          *
          * @return
          *

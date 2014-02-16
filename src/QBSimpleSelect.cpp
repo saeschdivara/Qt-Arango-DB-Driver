@@ -35,9 +35,11 @@ class QBSimpleSelectPrivate
         QBSimpleSelect::Type type;
         QString collection;
 
-        // QBSimpleSelect::Type::GetAllDocumentsType
         int skiptNumber = -1;
         int limit = -1;
+
+        // QBSimpleSelect::Type::GetByExample
+        QJsonObject example;
 };
 
 QBSimpleSelect::QBSimpleSelect(Type type, const QString & collection) :
@@ -71,6 +73,18 @@ int QBSimpleSelect::limit() const
     return d->limit;
 }
 
+void QBSimpleSelect::setExample(QJsonObject example)
+{
+    Q_D(QBSimpleSelect);
+    d->example = example;
+}
+
+QJsonObject QBSimpleSelect::example() const
+{
+    Q_D(const QBSimpleSelect);
+    return d->example;
+}
+
 QBSimpleSelect::Type QBSimpleSelect::type() const
 {
     Q_D(const QBSimpleSelect);
@@ -87,6 +101,9 @@ QString QBSimpleSelect::url() const
     {
         case Type::GetAllDocumentsType:
             url = QLatin1String("/simple/all");
+            break;
+        case Type::GetByExample:
+            url = QLatin1String("/simple/by-example");
             break;
         case Type::UnknownType:
             break;
@@ -107,15 +124,18 @@ QByteArray QBSimpleSelect::toJson() const
     obj.insert(QLatin1String("collection"), d->collection);
 
     switch (d->type) {
+        case Type::GetByExample: {
+            obj.insert("example", d->example);
+        }
         case Type::GetAllDocumentsType: {
-                // If skipNumber is bigger than 0, it is applied
-                if ( d->skiptNumber > 0 )
-                    obj.insert(QLatin1String("skip"), d->skiptNumber);
+            // If skipNumber is bigger than 0, it is applied
+            if ( d->skiptNumber > 0 )
+                obj.insert(QLatin1String("skip"), d->skiptNumber);
 
-                // If limit is bigger than 0, it is applied
-                if ( d->limit > 0 )
-                    obj.insert(QLatin1String("limit"), d->limit);
-            }
+            // If limit is bigger than 0, it is applied
+            if ( d->limit > 0 )
+                obj.insert(QLatin1String("limit"), d->limit);
+        }
             break;
         default:
             break;

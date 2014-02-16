@@ -72,7 +72,7 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
         static QSharedPointer<QBSelect> createSelect(QStringList & collections, int batchSize = 15);
 
         /**
-         * @brief createGetAllSelect
+         * @brief Creates select to get all documents from one collection
          *
          * @param collection
          *
@@ -82,6 +82,19 @@ class ARANGODBDRIVERSHARED_EXPORT QueryBuilder
          * @since 0.6
          */
         static QSharedPointer<QBSimpleSelect> createGetAllSelect(const QString & collection);
+
+        /**
+         * @brief createByExampleSelect
+         *
+         * @param collection
+         * @param example
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        static QSharedPointer<QBSimpleSelect> createByExampleSelect(const QString & collection, QJsonObject example);
 };
 
 }
