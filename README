@@ -8,8 +8,10 @@ Qt 5 and 5.1.
 
 Now what is driver already able to do:
 
+* Creating, getting and deleting Databases
 * Creating, getting, modifing, deleting and updating of Document's
 * Creating, getting, modifing, deleting and updating of Edge's
 * Creating, getting and deleting Colllection's
 * Creating from Collection's index's is possible
 * The following index's can be created and deleted: cap, fulltext, geo, hash, skiplist
+* Transactions are starting to get support
