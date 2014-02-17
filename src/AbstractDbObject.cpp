@@ -9,6 +9,11 @@ AbstractDbObject::AbstractDbObject(QObject *parent) :
 {
 }
 
+AbstractDbObject::~AbstractDbObject()
+{
+    delete d_ptr;
+}
+
 void AbstractDbObject::save()
 {
     Q_EMIT saveData(this);

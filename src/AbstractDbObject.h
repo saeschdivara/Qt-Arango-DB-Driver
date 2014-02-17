@@ -13,6 +13,7 @@ class ARANGODBDRIVERSHARED_EXPORT AbstractDbObject : public QObject
         Q_OBJECT
     public:
         explicit AbstractDbObject(QObject *parent = 0);
+        virtual ~AbstractDbObject();
 
         virtual QByteArray toJsonString() const = 0;
 

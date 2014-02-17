@@ -75,6 +75,27 @@ ArangoDBDriver::~ArangoDBDriver()
     delete d;
 }
 
+Database *ArangoDBDriver::createDatabase(const QString &name)
+{
+    return createDatabase(name, QList<Database::User *>());
+}
+
+Database *ArangoDBDriver::createDatabase(const QString &name, QList<Database::User *> users)
+{
+    Database *db = new Database(name, users, this);
+
+    connectDatabase(db);
+
+    return db;
+}
+
+void ArangoDBDriver::connectDatabase(Database *db)
+{
+    connect( db, &Database::saveData,
+             this, &ArangoDBDriver::_ar_database_save
+             );
+}
+
 bool ArangoDBDriver::isColllectionExisting(const QString & collectionName)
 {
     QUrl url(d->standardUrl + QString("/collection/") + collectionName);
@@ -377,7 +398,7 @@ void ArangoDBDriver::connectTransactionController(TransactionController *ctrl)
              );
 }
 
-void ArangoDBDriver::_ar_database_save(Database *db)
+void ArangoDBDriver::_ar_database_save(AbstractDbObject * db)
 {
     d->jsonData = db->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());

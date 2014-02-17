@@ -81,7 +81,41 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          */
         virtual ~ArangoDBDriver();
 
+        /**
+         * @brief Creates database with name and with root Database::User
+         * which has no password
+         *
+         * @param name
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Database * createDatabase(const QString & name);
 
+        /**
+         * @brief Creates database with name to which users have access
+         *
+         * @param name
+         * @param users
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Database * createDatabase(const QString & name, QList<Database::User *> users);
+
+        /**
+         * @brief Connects db signals to the drivers slots
+         *
+         * @param db
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void connectDatabase(Database * db);
 
         /**
          * @brief existsCollection
@@ -333,7 +367,7 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
          * @author Sascha Häusler <saeschdivara@gmail.com>
          * @since 0.6
           */
-        Q_SLOT void _ar_database_save(Database * db);
+        Q_SLOT void _ar_database_save(AbstractDbObject *db);
 
         /**
          * @brief _ar_document_save

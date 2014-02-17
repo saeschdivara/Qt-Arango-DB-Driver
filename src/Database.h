@@ -4,6 +4,7 @@
 #include "arangodb-driver_global.h"
 
 #include "AbstractDbObject.h"
+#include <QtCore/QJsonObject>
 
 namespace arangodb
 {
@@ -20,7 +21,18 @@ class ARANGODBDRIVERSHARED_EXPORT Database : public AbstractDbObject
 {
         Q_OBJECT
     public:
-        explicit Database(QObject *parent = 0);
+        class User
+        {
+            public:
+                QString name;
+                QString password;
+                bool isActive = false;
+                QJsonObject extraInformation;
+        };
+
+        explicit Database(const QString & name, QObject *parent = 0);
+        explicit Database(const QString & name, QList<Database::User *> users, QObject *parent = 0);
+        virtual ~Database();
 
         virtual QByteArray toJsonString() const;
 
