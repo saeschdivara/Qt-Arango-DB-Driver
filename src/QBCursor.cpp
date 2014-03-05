@@ -45,6 +45,8 @@ class QBCursorPrivate
         quint32 errorCode = 0;
         quint32 errorNumber = 0;
 
+        int fullCount;
+
         inline void resetError() {
             errorMessage.clear();
             errorCode = 0;
@@ -105,7 +107,11 @@ QList<Document *> QBCursor::data()
 int QBCursor::count() const
 {
     Q_D(const QBCursor);
-    return d->docs.count();
+
+    if ( d->fullCount == -1 )
+        return d->docs.count();
+    else
+        return d->fullCount;
 }
 
 void QBCursor::getMoreData()
@@ -159,6 +165,11 @@ void QBCursor::_ar_cursor_result_loaded()
 
         emit error();
         return;
+    }
+
+    if ( obj.contains("extra") ) {
+        QJsonObject extraData = obj.value("extra").toObject();
+        d->fullCount = extraData.value("fullCount").toInt(-1);
     }
 
     d->hasMore = obj.value(QStringLiteral("hasMore")).toBool(false);

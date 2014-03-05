@@ -15,7 +15,7 @@ TARGET = arangodb-driver
 TEMPLATE = lib
 
 CONFIG(release, debug|release){
-    TARGET += $$PWD/../../arangodb-driver-dist/release/arangodb-driver
+    #TARGET += $$PWD/../../arangodb-driver-dist/release/arangodb-driver
     DEFINES += AR_RELEASE_BUILD
 }
 CONFIG(debug, debug|release){

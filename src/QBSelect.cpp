@@ -36,8 +36,10 @@ class QBSelectPrivate
     public:
         QStringList collections;
         int batchSize;
+        int limitStart;
         int limit;
         bool isCounting;
+        bool isFullyCounting;
 
         QString where;
         QString whereField;
@@ -249,6 +251,25 @@ bool QBSelect::isCounting() const
     return d->isCounting;
 }
 
+void QBSelect::setFullCounting(bool count)
+{
+    Q_D(QBSelect);
+    d->isFullyCounting = count;
+}
+
+bool QBSelect::isFullyCounting() const
+{
+    Q_D(const QBSelect);
+    return d->isFullyCounting;
+}
+
+void QBSelect::setLimit(int start, int number)
+{
+    Q_D(QBSelect);
+    d->limit = number;
+    d->limitStart = start;
+}
+
 void QBSelect::setWhere(const QString & field, const QString & op)
 {
     Q_D(QBSelect);
@@ -327,7 +348,10 @@ QByteArray QBSelect::toJson() const
         query = query.arg(collectionIdentifier, lastCollection, QStringLiteral(""), d->where);
     }
     else {
-        QString limit = QStringLiteral("LIMIT %1").arg(QString::number(d->limit));
+        QString limit = QStringLiteral("LIMIT %1,%2")
+                .arg(QString::number(d->limitStart))
+                .arg(QString::number(d->limit));
+
         query = query.arg(collectionIdentifier, lastCollection, limit, d->where);
     }
 
@@ -342,6 +366,13 @@ QByteArray QBSelect::toJson() const
         bindVarsObj.insert(d->whereField, QJsonArray::fromStringList(d->bindVars));
 
         jsonObj.insert(QStringLiteral("bindVars"), bindVarsObj);
+    }
+
+    if ( d->isFullyCounting ) {
+        QJsonObject options;
+        options.insert(QStringLiteral("fullCount"), d->isFullyCounting);
+
+        jsonObj.insert("options", options);
     }
 
     jsonDoc.setObject(jsonObj);

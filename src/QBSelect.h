@@ -116,6 +116,37 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         bool isCounting() const;
 
         /**
+         * @brief setFullCounting
+         *
+         * @param count
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setFullCounting(bool count);
+
+        /**
+         * @brief isFullyCounting
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        bool isFullyCounting() const;
+
+        /**
+         * @brief setLimit
+         *
+         * @param start
+         * @param number
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setLimit(int start, int number);
+
+        /**
          * @brief This method assumes that only one collection
          * is set for the select and therefor the where statement
          * is set for this collection (first collection in the list)
