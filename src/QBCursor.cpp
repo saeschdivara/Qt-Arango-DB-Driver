@@ -45,7 +45,7 @@ class QBCursorPrivate
         quint32 errorCode = 0;
         quint32 errorNumber = 0;
 
-        int fullCount;
+        int fullCount = -1;
 
         inline void resetError() {
             errorMessage.clear();
