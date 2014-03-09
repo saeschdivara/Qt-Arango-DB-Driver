@@ -376,7 +376,7 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          *
          * @since 0.1
          */
-        void save();
+        bool save();
 
         /**
          * @brief update

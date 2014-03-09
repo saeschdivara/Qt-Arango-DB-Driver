@@ -280,13 +280,16 @@ void Document::_ar_dataUpdated()
     emit ready();
 }
 
-void Document::save()
+bool Document::save()
 {
     if ( !d_func()->isCreated || d_func()->isDirty ) {
         d_func()->isDirty = false;
 
         emit saveData(this);
+        return true;
     }
+
+    return false;
 }
 
 void Document::update()
