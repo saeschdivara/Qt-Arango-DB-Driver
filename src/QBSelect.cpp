@@ -24,9 +24,11 @@
 #include "QBSelect.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QList>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
+#include <QtCore/QPair>
 
 namespace arangodb
 {
@@ -46,6 +48,33 @@ class QBSelectPrivate
         QStringList bindVars;
 
         QVariant result;
+
+        QList< QPair<QString, QBSelect::SortingOrder> > sorting;
+
+        /**
+         * @brief getSorting
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        QString getSorting() const {
+
+            if ( sorting.size() == 0 ) {
+                return " ";
+            }
+
+            QPair<QString, QBSelect::SortingOrder> firstSorting = sorting.first();
+            QString sortingOrder(" SORT %1 %2 ");
+
+            if ( firstSorting.second == QBSelect::SortingOrder::AscSorting ) {
+                return sortingOrder.arg(firstSorting.first).arg("asc");
+            }
+            else if ( firstSorting.second == QBSelect::SortingOrder::DescSorting ) {
+                return sortingOrder.arg(firstSorting.first).arg("desc");
+            }
+        }
 
         /**
          * @brief The ResultType enum
@@ -324,13 +353,23 @@ void QBSelect::setResult(const QHash<QString, QVariant> & collectionFields)
     d->resultType = QBSelectPrivate::ResultType::HashResult;
 }
 
+void QBSelect::setSortingColumn(const QString &collection, const QString &column, QBSelect::SortingOrder order)
+{
+    Q_D(QBSelect);
+    QPair<QString, SortingOrder> sorting;
+    sorting.first = d->getCollectionIdentifier(collection) + "." + column;
+    sorting.second = order;
+
+    d->sorting.insert(0, sorting);
+}
+
 QByteArray QBSelect::toJson() const
 {
     Q_D(const QBSelect);
     QJsonDocument jsonDoc;
     QJsonObject jsonObj;
     const QString forCollectionTemplate("FOR %1 IN %2 ");
-    QString query("FOR %1 IN %2 %3 %4 RETURN %5");
+    QString query("FOR %1 IN %2 %3 %4 %5 RETURN %6");
 
     const int totalCollections = d->collections.size();
     for (int i = 0; i < totalCollections-1; ++i) {
@@ -345,14 +384,14 @@ QByteArray QBSelect::toJson() const
 
     // Only if limit is over 0, a limit is set
     if ( d->limit < 1 ) {
-        query = query.arg(collectionIdentifier, lastCollection, QStringLiteral(""), d->where);
+        query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), QStringLiteral(""), d->where);
     }
     else {
         QString limit = QStringLiteral("LIMIT %1,%2")
                 .arg(QString::number(d->limitStart))
                 .arg(QString::number(d->limit));
 
-        query = query.arg(collectionIdentifier, lastCollection, limit, d->where);
+        query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), limit, d->where);
     }
 
     query = query.arg(d->getResult());

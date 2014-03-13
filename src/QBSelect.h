@@ -42,6 +42,11 @@ class QBSelectPrivate;
 class ARANGODBDRIVERSHARED_EXPORT QBSelect
 {
     public:
+        enum class SortingOrder {
+            AscSorting = 1,
+            DescSorting = 2
+        };
+
         /**
          * @brief QBSelect
          *
@@ -230,6 +235,18 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
          * @since 0.5
          */
         void setResult(const QHash<QString, QVariant> & collectionFields);
+
+        /**
+         * @brief setSortingColumn
+         *
+         * @param collection
+         * @param column
+         * @param order
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setSortingColumn(const QString & collection, const QString & column, SortingOrder order);
 
         /**
          * @brief Returns the json representation of the query
