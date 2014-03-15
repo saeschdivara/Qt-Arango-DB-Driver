@@ -299,6 +299,13 @@ void QBSelect::setLimit(int start, int number)
     d->limitStart = start;
 }
 
+void QBSelect::setWhereNot(const QString &field, const QString &op)
+{
+    Q_D(QBSelect);
+    QString collectionIdentifier = d->getCollectionIdentifier(d->getCollectionName());
+    d->where = QStringLiteral("FILTER %1.%2 != \"%3\"").arg(collectionIdentifier, field, op);
+}
+
 void QBSelect::setWhere(const QString & field, const QString & op)
 {
     Q_D(QBSelect);
