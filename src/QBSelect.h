@@ -163,6 +163,17 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         void setWhereNot(const QString & field, const QString & op);
 
         /**
+         * @brief setWhereNot
+         *
+         * @param field
+         * @param op
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setWhereNot(const QString & field, const QStringList & op);
+
+        /**
          * @brief This method assumes that only one collection
          * is set for the select and therefor the where statement
          * is set for this collection (first collection in the list)

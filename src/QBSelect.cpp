@@ -306,6 +306,19 @@ void QBSelect::setWhereNot(const QString &field, const QString &op)
     d->where = QStringLiteral("FILTER %1.%2 != \"%3\"").arg(collectionIdentifier, field, op);
 }
 
+void QBSelect::setWhereNot(const QString &field, const QStringList &op)
+{
+    Q_D(QBSelect);
+    QString collectionIdentifier = d->getCollectionIdentifier(d->getCollectionName());
+    QString list;
+
+    for ( QString x : op ) {
+        list += x + ",";
+    }
+
+    d->where = QStringLiteral("FILTER %1.%2 != [%3]").arg(collectionIdentifier, field, list);
+}
+
 void QBSelect::setWhere(const QString & field, const QString & op)
 {
     Q_D(QBSelect);
