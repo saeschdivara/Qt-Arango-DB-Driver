@@ -63,16 +63,15 @@ Document::Document(QJsonObject obj, QObject * parent) :
     if ( obj.contains(internal::ID) ) {
         obj.remove(QStringLiteral("n"));
         d_func()->collectionName = obj.value(internal::ID).toString().split('/').at(0);
-        d_func()->data.insert(internal::ID, obj.value(internal::ID));
-        d_func()->data.insert(internal::KEY, obj.value(internal::KEY));
-        d_func()->data.insert(internal::REV, obj.value(internal::REV));
+        d_func()->data.insert(internal::ID, obj.take(internal::ID));
+        d_func()->data.insert(internal::KEY, obj.take(internal::KEY));
+        d_func()->data.insert(internal::REV, obj.take(internal::REV));
         d_func()->isCurrent = false;
         d_func()->isCreated = true;
     }
-    else {
-        for ( auto key : obj.keys() ) {
-            d_func()->data.insert(key, obj[key]);
-        }
+
+    for ( auto key : obj.keys() ) {
+        d_func()->data.insert(key, obj[key]);
     }
 }
 
