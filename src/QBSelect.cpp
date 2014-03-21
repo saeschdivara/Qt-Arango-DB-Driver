@@ -42,6 +42,7 @@ class QBSelectPrivate
         int limit;
         bool isCounting;
         bool isFullyCounting;
+        bool isRandom = false;
 
         QString where;
         QString whereField;
@@ -60,6 +61,10 @@ class QBSelectPrivate
          * @since 0.6
          */
         QString getSorting() const {
+
+            if ( isRandom ) {
+                return QString("SORT RAND()");
+            }
 
             if ( sorting.size() == 0 ) {
                 return " ";
@@ -232,6 +237,7 @@ QBSelect::QBSelect(const QString & collection, int batchSize) :
     d->batchSize = batchSize;
     d->isCounting = false;
     d->limit = -1;
+    d->limitStart = -1;
 }
 
 QBSelect::QBSelect(const QStringList & collections, int batchSize):
@@ -242,6 +248,7 @@ QBSelect::QBSelect(const QStringList & collections, int batchSize):
     d->batchSize = batchSize;
     d->isCounting = false;
     d->limit = -1;
+    d->limitStart = -1;
 }
 
 QBSelect::~QBSelect()
@@ -297,6 +304,12 @@ void QBSelect::setLimit(int start, int number)
     Q_D(QBSelect);
     d->limit = number;
     d->limitStart = start;
+}
+
+void QBSelect::setLimit(int number)
+{
+    Q_D(QBSelect);
+    d->limit = number;
 }
 
 void QBSelect::setWhereNot(const QString &field, const QString &op)
@@ -383,6 +396,12 @@ void QBSelect::setSortingColumn(const QString &collection, const QString &column
     d->sorting.insert(0, sorting);
 }
 
+void QBSelect::setRandom(bool isRandom)
+{
+    Q_D(QBSelect);
+    d->isRandom = isRandom;
+}
+
 QByteArray QBSelect::toJson() const
 {
     Q_D(const QBSelect);
@@ -407,11 +426,20 @@ QByteArray QBSelect::toJson() const
         query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), QStringLiteral(""), d->where);
     }
     else {
-        QString limit = QStringLiteral("LIMIT %1,%2")
-                .arg(QString::number(d->limitStart))
-                .arg(QString::number(d->limit));
 
-        query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), limit, d->where);
+        if ( d->limitStart >= 0 ) {
+            QString limit = QStringLiteral("LIMIT %1,%2")
+                    .arg(QString::number(d->limitStart))
+                    .arg(QString::number(d->limit));
+
+            query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), limit, d->where);
+        }
+        else {
+            QString limit = QStringLiteral("LIMIT %1")
+                    .arg(QString::number(d->limit));
+
+            query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), limit, d->where);
+        }
     }
 
     query = query.arg(d->getResult());
@@ -435,6 +463,7 @@ QByteArray QBSelect::toJson() const
     }
 
     jsonDoc.setObject(jsonObj);
+    qDebug() << jsonDoc.toJson();
     return jsonDoc.toJson();
 }
 

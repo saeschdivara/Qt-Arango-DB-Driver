@@ -225,6 +225,16 @@ class ARANGODBDRIVERSHARED_EXPORT ArangoDBDriver : public QObject
         Document* getDocument(QString id);
 
         /**
+         * @brief getRandomDocument
+         *
+         * @return
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        Document* getRandomDocument(const QString &colleciton);
+
+        /**
          * @brief Creates document for a collection
          *
          * @param collection

@@ -22,6 +22,7 @@
  *********************************************************************************/
 
 #include "ArangoDBDriver.h"
+#include "QueryBuilder.h"
 
 #include <transaction/TransactionController.h>
 
@@ -209,6 +210,19 @@ Document *ArangoDBDriver::getDocument(QString id)
     connectDocument(doc);
 
     return doc;
+}
+
+Document *ArangoDBDriver::getRandomDocument(const QString & colleciton)
+{
+    QueryBuilder qb;
+    auto select = qb.createSelect(colleciton);
+    select->setLimit(1);
+    select->setRandom(true);
+
+    auto cursor = executeSelect(select);
+    cursor->waitForResult();
+
+    return cursor->data().first();
 }
 
 Document *ArangoDBDriver::createDocument(QString collection)

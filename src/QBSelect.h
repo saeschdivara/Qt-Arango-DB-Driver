@@ -152,6 +152,16 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
         void setLimit(int start, int number);
 
         /**
+         * @brief setLimit
+         *
+         * @param number
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setLimit(int number);
+
+        /**
          * @brief setWhereNot
          *
          * @param field
@@ -269,6 +279,14 @@ class ARANGODBDRIVERSHARED_EXPORT QBSelect
          * @since 0.6
          */
         void setSortingColumn(const QString & collection, const QString & column, SortingOrder order);
+
+        /**
+         * @brief setRandom
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setRandom(bool isRandom);
 
         /**
          * @brief Returns the json representation of the query
