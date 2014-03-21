@@ -463,7 +463,6 @@ QByteArray QBSelect::toJson() const
     }
 
     jsonDoc.setObject(jsonObj);
-    qDebug() << jsonDoc.toJson();
     return jsonDoc.toJson();
 }
 
