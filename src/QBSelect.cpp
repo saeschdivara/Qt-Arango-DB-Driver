@@ -205,8 +205,8 @@ class QBSelectPrivate
         inline QString getCollectionIdentifier(const QString & collectionName) const {
             QString identifier;
 
-            if ( collectionName.length() > 4 )
-                identifier = collectionName.right(2).toUpper() + collectionName.left(2).toLower();
+            if ( collectionName.length() > 13 )
+                identifier = collectionName.right(4).toUpper() + collectionName.mid(4, 8).toLower() + collectionName.left(5).toLower();
             else
                 identifier = collectionName;
 
@@ -316,7 +316,7 @@ void QBSelect::setWhereNot(const QString &field, const QString &op)
 {
     Q_D(QBSelect);
     QString collectionIdentifier = d->getCollectionIdentifier(d->getCollectionName());
-    d->where = QStringLiteral("FILTER %1.%2 != \"%3\"").arg(collectionIdentifier, field, op);
+    d->where += QStringLiteral(" FILTER %1.%2 != \"%3\"").arg(collectionIdentifier, field, op);
 }
 
 void QBSelect::setWhereNot(const QString &field, const QStringList &op)
@@ -329,22 +329,29 @@ void QBSelect::setWhereNot(const QString &field, const QStringList &op)
         list += x + ",";
     }
 
-    d->where = QStringLiteral("FILTER %1.%2 != [%3]").arg(collectionIdentifier, field, list);
+    d->where += QStringLiteral(" FILTER %1.%2 != [%3]").arg(collectionIdentifier, field, list);
 }
 
 void QBSelect::setWhere(const QString & field, const QString & op)
 {
     Q_D(QBSelect);
     QString collectionIdentifier = d->getCollectionIdentifier(d->getCollectionName());
-    d->where = QStringLiteral("FILTER %1.%2 == \"%3\"").arg(collectionIdentifier, field, op);
+    d->where += QStringLiteral(" FILTER %1.%2 == \"%3\"").arg(collectionIdentifier, field, op);
+}
+
+void QBSelect::setWhere(const QString &collection, const QString &field, const QString &op)
+{
+    Q_D(QBSelect);
+    QString collectionIdentifier = d->getCollectionIdentifier(collection);
+    d->where += QStringLiteral(" FILTER %1.%2 == \"%3\"").arg(collectionIdentifier, field, op);
 }
 
 void QBSelect::setWhere(const QString & field, bool op)
 {
     Q_D(QBSelect);
     QString collectionIdentifier = d->getCollectionIdentifier(d->getCollectionName());
-    if (op) d->where = QStringLiteral("FILTER %1.%2 == true").arg(collectionIdentifier, field);
-    else d->where = QStringLiteral("FILTER %1.%2 == false").arg(collectionIdentifier, field);
+    if (op) d->where += QStringLiteral(" FILTER %1.%2 == true").arg(collectionIdentifier, field);
+    else d->where += QStringLiteral(" FILTER %1.%2 == false").arg(collectionIdentifier, field);
 }
 
 void QBSelect::setWhere(const QString & field, const QStringList & op)
@@ -362,7 +369,7 @@ void QBSelect::setWhere(const QString & collection1, const QString & field1,
     Q_D(QBSelect);
     QString identifier1 = d->getCollectionIdentifier(collection1);
     QString identifier2 = d->getCollectionIdentifier(collection2);
-    d->where = QStringLiteral("FILTER %1.%2 == %3.%4").arg(identifier1, field1, identifier2, field2);
+    d->where += QStringLiteral(" FILTER %1.%2 == %3.%4").arg(identifier1, field1, identifier2, field2);
 }
 
 void QBSelect::setResult(const QString & collectionName)
@@ -423,7 +430,7 @@ QByteArray QBSelect::toJson() const
 
     // Only if limit is over 0, a limit is set
     if ( d->limit < 1 ) {
-        query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), QStringLiteral(""), d->where);
+        query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), d->where, "");
     }
     else {
 
@@ -432,13 +439,13 @@ QByteArray QBSelect::toJson() const
                     .arg(QString::number(d->limitStart))
                     .arg(QString::number(d->limit));
 
-            query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), limit, d->where);
+            query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), d->where, limit);
         }
         else {
             QString limit = QStringLiteral("LIMIT %1")
                     .arg(QString::number(d->limit));
 
-            query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), limit, d->where);
+            query = query.arg(collectionIdentifier, lastCollection, d->getSorting(), d->where, limit);
         }
     }
 
@@ -463,6 +470,7 @@ QByteArray QBSelect::toJson() const
     }
 
     jsonDoc.setObject(jsonObj);
+    qDebug() << jsonDoc.toJson();
     return jsonDoc.toJson();
 }
 
