@@ -37,6 +37,8 @@ class DocumentPrivate;
 namespace arangodb
 {
 
+class ArangoDBDriver;
+
 /**
  * @brief The Document class
  *
@@ -97,6 +99,16 @@ class ARANGODBDRIVERSHARED_EXPORT Document : public QObject
          * @since 0.1
          */
         virtual ~Document();
+
+        /**
+         * @brief setDriver
+         *
+         * @param driver
+         *
+         * @author Sascha Häusler <saeschdivara@gmail.com>
+         * @since 0.6
+         */
+        void setDriver(ArangoDBDriver * driver);
 
         /**
          * @brief isReady

@@ -24,6 +24,7 @@
 #include "Document.h"
 #include "private/Document_p.h"
 #include <QtCore/QCoreApplication>
+#include <QtCore/QThread>
 #include <QtDebug>
 
 using namespace arangodb;
@@ -78,6 +79,11 @@ Document::Document(QJsonObject obj, QObject * parent) :
 Document::~Document()
 {
     delete d_ptr;
+}
+
+void Document::setDriver(ArangoDBDriver *driver)
+{
+    d_func()->driver = driver;
 }
 
 bool Document::isReady()
@@ -200,8 +206,8 @@ bool Document::isEveryAttributeDirty() const
 void Document::waitForResult()
 {
     QEventLoop loop;
-    connect(this, &Document::error, &loop, &QEventLoop::quit);
-    connect(this, &Document::ready, &loop, &QEventLoop::quit);
+    connect(this, &Document::error, &loop, &QEventLoop::quit, Qt::QueuedConnection);
+    connect(this, &Document::ready, &loop, &QEventLoop::quit, Qt::QueuedConnection);
     loop.exec();
 
 }
@@ -230,6 +236,8 @@ void Document::_ar_dataIsAvailable()
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
     d_func()->dirtyAttributes.clear();
+
+    qDebug() << QThread::currentThread() << "_ar_dataIsAvailable" << obj;
 
     reply->disconnect(this, SLOT(_ar_dataIsAvailable()));
 
@@ -283,6 +291,11 @@ bool Document::save()
 {
     if ( !d_func()->isCreated || d_func()->isDirty ) {
         d_func()->isDirty = false;
+
+        if ( d_func()->driver ) {
+            d_func()->driver->disconnectDocument(this);
+            d_func()->driver->connectDocument(this);
+        }
 
         emit saveData(this);
         return true;

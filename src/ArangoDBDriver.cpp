@@ -29,7 +29,9 @@
 #include <QtCore/QBuffer>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
+#include <QtCore/QEventLoop>
 #include <QtCore/QMetaMethod>
+#include <QtCore/QThread>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
@@ -102,25 +104,17 @@ bool ArangoDBDriver::isColllectionExisting(const QString & collectionName)
     QUrl url(d->standardUrl + QString("/collection/") + collectionName);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
 
-    bool isWaiting = true;
-
-    QMetaObject::Connection connection = connect(reply, &QNetworkReply::finished,
-                                                 [&isWaiting] {
-        isWaiting = false;
-    });
-
-    while (isWaiting) {
-        qApp->processEvents();
-    }
-
-    disconnect(connection);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+//    connect(reply, &QNetworkReply::error, &loop, &QEventLoop::quit);
+    loop.exec();
 
     return reply->error() == QNetworkReply::NoError;
 }
 
 Collection *ArangoDBDriver::getCollection(QString name)
 {
-    Collection *collection = new Collection(name, this);
+    Collection *collection = new Collection(name);
 
     QUrl url(d->standardUrl + QString("/collection/") + name);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
@@ -142,8 +136,7 @@ Collection *ArangoDBDriver::createCollection(const QString & name, Collection::T
                                             isSystem,
                                             isVolatile,
                                             keyOption,
-                                            type,
-                                            this);
+                                            type);
 
     connectCollection(collection);
     return collection;
@@ -151,7 +144,7 @@ Collection *ArangoDBDriver::createCollection(const QString & name, Collection::T
 
 Collection *ArangoDBDriver::createCollection(const QString &name, Collection::CreateOptions options)
 {
-    Collection * collection = new Collection(name, options, this);
+    Collection * collection = new Collection(name, options);
     connectCollection(collection);
     return collection;
 }
@@ -198,7 +191,7 @@ void ArangoDBDriver::disconnectCollection(Collection *collection)
 
 Document *ArangoDBDriver::getDocument(QString id)
 {
-    Document *doc = new Document(this);
+    Document *doc = new Document;
 
     QUrl url(d->standardUrl + QString("/document/") + id);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
@@ -227,7 +220,7 @@ Document *ArangoDBDriver::getRandomDocument(const QString & colleciton)
 
 Document *ArangoDBDriver::createDocument(QString collection)
 {
-    Document *doc = new Document(collection, this);
+    Document *doc = new Document(collection);
     connectDocument(doc);
 
     return doc;
@@ -235,7 +228,7 @@ Document *ArangoDBDriver::createDocument(QString collection)
 
 Document *ArangoDBDriver::createDocument(QString collection, QString key)
 {
-    Document *doc = new Document(collection, key, this);
+    Document *doc = new Document(collection, key);
     connectDocument(doc);
 
     return doc;
@@ -289,7 +282,7 @@ void ArangoDBDriver::disconnectDocument(Document *doc)
 
 Edge *ArangoDBDriver::getEdge(QString id)
 {
-    Edge *e = new Edge(this);
+    Edge *e = new Edge;
 
     QUrl url(d->standardUrl + QString("/edge/") + id);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
@@ -319,7 +312,7 @@ Edge *ArangoDBDriver::getEdge(QString id)
 
 Edge *ArangoDBDriver::createEdge(QString collection, Document *fromDoc, Document *toDoc)
 {
-    Edge *e = new Edge(collection, fromDoc, toDoc, this);
+    Edge *e = new Edge(collection, fromDoc, toDoc);
 
     connect(e, &Edge::saveData,
             this, &ArangoDBDriver::_ar_edge_save
@@ -356,7 +349,7 @@ void ArangoDBDriver::disconnectIndex(AbstractIndex *index)
 
 QSharedPointer<QBCursor> ArangoDBDriver::executeSelect(QSharedPointer<QBSelect> select)
 {
-    QSharedPointer<QBCursor> cursor(new QBCursor(this));
+    QSharedPointer<QBCursor> cursor(new QBCursor);
 
     QByteArray jsonSelect = select->toJson();
     QUrl url(d->standardUrl + QString("/cursor"));
@@ -375,7 +368,7 @@ QSharedPointer<QBCursor> ArangoDBDriver::executeSelect(QSharedPointer<QBSelect> 
 
 QSharedPointer<QBCursor> ArangoDBDriver::executeSelect(QSharedPointer<QBSimpleSelect> select)
 {
-    QSharedPointer<QBCursor> cursor(new QBCursor(this));
+    QSharedPointer<QBCursor> cursor(new QBCursor);
 
     QByteArray jsonSelect = select->toJson();
     QUrl url(d->standardUrl + select->url());
@@ -434,7 +427,10 @@ void ArangoDBDriver::_ar_document_save(Document *doc)
     d->jsonData = doc->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
 
+    qDebug() << QThread::currentThread() << "_ar_document_save" << d->jsonData;
+
     if ( doc->isCreated() ) {
+
         QUrl url(d->standardUrl + QString("/document/") + doc->docID());
         QNetworkRequest request(url);
         request.setRawHeader("Content-Type", "application/json");

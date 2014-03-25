@@ -28,6 +28,8 @@
 #include <QtCore/QJsonObject>
 #include <QtNetwork/QNetworkReply>
 
+#include "ArangoDBDriver.h"
+
 namespace internal {
 
 class DocumentPrivate
@@ -51,6 +53,8 @@ class DocumentPrivate
             errorCode = 0;
             errorNumber = 0;
         }
+
+        arangodb::ArangoDBDriver * driver = Q_NULLPTR;
 };
 
 const QString ID  = QStringLiteral("_id");
