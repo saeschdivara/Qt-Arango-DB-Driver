@@ -191,7 +191,11 @@ void ArangoDBDriver::disconnectCollection(Collection *collection)
 
 Document *ArangoDBDriver::getDocument(QString id)
 {
-    Document *doc = new Document;
+    QStringList splittedId = id.split('/');
+    QString collection = splittedId.first();
+    QString key = splittedId.last();
+
+    Document *doc = new Document(collection, key);
 
     QUrl url(d->standardUrl + QString("/document/") + id);
     QNetworkReply *reply = d->networkManager.get(QNetworkRequest(url));
@@ -203,6 +207,11 @@ Document *ArangoDBDriver::getDocument(QString id)
     connectDocument(doc);
 
     return doc;
+}
+
+Document *ArangoDBDriver::getDocument(const QString &collection, const QString &key)
+{
+    return getDocument(collection + "/" + key);
 }
 
 Document *ArangoDBDriver::getRandomDocument(const QString & colleciton)
@@ -427,7 +436,9 @@ void ArangoDBDriver::_ar_document_save(Document *doc)
     d->jsonData = doc->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
 
-    qDebug() << QThread::currentThread() << "_ar_document_save" << d->jsonData;
+    qDebug() << "------------------------------------------";
+    qDebug() << doc->collection();
+    qDebug() << "------------------------------------------";
 
     if ( doc->isCreated() ) {
 
