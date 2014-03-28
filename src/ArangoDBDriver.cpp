@@ -436,10 +436,6 @@ void ArangoDBDriver::_ar_document_save(Document *doc)
     d->jsonData = doc->toJsonString();
     QByteArray jsonDataSize = QByteArray::number(d->jsonData.size());
 
-    qDebug() << "------------------------------------------";
-    qDebug() << doc->collection();
-    qDebug() << "------------------------------------------";
-
     if ( doc->isCreated() ) {
 
         QUrl url(d->standardUrl + QString("/document/") + doc->docID());

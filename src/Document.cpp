@@ -237,8 +237,6 @@ void Document::_ar_dataIsAvailable()
     QJsonObject obj = QJsonDocument::fromJson(reply->readAll()).object();
     d_func()->dirtyAttributes.clear();
 
-    qDebug() << QThread::currentThread() << "_ar_dataIsAvailable" << obj;
-
     reply->disconnect(this, SLOT(_ar_dataIsAvailable()));
 
     bool hasError = obj.value("error").toBool();
