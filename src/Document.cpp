@@ -306,12 +306,22 @@ bool Document::save()
 
 void Document::update()
 {
+    if ( d_func()->driver ) {
+        d_func()->driver->disconnectDocument(this);
+        d_func()->driver->connectDocument(this);
+    }
+
     emit updateData(this);
 }
 
 void Document::sync()
 {
     if ( !d_func()->isCurrent ) {
+        if ( d_func()->driver ) {
+            d_func()->driver->disconnectDocument(this);
+            d_func()->driver->connectDocument(this);
+        }
+
         emit syncData(this);
     }
 }
@@ -322,11 +332,21 @@ void Document::drop()
         d_func()->isDirty = false;
         d_func()->isCreated = false;
 
+        if ( d_func()->driver ) {
+            d_func()->driver->disconnectDocument(this);
+            d_func()->driver->connectDocument(this);
+        }
+
         emit deleteData(this);
     }
 }
 
 void Document::updateStatus()
 {
+    if ( d_func()->driver ) {
+        d_func()->driver->disconnectDocument(this);
+        d_func()->driver->connectDocument(this);
+    }
+
     emit updateDataStatus(this);
 }
