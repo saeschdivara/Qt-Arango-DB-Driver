@@ -31,4 +31,6 @@ LIBS += -L$$PWD/../../../arangodb-driver-dist/release/ -larangodb-driver
 DEPENDPATH += $$PWD/../../../arangodb-driver-dist/release
 }
 
+# Add include paths
 INCLUDEPATH += $$PWD/../../src
+INCLUDEPATH += $$PWD/../../include

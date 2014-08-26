@@ -24,7 +24,9 @@
 #include <QString>
 #include <QtTest>
 #include <QCoreApplication>
-#include <Arangodbdriver.h>
+
+// Drivers
+#include <arangodb/ArangoDbDriver>
 
 class CollectionTest : public QObject
 {
@@ -41,7 +43,7 @@ class CollectionTest : public QObject
         void testCreateAndDeleteCollection_data();
 
     private:
-        arangodb::Arangodbdriver driver;
+        arangodb::ArangoDBDriver driver;
 };
 
 CollectionTest::CollectionTest()
