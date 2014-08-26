@@ -21,8 +21,8 @@
  ** CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *********************************************************************************/
 
-#ifndef QCURSOR_H
-#define QCURSOR_H
+#ifndef QBCURSOR_H
+#define QBCURSOR_H
 
 #include "arangodb-driver_global.h"
 #include "Document.h"
@@ -185,4 +185,4 @@ class ARANGODBDRIVERSHARED_EXPORT QBCursor : public QObject
 
 }
 
-#endif // QCURSOR_H
+#endif // QBCURSOR_H
